@@ -114,8 +114,9 @@ legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
   .sheet-handle { display: block; width: 40px; height: 4px; border-radius: 4px; background: #5a544e; margin: 0 auto 18px; }
   .export-sheet header { margin-bottom: 24px; }
 }
-.site-footer { margin-top: 48px; padding: 26px 0 8px; border-top: 1px solid var(--line); text-align: center; }
-.support-note { max-width: 620px; margin: 0 auto 16px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.support-banner { margin: 18px 0 6px; padding: 20px 22px; border-radius: 12px; background: linear-gradient(135deg, #221a12 0%, #1b1916 60%, #241a13 100%); border: 1px solid #45382c; text-align: center; }
+.support-note { max-width: 660px; margin: 0 auto 16px; color: #cfc6ba; font-size: 13.5px; line-height: 1.85; }
+.support-note strong { color: #f3ede3; }
 .support-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .social-btn { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 16px; border-radius: 999px; font-size: 13px; font-weight: 650; text-decoration: none; transition: opacity .15s, transform .15s; }
 .social-btn:hover { opacity: .85; transform: translateY(-1px); }
@@ -123,7 +124,7 @@ legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
 .social-github { background: #161b22; color: #fff; border: 1px solid #30363d; }
 .social-xhs { background: #ff2442; color: #fff; border: 1px solid rgba(255,255,255,.18); }
 @media (max-width: 640px) {
-  .site-footer { margin-top: 32px; }
+  .support-banner { margin-top: 14px; padding: 16px 14px; }
   .support-note { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
