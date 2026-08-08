@@ -113,8 +113,15 @@ legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
   .app-shell.editing .preview-stage { position: sticky; top: 78px; z-index: 10; height: calc(100dvh - 108px); max-height: 46dvh; min-height: 240px; background: #11100e; padding: 8px 0 4px; }
   .preview-window { height: 100%; }
   .controls-panel { overflow: visible; padding: 14px 0 30px; }
-  .film-grid, .leak-grid { grid-auto-rows: 82px; height: 270px; }
-  .film-card, .leak-grid button { height: 82px; }
+  /* 移动端：胶片模拟与漏光改为横向滚动条，节省竖向空间 */
+  .film-grid, .leak-grid { display: flex; flex-direction: row; height: auto; overflow-x: auto; overflow-y: hidden; padding: 3px 1px; gap: 10px; scroll-snap-type: x proximity; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .film-card, .leak-grid button { flex: 0 0 auto; width: 118px; height: 82px; scroll-snap-align: start; }
+  .film-card-copy { padding: 6px; }
+  .film-card-copy small { font-size: 8px; }
+  .film-card-copy strong { font-size: 10.5px; }
+  .leak-grid button span { left: 6px; bottom: 6px; inset: auto 6px 6px; }
+  .film-grid::-webkit-scrollbar, .leak-grid::-webkit-scrollbar { height: 4px; }
+  .film-grid::-webkit-scrollbar-thumb, .leak-grid::-webkit-scrollbar-thumb { background: #45382c; border-radius: 999px; }
   .mobile-export { display: block; position: fixed; z-index: 16; left: 15px; right: 15px; bottom: max(12px, env(safe-area-inset-bottom)); height: 54px; border: 0; background: var(--orange); color: #170d08; font-weight: 800; box-shadow: 0 -12px 30px #11100edd; }
   .sheet-backdrop { align-items: flex-end; }
   .export-sheet { width: 100%; height: auto; max-height: 88dvh; border-radius: 18px 18px 0 0; padding: 14px 20px max(22px, env(safe-area-inset-bottom)); }
