@@ -105,12 +105,11 @@ legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
   .format-note { position: static; transform: none; margin: 0 auto; }
   .header-actions .export-button { display: none; }
   .editor-grid { display: block; height: auto; margin-top: 5px; }
-  /* 编辑态：顶部（提示条+标题栏）与预览窗口整体吸顶固定，占屏约 1/3，滤镜选项在下方滚动 */
+  /* 编辑态：仅顶部提示条吸顶，预览窗口吸顶锁定占屏约 1/4，标题栏随内容滚动 */
   .app-shell.editing .workspace { display: contents; }
   .app-shell.editing .notice-bar { position: sticky; top: 0; z-index: 30; height: 30px; display: flex; align-items: center; justify-content: center; }
-  .app-shell.editing .app-header { position: sticky; top: 30px; z-index: 20; background: #11100e; }
   .app-shell.editing .file-meta { display: none; }
-  .app-shell.editing .preview-stage { position: sticky; top: 78px; z-index: 10; height: calc(100dvh - 108px); max-height: 46dvh; min-height: 240px; background: #11100e; padding: 8px 0 4px; }
+  .app-shell.editing .preview-stage { position: sticky; top: 30px; z-index: 10; height: 25dvh; min-height: 180px; max-height: 30dvh; background: #11100e; padding: 6px 0 4px; }
   .preview-window { height: 100%; }
   .controls-panel { overflow: visible; padding: 14px 0 30px; }
   /* 移动端：胶片模拟与漏光改为横向滚动条，节省竖向空间 */
