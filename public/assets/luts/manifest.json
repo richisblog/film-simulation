@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "cube_size": 64,
+  "luts": [
+    {
+      "id": "BLUESKETCH",
+      "asset": "BLUESKETCH.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 12874,
+      "sha256": "c7f6b89af7eeab450af82bc625ac2f89c852c34d0be92ecb0a7360518dc43e72",
+      "source_sha256": "a7ac5cc9b1df3be5d35fcb74c09fc3ee756f314f72b9aca81e63b5d261bf0754"
+    },
+    {
+      "id": "BW",
+      "asset": "BW.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 112101,
+      "sha256": "fd877dde755ee185ce5c64f16fb3b1f9f0d290f48790481cd385d3ff5f54350a",
+      "source_sha256": "593158b856fa9ea90f72ae0e9d3dfbacb992926c17c4ab29d4427cec96447f87"
+    },
+    {
+      "id": "BWHC",
+      "asset": "BWHC.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 111006,
+      "sha256": "243ecb79c5cd3a2fecd182dbe9b1a03addb0eac1c7840372ee87b7383ad84747",
+      "source_sha256": "da18df1fd61970138f235a1a5676f5ec5e46b4a30149c6fe5f51058bcba5d0e7"
+    },
+    {
+      "id": "BWIR",
+      "asset": "BWIR.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 69622,
+      "sha256": "80f1c3551a40b677ecfe77479117e36e2c46e835b856f6d5adab2417e3ec5329",
+      "source_sha256": "454af037482b2653e3968f530befc8a801763c9158ed19813c1d4dab1341ae9f"
+    },
+    {
+      "id": "BWLC",
+      "asset": "BWLC.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 117595,
+      "sha256": "fb820962cad309813c4a9cdccba636337623c2829b7b2c81573bea5e37b35b20",
+      "source_sha256": "76307cc5862099a5aa13c6c72eb0c92ddba2385e9675ffb46e70a398a219eeb1"
+    },
+    {
+      "id": "C41",
+      "asset": "C41.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 528959,
+      "sha256": "cb101500452f447bdaeefa59651cec974bc09f13fcf876a102092e5163bdbf8c",
+      "source_sha256": "522de1ae311bf7e85c703424e5caa00dd94e940bd2a3d8ecdaac70284acf4fa8"
+    },
+    {
+      "id": "CYBERWARM",
+      "asset": "CYBERWARM.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 596815,
+      "sha256": "5de86057b975c87976cffa85ae54906f13e4be635a8923bbced5e35b9d7fe87c",
+      "source_sha256": "d48a960bd0f3ec06ed9ae4ec45c2a469b443d908564193b338994cf9852e742c"
+    },
+    {
+      "id": "EMBER",
+      "asset": "EMBER.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 544070,
+      "sha256": "a5f1712aa538f53362dd66d1c23093fe1a19f6152619dde59f8ce0a5b7336d92",
+      "source_sha256": "66bade0f97e78b2207404980617f4c92d63443c2a2ebc0e3bfdf0537dc6bc8b3"
+    },
+    {
+      "id": "FADE",
+      "asset": "FADE.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 581229,
+      "sha256": "cf77cc7e798be55157d63f9c969a7066481b01b8c15c92d8a490c5a962c0afd3",
+      "source_sha256": "997bd0fd3b8df4abee8ff380099fc21c40725227df3befb3ab979237e56e3da0"
+    },
+    {
+      "id": "FJ200",
+      "asset": "FJ200.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 526706,
+      "sha256": "c3f1a4498f87f866aad10c2311719e8ae5fdc06aca3d0ce8e5d0348f502fd472",
+      "source_sha256": "dcefbc78d69a2244d1f24a12a110310c5f084c078dd9d66770fcc4f5564cbc34"
+    },
+    {
+      "id": "FJDISP",
+      "asset": "FJDISP.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 483612,
+      "sha256": "d0c885d7397da6e5e6e26b4ca4364763c1ee416845dd67edba4584fa0bc6c94d",
+      "source_sha256": "b7b57fca95b8870a41c03bc2554e078188f9bb505204c08012d89f0dcb01f03f"
+    },
+    {
+      "id": "FJEXP",
+      "asset": "FJEXP.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 725323,
+      "sha256": "2114592212fa365731a73d77ef4c0012ac035c2ff7967f5697872702dd05abd4",
+      "source_sha256": "989189b1cd28043539524d120fe3818bddbd8f0a8e751e97108e420f83f60dcb"
+    },
+    {
+      "id": "FJVIVID",
+      "asset": "FJVIVID.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 707818,
+      "sha256": "7a99b05b82bab5d3872ee8cccbb417bdc32c4c5c0cb5bcc84cfeec222fc0ddae",
+      "source_sha256": "8f89471da54d26a4dc9b048ce35260f6efd1738b764e81a0da1c1eed4bc1ba12"
+    },
+    {
+      "id": "GL200",
+      "asset": "GL200.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 528448,
+      "sha256": "52206b640ec2d7a6f415a6396a10bb24f49a636f04dda2312a0b4025f2df7c49",
+      "source_sha256": "c06f4745eb0f9ff3f07f9eaa27fe35384a22134354ef9c1fcaa2057db4204f6c"
+    },
+    {
+      "id": "GLDISP",
+      "asset": "GLDISP.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 470422,
+      "sha256": "ca2fb7a993b71f15cf115d4e5373747df02545f3d1b17a0c971179a00047e5f4",
+      "source_sha256": "00afd72b2e75de801750e33d407a33ccb280edfecff83c7f3c950097ed3b3ee6"
+    },
+    {
+      "id": "GLEXP",
+      "asset": "GLEXP.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 516264,
+      "sha256": "234063cf79e3126259d005528f00fefc8759ac80ceaf9214d3831230c9f8d3ee",
+      "source_sha256": "e00956efa17fafb2c04d6b29c7a0442806e90c8d52b5fbeed17ca6b1b37cc0bf"
+    },
+    {
+      "id": "GLLC",
+      "asset": "GLLC.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 755529,
+      "sha256": "aeb40d82448a62ccc3f24d8774bdbaba94c925de8407d69aafb609887de574a4",
+      "source_sha256": "3901b611a2d7e85a79283c197dd400434d57a54a90561db9c02563b5dedcf992"
+    },
+    {
+      "id": "GLVIVID",
+      "asset": "GLVIVID.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 737820,
+      "sha256": "ac851e2c1c9e991db40e4e11fa6358283337865c7a9994094b85f3a37036ff2a",
+      "source_sha256": "f298fff0b32cf915af0eaa42dd8a2a16b33a24d4e764f39c223d49b430efee6d"
+    },
+    {
+      "id": "GRNSKETCH",
+      "asset": "GRNSKETCH.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 9200,
+      "sha256": "473cbbfeadba629401c4bef4dd46993a59122e27c4c3b5fb80d1d09f276fd49b",
+      "source_sha256": "a702586570be638d50d3c550b28b4b6802eca3d96fcdab29e3842d1360b1fcd7"
+    },
+    {
+      "id": "HBLUE",
+      "asset": "HBLUE.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 597490,
+      "sha256": "c08067e91b6dfbe07ef98f666b965c3d168b6f0a4e24511d7d6e7ab0b33c66d7",
+      "source_sha256": "3c7b694665f6002818a887e6e78eac3160da33f954f3330e172e8855c5624279"
+    },
+    {
+      "id": "INSTCOOL",
+      "asset": "INSTCOOL.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 661400,
+      "sha256": "ee7c09fb908ffca46756f723f684e1e1a247d98cc329bd259d4636619b1640c1",
+      "source_sha256": "a22dbe9d00b6bd1776629920eb582ddfdb78b3bbc56bace7bc981758bcc2f835"
+    },
+    {
+      "id": "INSTWARM",
+      "asset": "INSTWARM.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 412989,
+      "sha256": "d264936b0ee1f68529b2eaee1422bd49eecd4386772f1115ebc33d6df2dffa8c",
+      "source_sha256": "a2e5ded2ebf2bda656e0e686fda9b0d64c40b377c85d643e2ed7af15811cbe79"
+    },
+    {
+      "id": "IRCOLOR",
+      "asset": "IRCOLOR.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 292610,
+      "sha256": "6fe6d2e2faa58e2eedd6f1721abe31869d6c45a4da7e9f281d6685689e85e262",
+      "source_sha256": "74839f9f557dfdd37e1d8cfc52a9217cc269ffa6dfd8f00874be2cafe6adb292"
+    },
+    {
+      "id": "LCLOOK",
+      "asset": "LCLOOK.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 688322,
+      "sha256": "beb43e49d466dbcd7d91a588024fe0ec71f80231e17bbbb7157705ae47c3f6f5",
+      "source_sha256": "339920f752408b3b117f3c10ebce2621abfc369cf7abce1e18eccc1111e8a104"
+    },
+    {
+      "id": "NEWSPAPER",
+      "asset": "NEWSPAPER.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 637624,
+      "sha256": "c7e4a3ccb8471c8313844fca769cbfda1728da7a9c7c0dfbbc95da174d6adc84",
+      "source_sha256": "da55c6305693c8bf109cf350331605138e1d8f7e03de6bbf2bfdf67e62191e03"
+    },
+    {
+      "id": "OLDWEST",
+      "asset": "OLDWEST.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 604879,
+      "sha256": "a7216789d93506f165c22b51e3ce52745bf0d9ebe342d0ff94e4da08493e5324",
+      "source_sha256": "5723dfda953bec2bfe51895c4774fbca13f6d1bcebd354606b63ae69120f9301"
+    },
+    {
+      "id": "PINK",
+      "asset": "PINK.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 659510,
+      "sha256": "e1359c9daa3e251cc44033e930b5cbf4eb3679955ca0b8ba9dfbfed89076951b",
+      "source_sha256": "b61670a9394cfa214756924e37d53aa4a1cc48245dec0cffbf2442c1b8b76e66"
+    },
+    {
+      "id": "PT400",
+      "asset": "PT400.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 520513,
+      "sha256": "37bab7dda6b1019150a607cbb2ba55c689534dcd0f69181cea8e27e1e2cbbbfe",
+      "source_sha256": "79b81455e466e193b817af84291c19a896d540d5507e69df7f06816ade9f108e"
+    },
+    {
+      "id": "PT400LC",
+      "asset": "PT400LC.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 469514,
+      "sha256": "ac81089d9f4c2e38caaaca0deb51cff724e8e23625b4757b9c639131f9ab2231",
+      "source_sha256": "7b45acd7f244febb2e06c8b0e98b6bceaeafa11bf8a03a3970752ed4a9386a85"
+    },
+    {
+      "id": "PURPLE",
+      "asset": "PURPLE.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 372608,
+      "sha256": "672a33a24d19a07d71a3e368ad99c8e0f28446a4fa478e5b681dc6a7e3be799f",
+      "source_sha256": "3c891d3afa0e4cd3446b2e302fb7e72ff0423062e06ecc6169a9e16188de6669"
+    },
+    {
+      "id": "REDSCALE",
+      "asset": "REDSCALE.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 240071,
+      "sha256": "9105ce77e8a748e0f33f5183cae95ccd526a95d1b20260b9c96b61cfe2009af5",
+      "source_sha256": "26ac72508ef2e20697b6a7cd7f03a28856b0d2bb0f9fc7e81c4b2ab02e4c8e48"
+    },
+    {
+      "id": "REDSKETCH",
+      "asset": "REDSKETCH.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 10105,
+      "sha256": "09bf0c148f599c63e2e285cfa87895c7193d78bcf15ac12caca8224116a497b0",
+      "source_sha256": "12602d93e95ed5f9622e1a86cb5a7e0581ffc26de7edef53bd15237ee8b591dc"
+    },
+    {
+      "id": "RETROCINE",
+      "asset": "RETROCINE.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 746433,
+      "sha256": "65cadbef7376952ad7cb30925cef37dce06eb0acc6476fc8f59bb14119f1655f",
+      "source_sha256": "44398be8a6c008f888b799af6e5bae8c0259014ce41c8361d28554b012c41572"
+    },
+    {
+      "id": "SABATTIER",
+      "asset": "SABATTIER.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 135839,
+      "sha256": "489b0b42f64af7f8ff7d4f494313e7e0d0f222a99cbb7f485e7cc460b4653733",
+      "source_sha256": "c4191fe3013eea8bbbeea6f2865b23e55e36c42e5fddf96f67d1d5537fd288a8"
+    },
+    {
+      "id": "THEHOTEL",
+      "asset": "THEHOTEL.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 712885,
+      "sha256": "c155cac034cf175e6b3bd3727052861dab7ee291520ae08a6a037eb564d3094d",
+      "source_sha256": "8cf0012a8260692ffbc7047babdbd58b057ab5ebeee4ad779c55dec7526c35f8"
+    },
+    {
+      "id": "VS200",
+      "asset": "VS200.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 576340,
+      "sha256": "9ce1d350f1bafc3e4b15e7e2105aecd43b704c09af66e4d14b1c7c684d5cdfe6",
+      "source_sha256": "efad93e06ccade1f67f4aaac8dddab2ea0f0ad7e9885accb69a3f905817ea368"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+:root { color-scheme: dark; font-family: Inter, "PingFang SC", "Noto Sans CJK SC", sans-serif; background: #12100e; color: #f4eee4; }
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; margin: 0; }
+body { min-width: 320px; background: radial-gradient(circle at 20% 10%, #292019 0, #12100e 40%); }
+button, input { font: inherit; }
+.app-shell { min-height: 100vh; min-height: 100dvh; padding: max(24px, env(safe-area-inset-top)) 5vw max(24px, env(safe-area-inset-bottom)); }
+.brand { letter-spacing: .14em; font-size: 15px; }
+.brand strong { color: #f0783c; }
+.empty-state { max-width: 720px; margin: 16vh auto 0; }
+.eyebrow { color: #f0783c; letter-spacing: .22em; font-size: 12px; }
+h1 { margin: 12px 0 20px; font-family: Georgia, "Songti SC", serif; font-size: clamp(44px, 8vw, 92px); font-weight: 500; line-height: .98; }
+.empty-state > p:last-child { color: #b8afa4; font-size: 17px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }

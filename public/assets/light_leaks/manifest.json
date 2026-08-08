@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "light_leaks": [
+    {
+      "id": "LEAK_01",
+      "asset": "leak_01.webp",
+      "source_name": "13.jpg",
+      "byte_length": 559992,
+      "sha256": "d65427c2b576993683eb8f6d79a25d54a3106cf59ed06b3eafefcc5bbc9e4406"
+    },
+    {
+      "id": "LEAK_02",
+      "asset": "leak_02.webp",
+      "source_name": "14.jpg",
+      "byte_length": 20446,
+      "sha256": "43da20abbbe390e1f57973b13a7551cc6dd04136a492ef5313d041b5bc3570fc"
+    },
+    {
+      "id": "LEAK_03",
+      "asset": "leak_03.webp",
+      "source_name": "15.jpg",
+      "byte_length": 34952,
+      "sha256": "370a9e94dcad4ce599ed419bf651a841df16b73104b22a586b580d8539fa08a2"
+    },
+    {
+      "id": "LEAK_04",
+      "asset": "leak_04.webp",
+      "source_name": "16.jpg",
+      "byte_length": 61766,
+      "sha256": "4cdcc414d33fb4759210d5ccdbef9ba3d82c446f8272e5c42673cd69d2bdb93c"
+    },
+    {
+      "id": "LEAK_05",
+      "asset": "leak_05.webp",
+      "source_name": "17.jpg",
+      "byte_length": 31364,
+      "sha256": "60be360890eeb3f5b0ed14443b76e908086100e6c23031d07009909acdbe9da7"
+    },
+    {
+      "id": "LEAK_06",
+      "asset": "leak_06.webp",
+      "source_name": "18.jpg",
+      "byte_length": 35832,
+      "sha256": "ddf19b0149dfafd98e239cd32a6210ba17f276dc00647e4f00a394888840d193"
+    },
+    {
+      "id": "LEAK_07",
+      "asset": "leak_07.webp",
+      "source_name": "19.jpg",
+      "byte_length": 17822,
+      "sha256": "3d7b6df4d63e9127e788dccbc6a40b0bfa45d53dee0f7eb7d31954ce6cb48da0"
+    },
+    {
+      "id": "LEAK_08",
+      "asset": "leak_08.webp",
+      "source_name": "20.jpg",
+      "byte_length": 20606,
+      "sha256": "c1b8b22cfe7aeed07edede0c5a637b4f843e5aec3e1165fdd0cacddd9e90904f"
+    },
+    {
+      "id": "LEAK_09",
+      "asset": "leak_09.webp",
+      "source_name": "Texture-1.jpg",
+      "byte_length": 32738,
+      "sha256": "2616ba00b99ff1a5c906d158a20aa01ff8c3dab6541181ae567c6daca7046528"
+    },
+    {
+      "id": "LEAK_10",
+      "asset": "leak_10.webp",
+      "source_name": "Texture-10.jpg",
+      "byte_length": 67292,
+      "sha256": "8ab47a7075dd6f616eaa9211a7580809f04f83f4f3aa0b3bb7490698d6ae4e8d"
+    },
+    {
+      "id": "LEAK_11",
+      "asset": "leak_11.webp",
+      "source_name": "Texture-11.jpg",
+      "byte_length": 71262,
+      "sha256": "069c9256578c70d44f3eb793598fc825be4fc8b511ea420ece3304a2397be03a"
+    },
+    {
+      "id": "LEAK_12",
+      "asset": "leak_12.webp",
+      "source_name": "Texture-12.jpg",
+      "byte_length": 77846,
+      "sha256": "6e2f663bc10c684d003a52eec733886ac16b8641440f70c575f8c9fde91fe62b"
+    },
+    {
+      "id": "LEAK_13",
+      "asset": "leak_13.webp",
+      "source_name": "Texture-2.jpg",
+      "byte_length": 42950,
+      "sha256": "245b8322837c11e62c62e16ccce4de6b62f84fd2eb3306f71d24e710d7b06ad1"
+    },
+    {
+      "id": "LEAK_14",
+      "asset": "leak_14.webp",
+      "source_name": "Texture-3.jpg",
+      "byte_length": 37548,
+      "sha256": "22f86743825aa03a03540a6dd86828902b4c16ea3d95b83dc69bc3bef31a205f"
+    },
+    {
+      "id": "LEAK_15",
+      "asset": "leak_15.webp",
+      "source_name": "Texture-4.jpg",
+      "byte_length": 97676,
+      "sha256": "1d52a8c432cf787f8cfd81ebd55b5c90f1b2c6565a4ed8af9c9b8d7d0fbf251b"
+    },
+    {
+      "id": "LEAK_16",
+      "asset": "leak_16.webp",
+      "source_name": "Texture-5.jpg",
+      "byte_length": 94066,
+      "sha256": "4644a928861de38852d96286155366b9ece4f88f39ed0e9c0119ac75d1f3a781"
+    },
+    {
+      "id": "LEAK_17",
+      "asset": "leak_17.webp",
+      "source_name": "Texture-6.jpg",
+      "byte_length": 50794,
+      "sha256": "8de867457fbc7bfab06c839b4f735dd14fa66a4bb31af960e9141df95570704b"
+    },
+    {
+      "id": "LEAK_18",
+      "asset": "leak_18.webp",
+      "source_name": "Texture-7.jpg",
+      "byte_length": 53680,
+      "sha256": "ec6a2f315da8c495f873815be5bd615fd4db9b6184b89a889ddb097a9df6ff12"
+    },
+    {
+      "id": "LEAK_19",
+      "asset": "leak_19.webp",
+      "source_name": "Texture-8.jpg",
+      "byte_length": 67398,
+      "sha256": "4591fc99fd17dc9628c4b1091d838476edf7a41d120147ea9daaf9384295a365"
+    },
+    {
+      "id": "LEAK_20",
+      "asset": "leak_20.webp",
+      "source_name": "Texture-9.jpg",
+      "byte_length": 47334,
+      "sha256": "a56855e547d36d84186c55f4fb74d6c7165da33b83f7c3d58b51107819d69a38"
+    }
+  ]
+}
