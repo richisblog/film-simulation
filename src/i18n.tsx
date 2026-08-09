@@ -29,6 +29,9 @@ const copy = {
     renderingStatus: '正在本地渲染照片', generated: (name: string) => `已生成 ${name}`, exportFailed: '导出失败',
     deviceMax: (max: number) => `当前设备最大支持 ${max} 像素长边，请选择较低分辨率。`,
     unsupportedFile: '请选择 JPEG、PNG、WebP，或当前浏览器能够读取的 HEIC 照片。', readFailed: '无法读取照片', lutLoadFailed: 'LUT 载入失败', leakLoadFailed: '漏光载入失败',
+    installTitle: '添加「胶片模拟」到主屏幕', installDescription: '像 App 一样全屏使用，并可更快打开。',
+    installStepShare: '点击 Safari 工具栏中的“分享”按钮', installStepAdd: '选择“添加到主屏幕”',
+    installClose: '关闭安装提示', installConfirm: '知道了',
   },
   en: {
     languageName: 'English', switchLanguage: '切换到中文', switchLabel: '中文',
@@ -56,6 +59,9 @@ const copy = {
     renderingStatus: 'Rendering photo locally', generated: (name: string) => `Generated ${name}`, exportFailed: 'Export failed',
     deviceMax: (max: number) => `This device supports a maximum long edge of ${max}px. Choose a lower resolution.`,
     unsupportedFile: 'Choose a JPEG, PNG, WebP, or a HEIC photo supported by this browser.', readFailed: 'Could not read the photo', lutLoadFailed: 'Could not load the LUT', leakLoadFailed: 'Could not load the light leak',
+    installTitle: 'Add Film Simulation to Home Screen', installDescription: 'Use it full screen like an app and launch it faster.',
+    installStepShare: 'Tap the Share button in the Safari toolbar', installStepAdd: 'Choose “Add to Home Screen”',
+    installClose: 'Close install instructions', installConfirm: 'Got it',
   },
 } as const
 

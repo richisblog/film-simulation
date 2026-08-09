@@ -5,6 +5,7 @@ import { DropZone } from './components/DropZone'
 import { ExportSheet } from './components/ExportSheet'
 import { ErrorToast } from './components/ErrorToast'
 import { LutLoadProgress } from './components/LutLoadProgress'
+import { InstallPrompt } from './components/InstallPrompt'
 import { Preview } from './components/Preview'
 import { canvasToBlob } from './export/encode'
 import { outputFilename } from './image/formats'
@@ -107,6 +108,7 @@ function AppContent() {
           onChange={editor.setSettings} onReset={editor.reset} />
       </div>}
       {editor.error && <ErrorToast error={editor.error} onClose={() => editor.setError(null)} onRetry={editor.retryError} />}
+      <InstallPrompt />
       <p className="visually-hidden" aria-live="polite">{status}</p>
       {showExport && editor.image && <ExportSheet source={editor.image} busy={exporting} onClose={() => setShowExport(false)} onExport={exportPhoto} />}
       {editor.image && <button type="button" className="mobile-export" onClick={() => setShowExport(true)}>{copy.mobileExport}</button>}
