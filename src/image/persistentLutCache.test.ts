@@ -38,6 +38,16 @@ class MemoryCacheStorage {
   }
 }
 
+class MemoryLocalStorage {
+  readonly values = new Map<string, string>()
+  get length() { return this.values.size }
+  clear() { this.values.clear() }
+  getItem(key: string) { return this.values.get(key) ?? null }
+  key(index: number) { return [...this.values.keys()][index] ?? null }
+  removeItem(key: string) { this.values.delete(key) }
+  setItem(key: string, value: string) { this.values.set(key, value) }
+}
+
 describe('BrowserLutByteCache', () => {
   test('returns an independent copy of validated persistent bytes', async () => {
     const storage = new MemoryCacheStorage()
@@ -74,6 +84,33 @@ describe('BrowserLutByteCache', () => {
     await expect(cache.put('PT400', 8, 4, new Uint8Array(4))).resolves.toBeUndefined()
     await expect(cache.delete('PT400', 8, 4)).resolves.toBeUndefined()
     await expect(cache.pruneOldVersions()).resolves.toBeUndefined()
+  })
+
+  test('persists through localStorage when Cache Storage is unavailable', async () => {
+    const local = new MemoryLocalStorage() as unknown as Storage
+    const bytes = new Uint8Array([9, 8, 7, 6])
+    const firstPage = new BrowserLutByteCache(undefined, 'https://film.test/', local)
+    await firstPage.put('PT400', 8, bytes.length, bytes)
+
+    const reopenedPage = new BrowserLutByteCache(undefined, 'https://film.test/', local)
+
+    expect(await reopenedPage.get('PT400', 8, bytes.length)).toEqual(bytes)
+  })
+
+  test('uses the local copy when a browser loses a successful Cache Storage write between pages', async () => {
+    const local = new MemoryLocalStorage() as unknown as Storage
+    const bytes = new Uint8Array([4, 3, 2, 1])
+    const firstPageCaches = new MemoryCacheStorage()
+    const firstPage = new BrowserLutByteCache(firstPageCaches as unknown as CacheStorage, 'https://film.test/', local)
+    await firstPage.put('PT400', 8, bytes.length, bytes)
+
+    const reopenedWithEmptyCaches = new BrowserLutByteCache(
+      new MemoryCacheStorage() as unknown as CacheStorage,
+      'https://film.test/',
+      local,
+    )
+
+    expect(await reopenedWithEmptyCaches.get('PT400', 8, bytes.length)).toEqual(bytes)
   })
 
   test('prunes only older application-owned LUT cache versions', async () => {

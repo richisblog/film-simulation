@@ -13,6 +13,6 @@ it('does not cache manifests, unrelated assets, or lookalike paths', () => {
   expect(isEffectAssetUrl(new URL('https://film.richis.top/not-assets/luts/INSTWARM.rgb.deflate'))).toBe(false)
 })
 
-it('uses the versioned cache for the preview/full asset layout', () => {
-  expect(EFFECT_CACHE_NAME).toBe('film-effects-v2')
+it('uses a fresh cache version for the new 8-cube asset bytes', () => {
+  expect(EFFECT_CACHE_NAME).toBe('film-effects-v3')
 })

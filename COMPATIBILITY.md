@@ -3,10 +3,11 @@
 ## 弱网与素材加载
 
 - 生产构建优先从 Cloudflare Pages 获取 LUT 和漏光；CDN 请求失败后自动回退到应用本站。
-- 胶片卡片使用独立的 16³ 预览 LUT，并将并发限制为 2；点击滤镜后才加载完整 LUT。
-- 完整素材失败会显示来源、阶段和耗时，并为网络、超时与服务端错误提供原位重试。
-- 二进制效果素材成功响应由 Service Worker 按 CacheFirst 缓存；错误响应不会进入缓存。
-- Chromium 与 WebKit 的端到端测试会模拟 CDN 断线、同源回退和双源失败重试。
+- 缩略图、左侧大预览和导出统一使用 8³ LUT；36 个 LUT 在后台同时准备，已成功项立即可用。
+- 页面显示完成数量、百分比、最近完成项和失败数；失败项可单独重试，不阻塞其他滤镜。
+- 通过版本化 Cache Storage 持久保存校验成功的压缩 LUT，并同步写入约 62 KB 的 localStorage 兼容副本。再次打开网站时读取本地缓存，只联网补齐缺失或损坏项。
+- 二进制效果素材成功响应也由 Service Worker 按 CacheFirst 缓存；8³ 上线时缓存名升级到 `film-effects-v3`，避免复用旧 16³ 字节。
+- Chromium 与 WebKit 的端到端测试覆盖 CDN 断线、同源回退、36/36 持久缓存、零请求重开和单项续传。
 
 ## 推荐环境
 
@@ -31,6 +32,6 @@ JPEG 与 PNG 使用浏览器 Canvas 编码。WebP 编码完成后会检查返回
 
 ## 渲染降级
 
-首选 WebGL2，将 64³ RGB8 LUT 作为三维纹理采样，并在同一着色器中完成颗粒、暗角和漏光。WebGL2 初始化失败时使用 Canvas 2D CPU 兼容模式；兼容模式在大图上会更慢。
+首选 WebGL2，将 8³ RGB8 LUT 作为三维纹理采样，并在同一着色器中完成颗粒、暗角和漏光。WebGL2 初始化失败时使用 Canvas 2D CPU 兼容模式；兼容模式在大图上会更慢。
 
 以下能力只做增强，不是核心流程依赖：WebGPU、OffscreenCanvas、File System Access、Web Share、安装提示。公开部署必须使用 HTTPS，才能稳定启用 Service Worker 与安装型 PWA。

@@ -69,7 +69,7 @@ git commit -m "perf: shrink application LUTs to 8-cube"
 
 **Interfaces:**
 - Produces: `LutByteCache` with `get(id, cubeSize, byteLength)`, `put(...)`, `delete(...)`, and `pruneOldVersions()`.
-- Produces: `BrowserLutByteCache` using cache name `film-lut-bytes-v1` and synthetic same-origin keys.
+- Produces: `BrowserLutByteCache` using cache name `film-lut-bytes-v1`, synthetic same-origin keys, and a versioned localStorage mirror for browsers that lose Cache Storage across page closure.
 
 - [ ] **Step 1: Write failing cache tests**
 
@@ -86,7 +86,7 @@ test('deletes and misses an entry whose byte length is wrong', async () => {
 })
 ```
 
-Also cover Cache Storage rejection and deletion of only old `film-lut-bytes-*` cache names.
+Also cover Cache Storage rejection, successful-write loss recovered from localStorage, and deletion of only old `film-lut-bytes-*` cache names/keys.
 
 - [ ] **Step 2: Run tests and verify RED**
 

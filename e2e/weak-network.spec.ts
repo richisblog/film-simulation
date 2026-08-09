@@ -1,73 +1,101 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type BrowserContext, type Page, type Route } from '@playwright/test'
 
 const PNG_1X1 = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
   'base64',
 )
 
-async function openPhoto(page: Page) {
-  await page.goto('/')
+const isLutBinary = (url: string) => url.endsWith('.rgb.deflate')
+
+async function uploadPhoto(page: Page) {
   await page.locator('input[type="file"]').setInputFiles({
-    name: 'weak-network.png',
+    name: 'persistent-lut.png',
     mimeType: 'image/png',
     buffer: PNG_1X1,
   })
-  await expect(page.getByText('weak-network.png')).toBeVisible()
+  await expect(page.getByText('persistent-lut.png')).toBeVisible()
 }
 
-function instwarmButton(page: Page) {
-  return page.getByRole('radio', { name: /暖调拍立得/ })
+async function waitForAllLuts(page: Page) {
+  await expect(page.getByRole('status')).toContainText('胶片色彩已就绪（36 / 36）', { timeout: 15_000 })
 }
 
-test('uses preview LUTs and falls back to the packaged full LUT when the CDN is unavailable', async ({ page }) => {
+async function blockCdn(context: BrowserContext) {
+  await context.route('https://cdn.invalid/**', (route) => route.abort('connectionfailed'))
+}
+
+test('reopens with all 36 LUTs from persistent local cache and no LUT network requests', async ({ context, page }) => {
   const requests: string[] = []
-  page.on('request', (request) => {
-    if (request.url().includes('/assets/luts/')) requests.push(request.url())
+  context.on('request', (request) => {
+    if (isLutBinary(request.url())) requests.push(request.url())
   })
-  await page.route('https://cdn.invalid/**', (route) => route.abort('connectionfailed'))
+  await blockCdn(context)
 
-  await openPhoto(page)
-  const filter = instwarmButton(page)
-  await filter.scrollIntoViewIfNeeded()
+  await page.goto('/')
+  await waitForAllLuts(page)
 
-  await expect.poll(() => requests.some((url) => url.includes('/luts/previews/INSTWARM.rgb.deflate'))).toBe(true)
-  expect(requests.some((url) => /\/luts\/INSTWARM\.rgb\.deflate$/.test(url))).toBe(false)
+  expect(new Set(requests.filter((url) => url.includes('/luts/previews/'))).size).toBe(72)
+  expect(requests.every((url) => url.includes('/luts/previews/'))).toBe(true)
 
-  const packagedResponse = page.waitForResponse((response) => (
-    response.url().startsWith('http://127.0.0.1:4174/assets/luts/INSTWARM.rgb.deflate')
-    && response.status() === 200
-  ))
-  await filter.click()
-  await packagedResponse
+  requests.length = 0
+  await page.close()
+  const reopened = await context.newPage()
+  await reopened.goto('/')
+  await waitForAllLuts(reopened)
 
-  expect(requests.some((url) => url === 'https://cdn.invalid/assets/luts/INSTWARM.rgb.deflate')).toBe(true)
-  expect(requests.some((url) => url.startsWith('http://127.0.0.1:4174/assets/luts/INSTWARM.rgb.deflate'))).toBe(true)
-  await expect(page.getByRole('alert')).toHaveCount(0)
+  expect(requests).toEqual([])
 })
 
-test('shows a retry action and starts a fresh request after both sources fail', async ({ page }) => {
-  let fullLutRequests = 0
-  await page.route('https://cdn.invalid/**', (route) => {
-    if (/\/luts\/INSTWARM\.rgb\.deflate$/.test(route.request().url())) fullLutRequests += 1
-    return route.abort('connectionfailed')
+test('after a partial failure, refresh requests only the missing LUT', async ({ context, page }) => {
+  const requests: string[] = []
+  const missingPattern = '**/assets/luts/previews/INSTWARM.rgb.deflate'
+  const failOrigin = async (route: Route) => {
+    if (route.request().url().startsWith('http://127.0.0.1:4174/')) return route.abort('connectionfailed')
+    return route.fallback()
+  }
+  context.on('request', (request) => {
+    if (isLutBinary(request.url())) requests.push(request.url())
   })
-  await page.route('**/assets/luts/INSTWARM.rgb.deflate', (route) => {
-    fullLutRequests += 1
-    return route.abort('connectionfailed')
-  })
+  await blockCdn(context)
+  await context.route(missingPattern, failOrigin)
 
-  await openPhoto(page)
-  const filter = instwarmButton(page)
+  await page.goto('/')
+  const progress = page.getByRole('status')
+  await expect(progress).toContainText('35 个可用 · 1 个待重试', { timeout: 15_000 })
+  await expect(page.getByRole('button', { name: '重试未完成色彩' })).toBeVisible()
+
+  await context.unroute(missingPattern, failOrigin)
+  requests.length = 0
+  await page.reload()
+  await waitForAllLuts(page)
+
+  expect(requests).toHaveLength(2)
+  expect(requests.every((url) => url.endsWith('/luts/previews/INSTWARM.rgb.deflate'))).toBe(true)
+})
+
+test('main preview and export use the preloaded 8-cube asset without a full LUT request', async ({ context, page }) => {
+  const requests: string[] = []
+  context.on('request', (request) => {
+    if (isLutBinary(request.url())) requests.push(request.url())
+  })
+  await blockCdn(context)
+
+  await page.goto('/')
+  await waitForAllLuts(page)
+  await uploadPhoto(page)
+  const filter = page.getByRole('radio', { name: /暖调拍立得/ })
   await filter.scrollIntoViewIfNeeded()
   await filter.click()
+  await expect(filter).toHaveAttribute('aria-checked', 'true')
 
-  const alert = page.getByRole('alert')
-  await expect(alert).toContainText('无法连接素材服务')
-  await expect(alert).toContainText('阶段 network')
-  await expect(page.getByRole('button', { name: '重试加载' })).toBeVisible()
-  expect(fullLutRequests).toBe(2)
+  const networkCountBeforeExport = requests.length
+  await page.getByRole('button', { name: '导出' }).click()
+  const download = page.waitForEvent('download')
+  await page.getByRole('button', { name: '下载照片' }).click()
+  await download
 
-  await page.getByRole('button', { name: '重试加载' }).click()
-  await expect.poll(() => fullLutRequests).toBe(4)
-  await expect(alert).toContainText('无法连接素材服务')
+  expect(requests).toHaveLength(networkCountBeforeExport)
+  expect(requests.every((url) => url.includes('/luts/previews/'))).toBe(true)
+  expect(requests.some((url) => /\/luts\/[A-Z0-9]+\.rgb\.deflate$/.test(url))).toBe(false)
+  await expect(page.getByRole('alert')).toHaveCount(0)
 })

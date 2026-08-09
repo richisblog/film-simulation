@@ -54,18 +54,20 @@ GitHub Actions 的生产构建会自动读取仓库中的 `.env.production`。`f
 
 ## 验收
 
-1. 打开浏览器开发者工具 Network，禁用浏览器缓存后上传照片。
-2. 胶片卡片请求应指向 `/assets/luts/previews/`，而不是完整 LUT。
-3. 点击滤镜后才应请求对应完整 `.rgb.deflate`。
+1. 打开浏览器开发者工具 Network，并清除站点数据后刷新页面。
+2. 页面应显示从 `0 / 36` 到 `36 / 36` 的加载进度，所有 LUT 请求都应指向 `/assets/luts/previews/`。
+3. 缩略图、左侧大预览和导出都不应请求 `/assets/luts/<ID>.rgb.deflate` 的 64³ 文件。
 4. 正常情况下第一个请求域名应为 `film-simulation.pages.dev`，自定义域激活后为 `film-cdn.richis.top`。
-5. 临时在开发者工具中阻止 CDN 域名，再次点击未缓存滤镜；请求应回退到 `film.richis.top/assets/...`。
-6. 页面不应产生照片上传、分析或遥测请求。
+5. 完成 36 / 36 后关闭并重新打开页面；LUT 网络请求应为 0，资源从版本化本地缓存读取。
+6. 清除一个 LUT 缓存或让一个请求失败后刷新；只有缺失项应重新经过 CDN → `film.richis.top` 回退链路。
+7. 页面不应产生照片上传、分析或遥测请求。
 
 ## CORS、缓存和更新
 
 - Pages 读取构建产物根目录的 `_headers`；GitHub Pages 和 nginx 不会把该文件当服务器配置。
 - nginx 继续为 `/assets/` 提供缓存，但 `manifest.json` 应使用 `no-cache` 或较短缓存，二进制 LUT/WebP 可以保持 7 天缓存。
-- Service Worker 使用 `film-effects-v2` CacheFirst 缓存，只缓存成功的二进制素材响应。
+- 应用使用 `film-lut-bytes-v1` Cache Storage 并双写约 62 KB 的 localStorage 兼容副本；缓存键包含尺寸和清单字节长度。
+- Service Worker 使用 `film-effects-v3` CacheFirst 缓存，只缓存成功的二进制素材响应。
 - 更换 LUT 内容但沿用同名文件时，应同步升级 Service Worker 缓存名；更推荐以后把内容哈希加入文件名。
 
 ## 回滚

@@ -14,7 +14,7 @@ Use one lightweight 8³ LUT per film simulation for thumbnails, the main preview
 
 ## Persistent Storage
 
-Use the browser Cache Storage API through a small adapter. Each successful compressed LUT is stored under a same-origin synthetic key containing:
+Use the browser Cache Storage API through a small adapter and mirror the same small payload into localStorage as a Safari-compatible fallback. Each successful compressed LUT is stored under a versioned key containing:
 
 - cache schema version;
 - cube size (`8`);
@@ -23,7 +23,7 @@ Use the browser Cache Storage API through a small adapter. Each successful compr
 
 Before returning a cached entry, validate its byte length. An absent or invalid entry is deleted and fetched through the existing ordered CDN → same-origin transport. Store bytes only after the network response passes the manifest length check. If decompression fails, evict that entry so the next attempt cannot repeat a corrupt cached payload.
 
-The adapter degrades to memory/network behavior when Cache Storage is unavailable or throws (private-mode or quota conditions). Storage failures do not prevent editing and do not replace the existing safe network diagnostic.
+Reads prefer Cache Storage and fall back to the localStorage Base64 copy. The complete fallback payload is only about 62 KB. If either storage API is unavailable or throws (private-mode or quota conditions), the other remains usable; if both fail, the app degrades to memory/network behavior. Storage failures do not prevent editing and do not replace the existing safe network diagnostic.
 
 Changing the cache schema, cube size, or manifest byte length creates a new key. On startup, delete older application-owned LUT cache versions; do not touch unrelated browser caches.
 
@@ -78,7 +78,7 @@ The panel uses `role="status"` with polite announcements and a labelled `progres
 ## Tests and Acceptance
 
 - Generator test proves every committed preview cube is 8³ and deterministic.
-- Persistent-cache tests prove hit-without-network, invalid-entry eviction, successful write, decompression eviction, and graceful unavailable-storage fallback.
+- Persistent-cache tests prove hit-without-network, invalid-entry eviction, successful dual write, Cache Storage loss with localStorage recovery, decompression eviction, and graceful unavailable-storage fallback.
 - Catalog tests prove preview/full APIs share one request and one cube; no 64³ asset is requested.
 - Preload tests prove 36 tasks start without a queue bottleneck, progress is monotonic, failures are isolated, and retry targets only failures.
 - Hook/UI tests prove preload starts on mount and the accessible progress/retry states render.
@@ -88,5 +88,5 @@ The panel uses `role="status"` with polite announcements and a labelled `progres
 ## Alternatives Rejected
 
 - Service Worker cache alone: insufficient application-level completion/resume visibility and harder corruption recovery.
-- IndexedDB: workable but adds database schema and transaction complexity without benefit for small immutable response bodies.
+- IndexedDB: workable but adds database schema and transaction complexity; a roughly 62 KB localStorage mirror is sufficient for Safari fallback.
 - 4³ cubes: smaller, but only 64 color samples and materially higher risk of visible banding. 8³ is already eight times smaller than 16³ before compression.
