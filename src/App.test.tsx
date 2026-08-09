@@ -13,9 +13,9 @@ it('shows a local-only privacy promise and accessible file picker', () => {
   expect(footerItems.map((item) => item.textContent?.trim())).toEqual([
     'GitHub Star',
     '小红书',
-    '浏览量暂不可用',
   ])
-  expect(screen.getByRole('status', { name: '网站累计浏览量' })).toBeInTheDocument()
+  expect(screen.queryByRole('status', { name: '网站累计浏览量' })).not.toBeInTheDocument()
+  expect(screen.getByText('为持续优化使用体验，本页面会记录匿名访问及导出所用的滤镜类型；不会上传或保存您的照片、文件名及个人信息。')).toHaveClass('analytics-privacy-note')
 })
 
 it('keeps the empty state and explains an unsupported file', async () => {
