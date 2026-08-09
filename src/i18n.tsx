@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 export type Language = 'zh-CN' | 'en'
 
@@ -73,9 +73,14 @@ const LanguageContext = createContext<LanguageContextValue>(defaultValue)
 const STORAGE_KEY = 'film-simulation-language'
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(() => {
-    return getStorage()?.getItem(STORAGE_KEY) === 'en' ? 'en' : 'zh-CN'
-  })
+  const [language, setLanguageState] = useState<Language>(() => resolveInitialLanguage(
+    readStoredLanguage(),
+    readBrowserLanguages(),
+  ))
+  const setLanguage = useCallback((nextLanguage: Language) => {
+    setLanguageState(nextLanguage)
+    try { getStorage()?.setItem(STORAGE_KEY, nextLanguage) } catch { /* Storage is optional. */ }
+  }, [])
 
   useEffect(() => {
     const current = copy[language]
@@ -83,10 +88,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.title = current.title
     document.querySelector('meta[name="description"]')?.setAttribute('content', current.description)
     document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', current.title)
-    getStorage()?.setItem(STORAGE_KEY, language)
+    document.querySelector('link[rel="manifest"]')?.setAttribute('href', manifestHref(language))
   }, [language])
 
-  const value = useMemo(() => ({ language, setLanguage, copy: copy[language] }), [language])
+  const value = useMemo(() => ({ language, setLanguage, copy: copy[language] }), [language, setLanguage])
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
 }
 
@@ -98,6 +103,24 @@ function getStorage(): Storage | null {
   } catch {
     return null
   }
+}
+
+function readStoredLanguage(): string | null {
+  try { return getStorage()?.getItem(STORAGE_KEY) ?? null } catch { return null }
+}
+
+function readBrowserLanguages(): readonly string[] {
+  if (typeof navigator === 'undefined') return []
+  return navigator.languages?.length ? navigator.languages : [navigator.language]
+}
+
+export function resolveInitialLanguage(stored: string | null, browserLanguages: readonly string[]): Language {
+  if (stored === 'zh-CN' || stored === 'en') return stored
+  return browserLanguages.some((value) => value.toLowerCase().startsWith('zh')) ? 'zh-CN' : 'en'
+}
+
+export function manifestHref(language: Language): string {
+  return language === 'zh-CN' ? './manifest-zh.webmanifest' : './manifest-en.webmanifest'
 }
 
 export function localizeErrorMessage(message: string, language: Language): string {

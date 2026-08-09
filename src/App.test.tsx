@@ -1,6 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { expect, it } from 'vitest'
+import { beforeEach, expect, it } from 'vitest'
 import App from './App'
+
+let storedValues: Map<string, string>
+
+beforeEach(() => {
+  storedValues = new Map([['film-simulation-language', 'zh-CN']])
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: {
+    getItem: (key: string) => storedValues.get(key) ?? null,
+    setItem: (key: string, value: string) => storedValues.set(key, value),
+    removeItem: (key: string) => storedValues.delete(key),
+  } })
+})
 
 it('shows a local-only privacy promise and accessible file picker', () => {
   render(<App />)
@@ -25,14 +36,7 @@ it('keeps the empty state and explains an unsupported file', async () => {
   expect(screen.getByRole('button', { name: '选择照片' })).toBeInTheDocument()
 })
 
-it('defaults to Chinese and can switch to persistent English UI', () => {
-  const values = new Map<string, string>()
-  Object.defineProperty(window, 'localStorage', { configurable: true, value: {
-    getItem: (key: string) => values.get(key) ?? null,
-    setItem: (key: string, value: string) => values.set(key, value),
-    removeItem: (key: string) => values.delete(key),
-  } })
-  window.localStorage.removeItem('film-simulation-language')
+it('honors persisted Chinese and can switch to persistent English UI', () => {
   render(<App />)
   expect(document.documentElement).toHaveAttribute('lang', 'zh-CN')
   fireEvent.click(screen.getByRole('button', { name: 'Switch to English' }))
