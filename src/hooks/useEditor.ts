@@ -36,7 +36,7 @@ export function useEditor(catalogOverride?: AssetCatalog) {
       setError(reason)
       return
     }
-    setError(reason instanceof Error ? reason.message : fallback)
+    setError(reason instanceof Error ? reason : fallback)
   }, [])
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export function useEditor(catalogOverride?: AssetCatalog) {
       setLeaks(catalog.leaks)
       setSettings({ ...DEFAULT_SETTINGS, seed: hashName(nextFile.name, nextFile.size) })
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : copy.readFailed)
+      setError(reason instanceof Error ? reason : copy.readFailed)
     } finally {
       if (request === fileGeneration.current) setBusy(false)
     }

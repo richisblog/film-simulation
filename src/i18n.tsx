@@ -122,20 +122,3 @@ export function resolveInitialLanguage(stored: string | null, browserLanguages: 
 export function manifestHref(language: Language): string {
   return language === 'zh-CN' ? './manifest-zh.webmanifest' : './manifest-en.webmanifest'
 }
-
-export function localizeErrorMessage(message: string, language: Language): string {
-  if (language === 'zh-CN') return message
-  const max = message.match(/当前设备最大支持 (\d+) 像素长边/)
-  if (max) return `This device supports a maximum long edge of ${max[1]}px. Choose a lower resolution.`
-  const exportFormat = message.match(/当前浏览器不能导出 (.+)，请改用 JPEG。/)
-  if (exportFormat) return `This browser cannot export ${exportFormat[1]}. Use JPEG instead.`
-  const exact: Record<string, string> = {
-    '请选择 JPEG、PNG、WebP，或当前浏览器能够读取的 HEIC 照片。': copy.en.unsupportedFile,
-    '无法读取照片': copy.en.readFailed, '导出失败': copy.en.exportFailed, '预览失败': copy.en.previewFailed,
-    '浏览器无法生成照片文件': 'The browser could not create the photo file.',
-    '当前浏览器无法读取此 HEIC，请在系统相册导出为 JPEG 后重试。': 'This browser cannot read this HEIC file. Export it as JPEG from Photos and try again.',
-    '无法读取这张照片，文件可能损坏或格式不受支持。': 'This photo could not be read. It may be damaged or use an unsupported format.',
-    '无法载入效果素材清单': 'Could not load the effects catalog.', 'LUT 载入失败': copy.en.lutLoadFailed, '漏光载入失败': copy.en.leakLoadFailed,
-  }
-  return exact[message] ?? message
-}

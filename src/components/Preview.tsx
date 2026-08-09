@@ -3,7 +3,8 @@ import type { DecodedImage } from '../image/decode'
 import { LutCube } from '../image/lut'
 import { createRenderer } from '../image/renderer'
 import type { EditSettings } from '../image/types'
-import { localizeErrorMessage, useLanguage } from '../i18n'
+import { useLanguage } from '../i18n'
+import { localizedError } from '../i18n/errors'
 
 interface Props { image: DecodedImage; settings: EditSettings; lut: LutCube | null; leak: HTMLImageElement | null }
 
@@ -33,7 +34,7 @@ export function Preview({ image, settings, lut, leak }: Props) {
     const size = { width: Math.max(1, Math.round(image.width * scale)), height: Math.max(1, Math.round(image.height * scale)) }
     const frame = requestAnimationFrame(() => {
       renderer.render(image.source, settings, lut, leak, size).catch((reason) => {
-        setError(reason instanceof Error ? localizeErrorMessage(reason.message, language) : copy.previewFailed)
+        setError(reason instanceof Error ? localizedError(reason, language) : copy.previewFailed)
       })
     })
     return () => {

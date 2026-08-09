@@ -60,3 +60,17 @@ it('starts non-blocking LUT preload on mount and publishes progress', async () =
   act(() => result.current.retryFailedLuts())
   await waitFor(() => expect(catalog.retryFailedLuts).toHaveBeenCalledOnce())
 })
+
+it('preserves an unexpected loading error object for safe presentation-layer localization', async () => {
+  const failure = new Error('内部未知错误')
+  const catalog = {
+    luts: [], leaks: [], load: vi.fn(async () => undefined),
+    preloadLuts: vi.fn(async () => undefined), retryFailedLuts: vi.fn(async () => undefined),
+    loadLut: vi.fn(async () => { throw failure }), retryLut: vi.fn(), loadPreviewLut: vi.fn(), loadLeak: vi.fn(),
+  } as unknown as AssetCatalog
+  const { result } = renderHook(() => useEditor(catalog))
+
+  act(() => result.current.setSettings({ ...result.current.settings, lutId: 'INSTWARM' }))
+
+  await waitFor(() => expect(result.current.error).toBe(failure))
+})
