@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Film Simulation",
+  "short_name": "Film Sim",
+  "description": "A film simulation tool that processes photos locally in your browser",
+  "lang": "en",
+  "theme_color": "#12100e",
+  "background_color": "#12100e",
+  "display": "standalone",
+  "start_url": "./",
+  "scope": "./",
+  "orientation": "any",
+  "categories": ["photo", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
