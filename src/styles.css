@@ -152,6 +152,8 @@ legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
 .social-btn svg { flex-shrink: 0; }
 .social-github { background: #161b22; color: #fff; border: 1px solid #30363d; }
 .social-xhs { background: #ff2442; color: #fff; border: 1px solid rgba(255,255,255,.18); }
+.social-views { min-width: 154px; justify-content: center; background: #2b2621; color: #eee4d8; border: 1px solid #574a3e; font-variant-numeric: tabular-nums; cursor: default; }
+.social-views:hover { opacity: 1; transform: none; }
 @media (max-width: 640px) {
   .site-footer { margin-top: 40px; padding: 22px 14px max(26px, env(safe-area-inset-bottom)); }
   .support-note { font-size: 12px; }

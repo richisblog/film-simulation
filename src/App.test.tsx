@@ -9,6 +9,13 @@ it('shows a local-only privacy promise and accessible file picker', () => {
   expect(screen.queryByText(/REWIND|LOCAL FILM LAB/)).not.toBeInTheDocument()
   expect(screen.getByText(/胶片仿色测试/)).toBeInTheDocument()
   expect(document.querySelector('input[type="file"]')).toHaveAttribute('accept', expect.stringContaining('image/heic'))
+  const footerItems = [...document.querySelector('.support-links')!.children]
+  expect(footerItems.map((item) => item.textContent?.trim())).toEqual([
+    'GitHub Star',
+    '小红书',
+    '浏览量暂不可用',
+  ])
+  expect(screen.getByRole('status', { name: '网站累计浏览量' })).toBeInTheDocument()
 })
 
 it('keeps the empty state and explains an unsupported file', async () => {
