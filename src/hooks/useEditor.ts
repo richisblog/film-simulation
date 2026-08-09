@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AssetCatalog, type LeakDescriptor, type LutDescriptor } from '../image/catalog'
+import { AssetLoadError } from '../image/assetRequest'
 import { decodeImageFile, type DecodedImage } from '../image/decode'
 import { isAcceptedImageFile } from '../image/formats'
 import { LutCube } from '../image/lut'
 import { DEFAULT_SETTINGS, type EditSettings } from '../image/types'
 
-export function useEditor() {
-  const catalog = useMemo(() => new AssetCatalog('./assets'), [])
+export function useEditor(catalogOverride?: AssetCatalog) {
+  const catalog = useMemo(() => catalogOverride ?? new AssetCatalog('./assets'), [catalogOverride])
   const [file, setFile] = useState<File | null>(null)
   const [image, setImage] = useState<DecodedImage | null>(null)
   const [settings, setSettings] = useState<EditSettings>(DEFAULT_SETTINGS)
@@ -15,12 +16,22 @@ export function useEditor() {
   const [lut, setLut] = useState<LutCube | null>(null)
   const [leak, setLeak] = useState<HTMLImageElement | null>(null)
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | Error | null>(null)
+  const [lutRetryGeneration, setLutRetryGeneration] = useState(0)
   const fileGeneration = useRef(0)
   const lutGeneration = useRef(0)
   const leakGeneration = useRef(0)
+  const retryLutId = useRef<string | null>(null)
   const loadLut = useCallback((id: string) => catalog.loadLut(id), [catalog])
   const loadPreviewLut = useCallback((id: string) => catalog.loadPreviewLut(id), [catalog])
+  const reportLoadError = useCallback((reason: unknown, fallback: string) => {
+    if (reason instanceof AssetLoadError) {
+      console.error('素材加载失败', reason.diagnostic)
+      setError(reason)
+      return
+    }
+    setError(reason instanceof Error ? reason.message : fallback)
+  }, [])
 
   const openFile = useCallback(async (nextFile: File) => {
     if (!isAcceptedImageFile(nextFile)) {
@@ -50,12 +61,15 @@ export function useEditor() {
     const request = ++lutGeneration.current
     if (!settings.lutId) { setLut(null); return }
     setLut(null)
-    loadLut(settings.lutId).then((value) => {
+    const shouldRetry = retryLutId.current === settings.lutId
+    retryLutId.current = null
+    const operation = shouldRetry ? catalog.retryLut(settings.lutId) : loadLut(settings.lutId)
+    operation.then((value) => {
       if (request === lutGeneration.current) setLut(value)
     }).catch((reason) => {
-      if (request === lutGeneration.current) setError(reason instanceof Error ? reason.message : 'LUT 载入失败')
+      if (request === lutGeneration.current) reportLoadError(reason, 'LUT 载入失败')
     })
-  }, [loadLut, settings.lutId])
+  }, [catalog, loadLut, lutRetryGeneration, reportLoadError, settings.lutId])
 
   useEffect(() => {
     const request = ++leakGeneration.current
@@ -64,14 +78,20 @@ export function useEditor() {
     catalog.loadLeak(settings.leakId).then((value) => {
       if (request === leakGeneration.current) setLeak(value)
     }).catch((reason) => {
-      if (request === leakGeneration.current) setError(reason instanceof Error ? reason.message : '漏光载入失败')
+      if (request === leakGeneration.current) reportLoadError(reason, '漏光载入失败')
     })
-  }, [catalog, settings.leakId])
+  }, [catalog, reportLoadError, settings.leakId])
 
   useEffect(() => () => image?.close(), [image])
 
   return {
     file, image, settings, setSettings, luts, leaks, lut, leak, loadLut, loadPreviewLut, busy, error, setError, openFile,
+    retryError: () => {
+      if (!(error instanceof AssetLoadError) || error.assetKind !== 'lut' || !settings.lutId) return
+      retryLutId.current = settings.lutId
+      setError(null)
+      setLutRetryGeneration((value) => value + 1)
+    },
     reset: () => setSettings((current) => ({ ...DEFAULT_SETTINGS, seed: current.seed })),
   }
 }

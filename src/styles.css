@@ -93,7 +93,10 @@ legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
 .privacy-note { text-align: center; color: #706960; font-size: 10px; }
 .error-toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; max-width: min(620px, calc(100% - 32px)); background: #482017; border: 1px solid #9f4932; padding: 14px 52px 14px 16px; display: flex; gap: 12px; font-size: 12px; box-shadow: 0 14px 50px #0009; }
 .error-toast strong { color: #ff9d79; white-space: nowrap; }
-.error-toast button { position: absolute; right: 4px; top: 2px; min-width: 44px; min-height: 44px; background: transparent; border: 0; font-size: 22px; }
+.error-toast-message { min-width: 0; }
+.error-toast-message small { display: block; margin-top: 4px; color: #d7a896; font-variant-numeric: tabular-nums; }
+.error-toast .error-retry { flex: 0 0 auto; align-self: center; min-height: 32px; padding: 0 12px; border: 1px solid #c96f53; background: #2b1712; color: #ffb094; cursor: pointer; }
+.error-toast .error-close { position: absolute; right: 4px; top: 2px; min-width: 44px; min-height: 44px; background: transparent; border: 0; font-size: 22px; }
 .mobile-export { display: none; }
 
 @media (max-width: 820px) {

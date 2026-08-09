@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Controls } from './components/Controls'
 import { DropZone } from './components/DropZone'
 import { ExportSheet } from './components/ExportSheet'
+import { ErrorToast } from './components/ErrorToast'
 import { Preview } from './components/Preview'
 import { canvasToBlob } from './export/encode'
 import { outputFilename } from './image/formats'
@@ -77,8 +78,7 @@ export default function App() {
           thumbnailSource={thumbnailSource!} loadPreviewLut={editor.loadPreviewLut}
           onChange={editor.setSettings} onReset={editor.reset} />
       </div>}
-      {editor.error && <div role="alert" className="error-toast"><strong>出现问题</strong><span>{editor.error}</span>
-        <button type="button" aria-label="关闭错误" onClick={() => editor.setError(null)}>×</button></div>}
+      {editor.error && <ErrorToast error={editor.error} onClose={() => editor.setError(null)} onRetry={editor.retryError} />}
       <p className="visually-hidden" aria-live="polite">{status}</p>
       {showExport && editor.image && <ExportSheet source={editor.image} busy={exporting} onClose={() => setShowExport(false)} onExport={exportPhoto} />}
       {editor.image && <button type="button" className="mobile-export" onClick={() => setShowExport(true)}>导出照片</button>}
