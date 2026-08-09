@@ -15,7 +15,8 @@
 - Never send photos, filenames, filter selections, LUT operations, or export information.
 - Do not ship administrative API keys, account passwords, cookies, user IDs, or fingerprints.
 - Analytics failure must not affect loading, editing, preview, or export.
-- The public counter is eventually consistent and may lag the private dashboard by about 30 minutes.
+- Disable GoatCounter Sessions deduplication so every document load and refresh counts as one PV.
+- The public counter is eventually consistent and may lag the private dashboard by up to four hours.
 
 ---
 
@@ -39,7 +40,7 @@ Cover exact behavior:
 expect(startPageviewTracking(productionOptions)).toBe(true)
 expect(document.querySelectorAll('script[data-goatcounter]')).toHaveLength(1)
 expect(script.dataset.goatcounter).toBe('https://film-simulation.goatcounter.com/count')
-expect(script.dataset.goatcounterPath).toBe('/')
+expect(script.dataset.goatcounterSettings).toBe('{"path":"/","no_events":true}')
 expect(startPageviewTracking(productionOptions)).toBe(true) // still one script
 expect(startPageviewTracking({ ...productionOptions, location: localhost })).toBe(false)
 await expect(readTotalPageviews(siteUrl, fetcher)).resolves.toBe('12,345')
@@ -56,7 +57,7 @@ Expected: FAIL because the module does not exist.
 
 - [ ] **Step 3: Implement the minimal adapter**
 
-Normalize the service URL with `new URL`, accept only `https:`, reject localhost/loopback document hosts, inject the official `https://gc.zgo.at/count.js` script once with `async`, `data-goatcounter`, and canonical path `/`, then parse `{ count: string }` from the public total endpoint. Keep transport errors as rejected promises for the UI boundary to handle.
+Normalize the service URL with `new URL`, accept only `https:`, reject localhost/loopback document hosts, inject the official `https://gc.zgo.at/count.js` script once with `async`, `data-goatcounter`, and `data-goatcounter-settings='{"path":"/","no_events":true}'`, then parse `{ count: string }` from the public total endpoint. Keep transport errors as rejected promises for the UI boundary to handle.
 
 - [ ] **Step 4: Run adapter tests and verify GREEN**
 
@@ -158,7 +159,7 @@ Document:
 - Dashboard: `https://film-simulation.goatcounter.com`
 - Public counter setting: Settings → Site settings → Allow adding visitor counts
 - Production variable and canonical `/` path
-- Public counter cache delay and dashboard update delay
+- Public counter cache delay of up to four hours and dashboard update delay
 - Owner-visit exclusion, account recovery, disable procedure, and blocked-script behavior
 - Credential storage outside the repository
 
@@ -191,7 +192,7 @@ git commit -m "docs: configure GoatCounter analytics"
 
 - [ ] **Step 1: Create the dedicated hosted account**
 
-Create `film-simulation.goatcounter.com` for `film.richis.top` using the project owner's email. Generate a strong unique password, keep it out of terminal output and Git, store it in the system credential manager, and complete any required email verification. Enable public visitor counts. Do not create or expose an API token.
+Create `film-simulation.goatcounter.com` for `film.richis.top` using the project owner's email. Generate a strong unique password, keep it out of terminal output and Git, store it in the system credential manager, and complete any required email verification. Enable public visitor counts and disable Sessions deduplication so each refresh is a PV. Do not create or expose an API token.
 
 - [ ] **Step 2: Write browser tests**
 

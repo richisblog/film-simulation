@@ -8,7 +8,7 @@ Add privacy-conscious pageview analytics to `film.richis.top` from zero and show
 
 Use the hosted edition of the open-source GoatCounter project. It supplies a private analytics dashboard, a lightweight browser pageview collector, and a public visitor-counter endpoint. This avoids adding a database or mutable API to the static application.
 
-The production account is dedicated to this project and starts empty. Its canonical tracked path is `/`; all supported hostnames report the same canonical path so `film.richis.top`, GitHub Pages, and Cloudflare preview traffic do not fragment the displayed total. Localhost and automated tests never send analytics.
+The production account is dedicated to this project and starts empty. Its canonical tracked path is `/`; all supported hostnames report the same canonical path so `film.richis.top`, GitHub Pages, and Cloudflare preview traffic do not fragment the displayed total. GoatCounter's Sessions deduplication is disabled so every document load is a pageview, including refreshes. Localhost and automated tests never send analytics.
 
 GoatCounter may be blocked by privacy tools or unavailable on some networks. Analytics is optional telemetry, never an application dependency. No account key or administrative API token is shipped to the browser.
 
@@ -21,7 +21,7 @@ Create a small analytics module with two responsibilities:
 
 The service URL is supplied through `VITE_GOATCOUNTER_URL`. Missing or invalid configuration disables analytics cleanly. The module deduplicates script injection and uses bounded timeouts so a statistics outage cannot delay page rendering.
 
-The published counter is eventually consistent. GoatCounter documents a roughly 30-minute cache for public counters, so the visible number may lag the private dashboard. This is acceptable for a cumulative social-proof number.
+The published counter is eventually consistent. GoatCounter documents that public counter responses may be cached for up to four hours, so the visible number may lag the private dashboard. This is acceptable for a cumulative social-proof number.
 
 ## Footer UI
 
