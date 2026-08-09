@@ -3,6 +3,7 @@ import { Controls } from './components/Controls'
 import { DropZone } from './components/DropZone'
 import { ExportSheet } from './components/ExportSheet'
 import { ErrorToast } from './components/ErrorToast'
+import { LutLoadProgress } from './components/LutLoadProgress'
 import { Preview } from './components/Preview'
 import { canvasToBlob } from './export/encode'
 import { outputFilename } from './image/formats'
@@ -64,6 +65,7 @@ export default function App() {
           <button type="button" className="export-button" onClick={() => setShowExport(true)}>导出</button></>}
         </div>
       </header>
+      <LutLoadProgress progress={editor.lutProgress} onRetry={editor.retryFailedLuts} />
       
       {!editor.image ? <section className="empty-state">
         <div className="hero-copy"><p className="eyebrow">本地胶片暗房</p>

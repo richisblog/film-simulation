@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AssetCatalog, type LeakDescriptor, type LutDescriptor } from '../image/catalog'
+import { AssetCatalog, type LeakDescriptor, type LutDescriptor, type LutPreloadProgress } from '../image/catalog'
 import { AssetLoadError } from '../image/assetRequest'
 import { decodeImageFile, type DecodedImage } from '../image/decode'
 import { isAcceptedImageFile } from '../image/formats'
@@ -17,6 +17,10 @@ export function useEditor(catalogOverride?: AssetCatalog) {
   const [leak, setLeak] = useState<HTMLImageElement | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | Error | null>(null)
+  const [lutProgress, setLutProgress] = useState<LutPreloadProgress>({
+    total: 0, completed: 0, succeeded: 0, failed: 0,
+    active: 0, currentId: null, percent: 0, done: false,
+  })
   const [lutRetryGeneration, setLutRetryGeneration] = useState(0)
   const fileGeneration = useRef(0)
   const lutGeneration = useRef(0)
@@ -32,6 +36,22 @@ export function useEditor(catalogOverride?: AssetCatalog) {
     }
     setError(reason instanceof Error ? reason.message : fallback)
   }, [])
+
+  useEffect(() => {
+    let active = true
+    const publish = (progress: LutPreloadProgress) => {
+      if (active) setLutProgress(progress)
+    }
+    void catalog.load().then(() => {
+      if (!active) return
+      setLuts(catalog.luts)
+      setLeaks(catalog.leaks)
+      return catalog.preloadLuts(publish)
+    }).catch(() => {
+      // Background preparation must not overwrite a newer user-facing editor error.
+    })
+    return () => { active = false }
+  }, [catalog])
 
   const openFile = useCallback(async (nextFile: File) => {
     if (!isAcceptedImageFile(nextFile)) {
@@ -85,7 +105,9 @@ export function useEditor(catalogOverride?: AssetCatalog) {
   useEffect(() => () => image?.close(), [image])
 
   return {
-    file, image, settings, setSettings, luts, leaks, lut, leak, loadLut, loadPreviewLut, busy, error, setError, openFile,
+    file, image, settings, setSettings, luts, leaks, lut, leak, loadLut, loadPreviewLut,
+    lutProgress, busy, error, setError, openFile,
+    retryFailedLuts: () => { void catalog.retryFailedLuts(setLutProgress) },
     retryError: () => {
       if (!(error instanceof AssetLoadError) || error.assetKind !== 'lut' || !settings.lutId) return
       retryLutId.current = settings.lutId

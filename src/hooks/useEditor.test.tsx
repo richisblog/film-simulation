@@ -15,6 +15,8 @@ it('retries the currently selected LUT without changing editor settings', async 
     luts: [], leaks: [], load: vi.fn(async () => undefined),
     loadLut: vi.fn(async () => { throw failure }),
     retryLut: vi.fn(async () => cube),
+    preloadLuts: vi.fn(async () => undefined),
+    retryFailedLuts: vi.fn(async () => undefined),
     loadPreviewLut: vi.fn(async () => cube),
     loadLeak: vi.fn(),
   } as unknown as AssetCatalog
@@ -31,4 +33,30 @@ it('retries the currently selected LUT without changing editor settings', async 
   expect(result.current.settings).toEqual(settingsBeforeRetry)
   expect(result.current.error).toBeNull()
   expect(console.error).toHaveBeenCalledWith('素材加载失败', failure.diagnostic)
+})
+
+it('starts non-blocking LUT preload on mount and publishes progress', async () => {
+  const progress = {
+    total: 36, completed: 12, succeeded: 11, failed: 1,
+    active: 24, currentId: 'PT400', percent: 33, done: false,
+  }
+  const descriptor = {
+    id: 'PT400', asset: 'PT400.full.rgb', cube_size: 64, byte_length: 10,
+    preview_asset: 'previews/PT400.rgb', preview_cube_size: 8, preview_byte_length: 100,
+  }
+  const catalog = {
+    luts: [descriptor], leaks: [], load: vi.fn(async () => undefined),
+    preloadLuts: vi.fn(async (emit: (value: typeof progress) => void) => emit(progress)),
+    retryFailedLuts: vi.fn(async () => undefined),
+    loadLut: vi.fn(), retryLut: vi.fn(), loadPreviewLut: vi.fn(), loadLeak: vi.fn(),
+  } as unknown as AssetCatalog
+
+  const { result } = renderHook(() => useEditor(catalog))
+
+  await waitFor(() => expect(catalog.preloadLuts).toHaveBeenCalledOnce())
+  expect(result.current.luts).toEqual([descriptor])
+  expect(result.current.lutProgress).toEqual(progress)
+
+  act(() => result.current.retryFailedLuts())
+  await waitFor(() => expect(catalog.retryFailedLuts).toHaveBeenCalledOnce())
 })
