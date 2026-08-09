@@ -1,2 +1,9 @@
-/assets/*
-  Cache-Control: public, max-age=86400
+/assets/luts/*.rgb.deflate
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=604800
+
+/assets/light_leaks/*.webp
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=604800

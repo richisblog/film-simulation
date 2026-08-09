@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { EFFECT_CACHE_NAME, isEffectAssetUrl } from './src/config/pwaCache'
 
 export default defineConfig({
   base: './',
@@ -23,9 +24,13 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,json}'],
         globIgnores: ['**/assets/luts/*.deflate', '**/assets/light_leaks/*.webp'],
         runtimeCaching: [{
-          urlPattern: /\/assets\/(luts|light_leaks)\//,
+          urlPattern: ({ url }) => isEffectAssetUrl(url),
           handler: 'CacheFirst',
-          options: { cacheName: 'film-effects-v1', expiration: { maxEntries: 64, maxAgeSeconds: 31536000 } },
+          options: {
+            cacheName: EFFECT_CACHE_NAME,
+            cacheableResponse: { statuses: [200] },
+            expiration: { maxEntries: 64, maxAgeSeconds: 31536000 },
+          },
         }],
       },
     }),

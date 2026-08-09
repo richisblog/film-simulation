@@ -1,0 +1,5 @@
+export const EFFECT_CACHE_NAME = 'film-effects-v2'
+
+export function isEffectAssetUrl(url: URL): boolean {
+  return /\/assets\/(?:luts|light_leaks)\/.+\.(?:deflate|webp)$/.test(url.pathname)
+}

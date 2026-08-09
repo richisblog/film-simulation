@@ -25,6 +25,7 @@ npm run dev
 ## 测试与构建
 
 ```bash
+npm run test:assets
 npm test
 npm run test:e2e
 npm run build
@@ -38,6 +39,8 @@ npx playwright install chromium
 ```
 
 生产文件位于 `dist/`。它是纯静态站点，可部署到任意支持 HTTPS 的静态托管服务。部署时把 `dist/` 内容作为站点根目录；无需 API、数据库、环境变量或服务端路由。
+
+可选的 `VITE_ASSET_BASE_URL` 能把 LUT 与漏光优先放到 CDN；CDN 失败时应用会自动回退到随站点发布的素材。Cloudflare Pages 的部署、`film-cdn.richis.top` 配置与回滚步骤见 [Cloudflare CDN 指南](./docs/CLOUDFLARE_CDN.md)。
 
 ## 隐私与限制
 
