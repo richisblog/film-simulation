@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-09
 
-**Status:** Awaiting written-spec approval
+**Status:** Approved
 
 ## Goal
 
@@ -52,7 +52,7 @@ The build accepts `VITE_ASSET_BASE_URL` as an optional absolute asset root. Mani
 1. `VITE_ASSET_BASE_URL`, when configured.
 2. The application's same-origin `./assets` root.
 
-Duplicate normalized candidates are removed. Two automatic attempts are made in total: CDN then same-origin when both exist, or two same-origin attempts when no CDN is configured. A short fixed delay separates attempts. HTTP 4xx, integrity, decompression, and unsupported-browser failures stop immediately; network errors, HTTP 5xx, and timeouts retry or fall back.
+Duplicate normalized candidates are removed. Two automatic attempts are made in total: CDN then same-origin when both exist, or two same-origin attempts when no CDN is configured. A short fixed delay separates attempts. Any CDN transport or compressed-length failure may fall back to the distinct same-origin source. A same-origin HTTP 4xx, decompression failure, or unsupported-browser failure stops immediately; network errors, HTTP 5xx, and timeouts retry while an attempt remains.
 
 The service worker runtime route must cache eligible `/assets/` responses from either origin and must not cache failed responses. The cache name is versioned for this asset layout change.
 
