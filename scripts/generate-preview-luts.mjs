@@ -5,8 +5,10 @@ import { sampleCube } from './preview-luts.mjs'
 
 const root = path.resolve(import.meta.dirname, '..')
 const lutRoot = path.join(root, 'public/assets/luts')
-const previewRoot = path.join(lutRoot, 'previews')
+const previewDirectory = '8cube-v1'
+const previewRoot = path.join(lutRoot, previewDirectory)
 const manifestPath = path.join(lutRoot, 'manifest.json')
+const versionedManifestPath = path.join(lutRoot, 'manifest-8cube-v1.json')
 const previewSize = 8
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'))
@@ -21,12 +23,16 @@ for (const descriptor of manifest.luts) {
   }
   const preview = sampleCube(source, descriptor.cube_size, previewSize)
   const output = deflateSync(preview, { level: 9 })
-  const previewAsset = `previews/${descriptor.id}.rgb.deflate`
+  const previewAsset = `${previewDirectory}/${descriptor.id}.rgb.deflate`
   await writeFile(path.join(lutRoot, previewAsset), output)
   descriptor.preview_asset = previewAsset
   descriptor.preview_cube_size = previewSize
   descriptor.preview_byte_length = output.length
 }
 
-await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
+const serializedManifest = `${JSON.stringify(manifest, null, 2)}\n`
+await Promise.all([
+  writeFile(manifestPath, serializedManifest),
+  writeFile(versionedManifestPath, serializedManifest),
+])
 console.log(`Generated ${manifest.luts.length} preview LUTs in ${path.relative(root, previewRoot)}`)

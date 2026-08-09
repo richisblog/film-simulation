@@ -50,7 +50,7 @@ it('loads manifests once and selected canonical 8-cube bytes on demand', async (
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
     calls.push(path)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ cube_size: 2, luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ cube_size: 2, luts: [{
       id: 'TEST', asset: 'TEST.rgb', cube_size: 2, byte_length: lut.length,
       preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: lut.length,
     }] }))
@@ -64,14 +64,15 @@ it('loads manifests once and selected canonical 8-cube bytes on demand', async (
   const second = await catalog.loadLut('TEST')
   expect(first).toBe(second)
   expect(first.size).toBe(2)
-  expect(calls.filter((path) => path.endsWith('manifest.json'))).toHaveLength(2)
+  expect(calls.filter((path) => path.includes('manifest'))).toHaveLength(2)
+  expect(calls).toContain('/assets/luts/manifest-8cube-v1.json')
   expect(calls.filter((path) => path.endsWith('TEST.rgb'))).toHaveLength(1)
 })
 
 it('rejects an asset with a manifest byte-length mismatch', async () => {
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: [{
       id: 'BAD', asset: 'BAD.rgb', cube_size: 2, byte_length: 24,
       preview_asset: 'previews/BAD.rgb', preview_cube_size: 2, preview_byte_length: 24,
     }] }))
@@ -89,7 +90,7 @@ it('shares one canonical preview asset and cube across main and thumbnail APIs',
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
     calls.push(path)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: [{
       id: 'TEST', asset: 'TEST.full.rgb', cube_size: 3, byte_length: 81,
       preview_asset: 'previews/TEST.preview.rgb', preview_cube_size: 2, preview_byte_length: preview.length,
     }] }))
@@ -117,7 +118,7 @@ it('uses validated persistent bytes without making a binary network request', as
   const binaryCalls: string[] = []
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: [{
       id: 'TEST', asset: 'TEST.full.rgb', cube_size: 64, byte_length: 10,
       preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: bytes.length,
     }] }))
@@ -136,7 +137,7 @@ it('persists validated network bytes for the next page load', async () => {
   const byteCache = new MemoryLutByteCache()
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: [{
       id: 'TEST', asset: 'TEST.full.rgb', cube_size: 64, byte_length: 10,
       preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: bytes.length,
     }] }))
@@ -156,7 +157,7 @@ it('evicts persistent compressed bytes when decompression fails', async () => {
   await byteCache.put('BAD', 2, corrupt.length, corrupt)
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: [{
       id: 'BAD', asset: 'BAD.full.rgb.deflate', cube_size: 64, byte_length: 10,
       preview_asset: 'previews/BAD.rgb.deflate', preview_cube_size: 2, preview_byte_length: corrupt.length,
     }] }))
@@ -183,7 +184,7 @@ it('starts all 36 preloads together, isolates failure, and retries only the miss
   let retrying = false
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: descriptors }))
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: descriptors }))
     if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [] }))
     const id = path.match(/(LUT\d{2})\.rgb$/)?.[1]
     if (!id) throw new Error(`unexpected ${path}`)
@@ -216,7 +217,7 @@ it.each([
   let release: ((response: Response) => void) | undefined
   const fetcher = vi.fn(async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: [{
       id: 'TEST', asset: 'TEST.rgb', cube_size: 2, byte_length: bytes.length,
       preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: bytes.length,
     }] }))
@@ -229,7 +230,7 @@ it.each([
   const first = load(catalog)
   const second = load(catalog)
   await vi.waitFor(() => expect(release).toBeTypeOf('function'))
-  expect(fetcher.mock.calls.filter(([url]) => !String(url).endsWith('manifest.json'))).toHaveLength(1)
+  expect(fetcher.mock.calls.filter(([url]) => !String(url).includes('manifest'))).toHaveLength(1)
   release!(new Response(bytes))
 
   const [firstCube, secondCube] = await Promise.all([first, second])
@@ -241,7 +242,7 @@ it('removes rejected in-flight work so an explicit retry can request again', asy
   let binaryCalls = 0
   const fetcher = vi.fn(async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: [{
       id: 'TEST', asset: 'TEST.rgb', cube_size: 2, byte_length: bytes.length,
       preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: bytes.length,
     }] }))

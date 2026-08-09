@@ -29,6 +29,7 @@ export interface LutPreloadProgress {
 }
 
 const browserFetch: typeof fetch = (input, init) => globalThis.fetch.call(globalThis, input, init)
+const LUT_MANIFEST = 'manifest-8cube-v1.json'
 
 export class AssetCatalog {
   luts: LutDescriptor[] = []
@@ -54,7 +55,7 @@ export class AssetCatalog {
 
   private async loadManifests(): Promise<void> {
     const [lutResponse, leakResponse] = await Promise.all([
-      this.fetcher(`${this.base}/luts/manifest.json`),
+      this.fetcher(`${this.base}/luts/${LUT_MANIFEST}`),
       this.fetcher(`${this.base}/light_leaks/manifest.json`),
     ])
     if (!lutResponse.ok || !leakResponse.ok) throw new Error('无法载入效果素材清单')

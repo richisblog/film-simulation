@@ -34,8 +34,8 @@ test('reopens with all 36 LUTs from persistent local cache and no LUT network re
   await page.goto('/')
   await waitForAllLuts(page)
 
-  expect(new Set(requests.filter((url) => url.includes('/luts/previews/'))).size).toBe(72)
-  expect(requests.every((url) => url.includes('/luts/previews/'))).toBe(true)
+  expect(new Set(requests.filter((url) => url.includes('/luts/8cube-v1/'))).size).toBe(72)
+  expect(requests.every((url) => url.includes('/luts/8cube-v1/'))).toBe(true)
 
   requests.length = 0
   await page.close()
@@ -48,7 +48,7 @@ test('reopens with all 36 LUTs from persistent local cache and no LUT network re
 
 test('after a partial failure, refresh requests only the missing LUT', async ({ context, page }) => {
   const requests: string[] = []
-  const missingPattern = '**/assets/luts/previews/INSTWARM.rgb.deflate'
+  const missingPattern = '**/assets/luts/8cube-v1/INSTWARM.rgb.deflate'
   const failOrigin = async (route: Route) => {
     if (route.request().url().startsWith('http://127.0.0.1:4174/')) return route.abort('connectionfailed')
     return route.fallback()
@@ -70,7 +70,7 @@ test('after a partial failure, refresh requests only the missing LUT', async ({ 
   await waitForAllLuts(page)
 
   expect(requests).toHaveLength(2)
-  expect(requests.every((url) => url.endsWith('/luts/previews/INSTWARM.rgb.deflate'))).toBe(true)
+  expect(requests.every((url) => url.endsWith('/luts/8cube-v1/INSTWARM.rgb.deflate'))).toBe(true)
 })
 
 test('main preview and export use the preloaded 8-cube asset without a full LUT request', async ({ context, page }) => {
@@ -95,7 +95,7 @@ test('main preview and export use the preloaded 8-cube asset without a full LUT 
   await download
 
   expect(requests).toHaveLength(networkCountBeforeExport)
-  expect(requests.every((url) => url.includes('/luts/previews/'))).toBe(true)
+  expect(requests.every((url) => url.includes('/luts/8cube-v1/'))).toBe(true)
   expect(requests.some((url) => /\/luts\/[A-Z0-9]+\.rgb\.deflate$/.test(url))).toBe(false)
   await expect(page.getByRole('alert')).toHaveCount(0)
 })

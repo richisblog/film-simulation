@@ -55,7 +55,7 @@ GitHub Actions 的生产构建会自动读取仓库中的 `.env.production`。`f
 ## 验收
 
 1. 打开浏览器开发者工具 Network，并清除站点数据后刷新页面。
-2. 页面应显示从 `0 / 36` 到 `36 / 36` 的加载进度，所有 LUT 请求都应指向 `/assets/luts/previews/`。
+2. 页面应显示从 `0 / 36` 到 `36 / 36` 的加载进度，所有 LUT 请求都应指向 `/assets/luts/8cube-v1/`。
 3. 缩略图、左侧大预览和导出都不应请求 `/assets/luts/<ID>.rgb.deflate` 的 64³ 文件。
 4. 正常情况下第一个请求域名应为 `film-simulation.pages.dev`，自定义域激活后为 `film-cdn.richis.top`。
 5. 完成 36 / 36 后关闭并重新打开页面；LUT 网络请求应为 0，资源从版本化本地缓存读取。

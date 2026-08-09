@@ -6,7 +6,7 @@ Use one lightweight 8³ LUT per film simulation for thumbnails, the main preview
 
 ## Decisions
 
-- The committed `preview_asset` files become 8³ cubes. Existing 64³ source files remain in the repository for deterministic regeneration, but the browser never requests them during editing or export.
+- The committed `preview_asset` files become 8³ cubes under the immutable version path `8cube-v1/`. The application reads `manifest-8cube-v1.json`; versioning both URLs prevents old seven-day HTTP or Service Worker entries from supplying former 16³ bytes. Existing 64³ source files remain in the repository for deterministic regeneration, but the browser never requests them during editing or export.
 - `loadLut` and `loadPreviewLut` resolve through one canonical 8³ cache and one in-flight map. A single LUT cannot be downloaded or decompressed twice concurrently.
 - Export deliberately uses the same 8³ cube shown in the main preview. There is no late 64³ quality upgrade.
 - All 36 preload promises start immediately after the same-origin manifest loads. This is an application concurrency limit of 36; the browser and HTTP/2 transport still control socket scheduling.
@@ -77,7 +77,7 @@ The panel uses `role="status"` with polite announcements and a labelled `progres
 
 ## Tests and Acceptance
 
-- Generator test proves every committed preview cube is 8³ and deterministic.
+- Generator tests prove every committed preview cube is 8³ and deterministic, and that the versioned manifest matches the legacy compatibility manifest.
 - Persistent-cache tests prove hit-without-network, invalid-entry eviction, successful dual write, Cache Storage loss with localStorage recovery, decompression eviction, and graceful unavailable-storage fallback.
 - Catalog tests prove preview/full APIs share one request and one cube; no 64³ asset is requested.
 - Preload tests prove 36 tasks start without a queue bottleneck, progress is monotonic, failures are isolated, and retry targets only failures.

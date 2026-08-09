@@ -26,7 +26,7 @@
 - Modify: `scripts/generate-preview-luts.mjs`
 - Modify: `scripts/preview-luts.test.mjs`
 - Modify: `public/assets/luts/manifest.json`
-- Regenerate: `public/assets/luts/previews/*.rgb.deflate`
+- Regenerate: `public/assets/luts/8cube-v1/*.rgb.deflate`
 
 **Interfaces:**
 - Consumes: `sampleCube(source: Uint8Array, sourceSize: number, previewSize: number): Uint8Array`
@@ -57,7 +57,7 @@ Expected: PASS both times and `git diff` is unchanged by the second generation.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add scripts/generate-preview-luts.mjs scripts/preview-luts.test.mjs public/assets/luts/manifest.json public/assets/luts/previews
+git add scripts/generate-preview-luts.mjs scripts/preview-luts.test.mjs public/assets/luts/manifest.json public/assets/luts/8cube-v1
 git commit -m "perf: shrink application LUTs to 8-cube"
 ```
 
@@ -138,7 +138,7 @@ git commit -m "feat: persist validated LUT bytes locally"
 test('full and preview APIs share one 8-cube request and cube', async () => {
   const [main, thumbnail] = await Promise.all([catalog.loadLut('PT400'), catalog.loadPreviewLut('PT400')])
   expect(main).toBe(thumbnail)
-  expect(fetcher).toHaveRequestedOnly('luts/previews/PT400.rgb.deflate')
+  expect(fetcher).toHaveRequestedOnly('luts/8cube-v1/PT400.rgb.deflate')
   expect(main.size).toBe(8)
 })
 
@@ -246,7 +246,7 @@ git commit -m "feat: show resumable LUT preload progress"
 
 - [ ] **Step 1: Add failing browser tests**
 
-Test A waits for 36/36, records LUT network requests, reloads the same context, and asserts zero new LUT network requests after manifest load. Test B aborts only `INSTWARM` at both sources, confirms 35/36 plus one failure, removes the route, reloads, and asserts that only `INSTWARM` reaches the network. Test C selects and exports a filter and asserts every LUT URL contains `/luts/previews/`.
+Test A waits for 36/36, records LUT network requests, reloads the same context, and asserts zero new LUT network requests after manifest load. Test B aborts only `INSTWARM` at both sources, confirms 35/36 plus one failure, removes the route, reloads, and asserts that only `INSTWARM` reaches the network. Test C selects and exports a filter and asserts every LUT URL contains `/luts/8cube-v1/`.
 
 - [ ] **Step 2: Run Chromium and verify RED**
 

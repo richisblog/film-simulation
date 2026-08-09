@@ -51,7 +51,7 @@ test('production manifest has a valid lightweight preview for every LUT', async 
   let total = 0
   for (const descriptor of manifest.luts) {
     assert.equal(descriptor.preview_cube_size, 8, descriptor.id)
-    assert.match(descriptor.preview_asset, /^previews\/[A-Z0-9]+\.rgb\.deflate$/)
+    assert.match(descriptor.preview_asset, /^8cube-v1\/[A-Z0-9]+\.rgb\.deflate$/)
     const asset = path.join(root, 'public/assets/luts', descriptor.preview_asset)
     const info = await stat(asset)
     assert.equal(info.size, descriptor.preview_byte_length, descriptor.id)
@@ -60,4 +60,11 @@ test('production manifest has a valid lightweight preview for every LUT', async 
     total += info.size
   }
   assert.ok(total < 1024 * 1024, `preview assets total ${total} bytes`)
+})
+
+test('ships an identical versioned manifest so old HTTP caches cannot pin asset paths', async () => {
+  const legacy = await readFile(path.join(root, 'public/assets/luts/manifest.json'), 'utf8')
+  const versioned = await readFile(path.join(root, 'public/assets/luts/manifest-8cube-v1.json'), 'utf8')
+
+  assert.equal(versioned, legacy)
 })

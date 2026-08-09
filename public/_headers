@@ -1,3 +1,6 @@
+/assets/luts/manifest-8cube-v1.json
+  Cache-Control: public, max-age=0, must-revalidate
+
 /assets/luts/*.rgb.deflate
   Access-Control-Allow-Origin: *
   Cross-Origin-Resource-Policy: cross-origin
