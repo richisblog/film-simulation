@@ -7,6 +7,10 @@ const PNG_1X1 = Buffer.from(
 
 const isLutBinary = (url: string) => url.endsWith('.rgb.deflate')
 
+test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => localStorage.setItem('film-simulation-language', 'zh-CN'))
+})
+
 async function uploadPhoto(page: Page) {
   await page.locator('input[type="file"]').setInputFiles({
     name: 'persistent-lut.png',

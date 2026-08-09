@@ -4,10 +4,12 @@
 
 “胶片模拟”是一个无需登录的本地胶片工作台。照片从文件选择器进入浏览器后，使用 WebGL2（或 Canvas 兼容模式）在本机完成 LUT、颗粒、暗角和漏光处理；原图与输出均不会上传。
 
+界面完整支持中文和英文。首次访问会根据浏览器语言自动选择（中文环境使用中文，其他环境使用英文），手动切换后会在当前浏览器中记住选择。
+
 ## 功能
 
 - 输入：JPEG、PNG、WebP；HEIC/HEIF 仅在当前浏览器能够原生解码时使用。
-- 效果：原图与 36 个 64³ LUT、LUT 强度、确定性颗粒、暗角、20 个 Screen 漏光与漏光强度。
+- 效果：原图与 36 个 8³ LUT、LUT 强度、确定性颗粒、暗角、20 个 Screen 漏光与漏光强度。
 - 输出：JPEG、PNG、WebP；原尺寸或 4096、3072、2048、1080 长边，不放大小图。
 - 设备：响应式电脑/手机界面、键盘和触控操作、PWA 安装与按需离线效果缓存。
 
@@ -26,6 +28,7 @@ npm run dev
 
 ```bash
 npm run test:assets
+npm run test:pwa-assets
 npm test
 npm run test:e2e
 npm run build
@@ -47,7 +50,7 @@ npx playwright install chromium
 ## 隐私与限制
 
 - 应用只通过浏览器 File API 读取用户明确选择的单张照片，没有相册扫描、账户或广告 Cookie。
-- 生产站使用 GoatCounter 记录聚合页面访问，并在导出成功后记录当时的滤镜 ID 与公开中文名称；不使用广告标识、Cookie、localStorage 或指纹追踪。
+- 生产站使用 GoatCounter 记录聚合页面访问，并在导出成功后记录当时的稳定滤镜 ID 与当前语言下的公开名称；不使用广告标识、Cookie、localStorage 或指纹追踪。
 - 照片、图像数据、文件名、导出文件名、调节参数、LUT 内容和导出结果均不会发送给统计服务；网络还用于下载网页自身、LUT 与漏光素材。
 - 刷新页面后原图消失。输出不会保留 EXIF、位置、ICC、HDR gain map 或其他源元数据。
 - HEIC 不使用 WASM 或服务器转码。不支持时请先在系统相册中导出 JPEG。

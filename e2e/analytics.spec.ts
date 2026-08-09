@@ -6,6 +6,7 @@ const PNG_1X1 = Buffer.from(
 )
 
 test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => localStorage.setItem('film-simulation-language', 'zh-CN'))
   await context.route('https://cdn.invalid/**', (route) => route.abort('connectionfailed'))
 })
 
