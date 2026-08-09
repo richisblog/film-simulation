@@ -16,7 +16,7 @@ export function LutLoadProgress({ progress, onRetry }: Props) {
         ? '正在准备胶片色彩'
         : '部分胶片色彩待重试'
 
-  return <section className={`lut-load-progress ${progress.failed > 0 ? 'has-failure' : ''}`} role="status" aria-live="polite">
+  return <section className={`lut-load-progress ${progress.failed > 0 ? 'has-failure' : ''}`} role="status" aria-label="胶片色彩加载状态" aria-live="polite">
     <div className="lut-progress-copy">
       <strong>{title}</strong>
       <span>{progress.total > 0

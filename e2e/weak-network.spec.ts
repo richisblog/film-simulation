@@ -17,7 +17,7 @@ async function uploadPhoto(page: Page) {
 }
 
 async function waitForAllLuts(page: Page) {
-  await expect(page.getByRole('status')).toContainText('胶片色彩已就绪（36 / 36）', { timeout: 15_000 })
+  await expect(page.getByRole('status', { name: '胶片色彩加载状态' })).toContainText('胶片色彩已就绪（36 / 36）', { timeout: 15_000 })
 }
 
 async function blockCdn(context: BrowserContext) {
@@ -60,7 +60,7 @@ test('after a partial failure, refresh requests only the missing LUT', async ({ 
   await context.route(missingPattern, failOrigin)
 
   await page.goto('/')
-  const progress = page.getByRole('status')
+  const progress = page.getByRole('status', { name: '胶片色彩加载状态' })
   await expect(progress).toContainText('35 个可用 · 1 个待重试', { timeout: 15_000 })
   await expect(page.getByRole('button', { name: '重试未完成色彩' })).toBeVisible()
 

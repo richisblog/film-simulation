@@ -15,7 +15,7 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    command: 'VITE_ASSET_BASE_URL=https://cdn.invalid/assets npm run build && npm run preview -- --host 127.0.0.1 --port 4174',
+    command: 'VITE_ASSET_BASE_URL=https://cdn.invalid/assets VITE_GOATCOUNTER_URL=https://analytics.invalid npm run build && npm run preview -- --host 127.0.0.1 --port 4174',
     url: 'http://127.0.0.1:4174',
     reuseExistingServer: false,
   },
