@@ -48,13 +48,7 @@ curl -I -H 'Origin: https://film.richis.top' https://film-cdn.richis.top/assets/
 VITE_ASSET_BASE_URL=https://film-simulation.pages.dev/assets npm run build
 ```
 
-GitHub Actions 也会读取仓库变量作为覆盖项。在仓库 Settings → Secrets and variables → Actions → Variables 添加：
-
-```text
-VITE_ASSET_BASE_URL=https://film-simulation.pages.dev/assets
-```
-
-`film-cdn.richis.top` 激活后，再把以上地址替换为 `https://film-cdn.richis.top/assets` 并重新构建。
+GitHub Actions 的生产构建会自动读取仓库中的 `.env.production`。`film-cdn.richis.top` 激活后，把该文件中的地址替换为 `https://film-cdn.richis.top/assets` 并重新构建。
 
 变量不属于秘密。不要在其中加入 token 或签名查询参数。构建后的 CDN 地址已经写入 JavaScript，因此修改变量后必须重新构建和部署。
 
@@ -78,7 +72,7 @@ VITE_ASSET_BASE_URL=https://film-simulation.pages.dev/assets
 
 最快回滚不需要删除 Cloudflare 项目：
 
-1. 删除 GitHub Actions 仓库变量 `VITE_ASSET_BASE_URL`（如有），并删除或清空 `.env.production` 中的默认值。
+1. 删除或清空 `.env.production` 中的默认值。
 2. 重新执行 `npm run build` 并部署。
 3. 应用将只使用打包的 `./assets`。
 
@@ -86,4 +80,4 @@ VITE_ASSET_BASE_URL=https://film-simulation.pages.dev/assets
 
 ## CI 凭据（可选）
 
-如以后要让 GitHub Actions 同时发布 Cloudflare Pages，按 Cloudflare Direct Upload CI 文档创建最小权限 API Token，并把 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID` 保存为 GitHub Secrets。当前工作流只读取可公开的 `VITE_ASSET_BASE_URL` 变量，不要求或保存 Cloudflare 凭据。
+如以后要让 GitHub Actions 同时发布 Cloudflare Pages，按 Cloudflare Direct Upload CI 文档创建最小权限 API Token，并把 `CLOUDFLARE_API_TOKEN` 与 `CLOUDFLARE_ACCOUNT_ID` 保存为 GitHub Secrets。当前工作流不要求或保存 Cloudflare 凭据。

@@ -38,8 +38,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          VITE_ASSET_BASE_URL: ${{ vars.VITE_ASSET_BASE_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
