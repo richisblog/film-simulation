@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import test from 'node:test'
-import { deflateSync } from 'node:zlib'
+import { deflateSync, inflateSync } from 'node:zlib'
 import { sampleCube } from './preview-luts.mjs'
 
 const root = path.resolve(import.meta.dirname, '..')
@@ -50,11 +50,13 @@ test('production manifest has a valid lightweight preview for every LUT', async 
 
   let total = 0
   for (const descriptor of manifest.luts) {
-    assert.equal(descriptor.preview_cube_size, 16, descriptor.id)
+    assert.equal(descriptor.preview_cube_size, 8, descriptor.id)
     assert.match(descriptor.preview_asset, /^previews\/[A-Z0-9]+\.rgb\.deflate$/)
     const asset = path.join(root, 'public/assets/luts', descriptor.preview_asset)
     const info = await stat(asset)
     assert.equal(info.size, descriptor.preview_byte_length, descriptor.id)
+    const compressed = await readFile(asset)
+    assert.equal(inflateSync(compressed).length, 8 ** 3 * 3, descriptor.id)
     total += info.size
   }
   assert.ok(total < 1024 * 1024, `preview assets total ${total} bytes`)

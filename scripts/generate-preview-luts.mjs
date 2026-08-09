@@ -7,7 +7,7 @@ const root = path.resolve(import.meta.dirname, '..')
 const lutRoot = path.join(root, 'public/assets/luts')
 const previewRoot = path.join(lutRoot, 'previews')
 const manifestPath = path.join(lutRoot, 'manifest.json')
-const previewSize = 16
+const previewSize = 8
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'))
 await mkdir(previewRoot, { recursive: true })
