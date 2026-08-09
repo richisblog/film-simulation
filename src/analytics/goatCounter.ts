@@ -4,6 +4,33 @@ export interface GoatCounterOptions {
   document: Document
 }
 
+interface GoatCounterEvent {
+  path: string
+  title: string
+  event: true
+  no_session: true
+}
+
+interface GoatCounterClient {
+  count: (event: GoatCounterEvent) => void
+}
+
+declare global {
+  interface Window {
+    goatcounter?: GoatCounterClient
+  }
+}
+
+export interface FilterExportTrackingOptions {
+  siteUrl: string
+  location: Pick<Location, 'hostname' | 'protocol'>
+  window: Window
+  lutId: string | null
+  lutName: string | null
+  retryIntervalMs?: number
+  maxWaitMs?: number
+}
+
 const SCRIPT_SELECTOR = 'script[data-goatcounter]'
 const SCRIPT_URL = 'https://gc.zgo.at/count.js'
 const TRACKING_SETTINGS = JSON.stringify({ path: '/', no_events: true })
@@ -22,26 +49,40 @@ export function startPageviewTracking(options: GoatCounterOptions): boolean {
   return true
 }
 
-export async function readTotalPageviews(
-  siteUrl: string,
-  fetcher: typeof fetch = globalThis.fetch.bind(globalThis),
-  signal?: AbortSignal,
-): Promise<string> {
-  const origin = serviceOrigin(siteUrl)
-  if (!origin) throw new Error('浏览量服务地址无效')
+export function trackFilterExport(options: FilterExportTrackingOptions): boolean {
+  if (!serviceOrigin(options.siteUrl) || !isProductionPage(options.location)) return false
 
-  try {
-    const response = await fetcher(`${origin}/counter/TOTAL.json`, { signal })
-    if (!response.ok) throw new Error('invalid status')
-    const payload = await response.json() as { count?: unknown }
-    if (typeof payload.count !== 'string' || !/^\d{1,3}(?:,\d{3})*$/.test(payload.count)) {
-      throw new Error('invalid count')
+  const event: GoatCounterEvent = options.lutId
+    ? {
+        path: `export-filter-${options.lutId}`,
+        title: `导出滤镜：${options.lutName ?? options.lutId}`,
+        event: true,
+        no_session: true,
+      }
+    : {
+        path: 'export-filter-NONE',
+        title: '导出滤镜：未使用滤镜',
+        event: true,
+        no_session: true,
+      }
+  const retryIntervalMs = options.retryIntervalMs ?? 100
+  const maxWaitMs = options.maxWaitMs ?? 3_000
+
+  const sendWhenReady = (elapsedMs: number) => {
+    if (options.window.goatcounter?.count) {
+      try {
+        options.window.goatcounter.count(event)
+      } catch {
+        // Optional telemetry must never affect export.
+      }
+      return
     }
-    return payload.count
-  } catch (reason) {
-    if (reason instanceof DOMException && reason.name === 'AbortError') throw reason
-    throw new Error('浏览量响应无效', { cause: reason })
+    if (elapsedMs >= maxWaitMs) return
+    options.window.setTimeout(() => sendWhenReady(elapsedMs + retryIntervalMs), retryIntervalMs)
   }
+
+  sendWhenReady(0)
+  return true
 }
 
 function serviceOrigin(value: string): string | null {

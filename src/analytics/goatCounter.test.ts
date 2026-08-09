@@ -1,11 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { readTotalPageviews, startPageviewTracking } from './goatCounter'
+import { startPageviewTracking, trackFilterExport } from './goatCounter'
 
 const productionLocation = { hostname: 'film.richis.top', protocol: 'https:' }
 const siteUrl = 'https://film-simulation.goatcounter.com'
 
 afterEach(() => {
+  vi.useRealTimers()
   document.querySelectorAll('script[data-goatcounter]').forEach((element) => element.remove())
+  delete window.goatcounter
 })
 
 describe('startPageviewTracking', () => {
@@ -38,33 +40,96 @@ describe('startPageviewTracking', () => {
   })
 })
 
-describe('readTotalPageviews', () => {
-  it('returns GoatCounter’s validated formatted total', async () => {
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify({
-      count: '12,345',
-      count_unique: '12,345',
-    }), { status: 200, headers: { 'content-type': 'application/json' } }))
-    const controller = new AbortController()
+describe('trackFilterExport', () => {
+  it('records every successful filtered export as an event', () => {
+    const count = vi.fn()
+    window.goatcounter = { count }
 
-    await expect(readTotalPageviews(`${siteUrl}/`, fetcher, controller.signal)).resolves.toBe('12,345')
-    expect(fetcher).toHaveBeenCalledWith(`${siteUrl}/counter/TOTAL.json`, {
-      signal: controller.signal,
+    expect(trackFilterExport({
+      siteUrl,
+      location: productionLocation,
+      window,
+      lutId: 'INSTWARM',
+      lutName: '暖调拍立得',
+    })).toBe(true)
+    expect(count).toHaveBeenCalledOnce()
+    expect(count).toHaveBeenCalledWith({
+      path: 'export-filter-INSTWARM',
+      title: '导出滤镜：暖调拍立得',
+      event: true,
+      no_session: true,
     })
   })
 
-  it.each([
-    new Response('', { status: 503 }),
-    new Response(JSON.stringify({ count: '' }), { status: 200 }),
-    new Response(JSON.stringify({ count: 'many' }), { status: 200 }),
-    new Response(JSON.stringify({ count_unique: '12' }), { status: 200 }),
-  ])('rejects an unavailable or malformed counter response', async (response) => {
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(response)
-    await expect(readTotalPageviews(siteUrl, fetcher)).rejects.toThrow('浏览量响应无效')
+  it('keeps exports without a LUT in the preference denominator', () => {
+    const count = vi.fn()
+    window.goatcounter = { count }
+
+    trackFilterExport({ siteUrl, location: productionLocation, window, lutId: null, lutName: null })
+
+    expect(count).toHaveBeenCalledWith({
+      path: 'export-filter-NONE',
+      title: '导出滤镜：未使用滤镜',
+      event: true,
+      no_session: true,
+    })
   })
 
-  it('rejects an unsafe counter service URL before making a request', async () => {
-    const fetcher = vi.fn<typeof fetch>()
-    await expect(readTotalPageviews('http://stats.example.com', fetcher)).rejects.toThrow('浏览量服务地址无效')
-    expect(fetcher).not.toHaveBeenCalled()
+  it('waits briefly for the asynchronous collector and sends exactly once', () => {
+    vi.useFakeTimers()
+    const count = vi.fn()
+
+    trackFilterExport({
+      siteUrl,
+      location: productionLocation,
+      window,
+      lutId: 'INSTWARM',
+      lutName: '暖调拍立得',
+      retryIntervalMs: 100,
+      maxWaitMs: 300,
+    })
+    vi.advanceTimersByTime(99)
+    window.goatcounter = { count }
+    vi.advanceTimersByTime(1_000)
+
+    expect(count).toHaveBeenCalledOnce()
+  })
+
+  it('gives up silently when the collector remains unavailable', () => {
+    vi.useFakeTimers()
+
+    expect(() => {
+      trackFilterExport({
+        siteUrl,
+        location: productionLocation,
+        window,
+        lutId: 'INSTWARM',
+        lutName: '暖调拍立得',
+        retryIntervalMs: 100,
+        maxWaitMs: 300,
+      })
+      vi.advanceTimersByTime(1_000)
+    }).not.toThrow()
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('does not schedule events for local, insecure, or invalid configurations', () => {
+    vi.useFakeTimers()
+
+    expect(trackFilterExport({
+      siteUrl,
+      location: { hostname: 'localhost', protocol: 'https:' },
+      window,
+      lutId: 'INSTWARM',
+      lutName: '暖调拍立得',
+    })).toBe(false)
+    expect(trackFilterExport({
+      siteUrl: 'http://analytics.invalid',
+      location: productionLocation,
+      window,
+      lutId: 'INSTWARM',
+      lutName: '暖调拍立得',
+    })).toBe(false)
+    expect(vi.getTimerCount()).toBe(0)
   })
 })
