@@ -38,14 +38,17 @@ E2E 首次运行前安装项目对应浏览器：
 npx playwright install chromium
 ```
 
-生产文件位于 `dist/`。它是纯静态站点，可部署到任意支持 HTTPS 的静态托管服务。部署时把 `dist/` 内容作为站点根目录；无需 API、数据库、环境变量或服务端路由。
+生产文件位于 `dist/`。它是纯静态站点，可部署到任意支持 HTTPS 的静态托管服务。部署时把 `dist/` 内容作为站点根目录；无需自建 API、数据库或服务端路由。
 
 可选的 `VITE_ASSET_BASE_URL` 能把 LUT 与漏光优先放到 CDN；CDN 失败时应用会自动回退到随站点发布的素材。Cloudflare Pages 的部署、`film-cdn.richis.top` 配置与回滚步骤见 [Cloudflare CDN 指南](./docs/CLOUDFLARE_CDN.md)。
 
+可选的 `VITE_GOATCOUNTER_URL` 用于启用无 Cookie 的聚合页面访问统计和页脚公开浏览量。生产统计配置、后台入口与停用方法见 [流量统计指南](./docs/ANALYTICS.md)。
+
 ## 隐私与限制
 
-- 应用只通过浏览器 File API 读取用户明确选择的单张照片，没有相册扫描、账户、Cookie、分析或遥测。
-- 网络只用于下载网页自身、所选 LUT 和所选漏光素材；测试会验证不存在上传/API 请求。
+- 应用只通过浏览器 File API 读取用户明确选择的单张照片，没有相册扫描、账户或广告 Cookie。
+- 生产站使用 GoatCounter 记录聚合页面浏览量、来源、粗粒度浏览器/设备与国家信息；不使用广告标识、Cookie、localStorage 或指纹追踪。
+- 照片、文件名、滤镜选择、LUT 运算和导出内容均不会发送给统计服务；网络还用于下载网页自身、LUT 与漏光素材。
 - 刷新页面后原图消失。输出不会保留 EXIF、位置、ICC、HDR gain map 或其他源元数据。
 - HEIC 不使用 WASM 或服务器转码。不支持时请先在系统相册中导出 JPEG。
 - 原尺寸导出受浏览器与 GPU 最大纹理尺寸限制；页面会提示改选较低分辨率。
