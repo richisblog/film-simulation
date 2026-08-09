@@ -15,7 +15,8 @@ const outputExtension: Record<ExportMime, string> = {
   'image/webp': 'webp',
 }
 
-export function outputFilename(inputName: string, mime: ExportMime): string {
-  const withoutExtension = inputName.replace(/\.[^./\\]+$/, '') || '照片'
-  return `${withoutExtension}-胶片模拟.${outputExtension[mime]}`
+export function outputFilename(inputName: string, mime: ExportMime, language: 'zh-CN' | 'en' = 'zh-CN'): string {
+  const withoutExtension = inputName.replace(/\.[^./\\]+$/, '') || (language === 'en' ? 'photo' : '照片')
+  const suffix = language === 'en' ? 'film-simulation' : '胶片模拟'
+  return `${withoutExtension}-${suffix}.${outputExtension[mime]}`
 }

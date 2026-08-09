@@ -1,6 +1,7 @@
 import type { LutDescriptor } from '../image/catalog'
 import type { LutCube } from '../image/lut'
 import { lutDisplayName } from '../image/lutNames'
+import { useLanguage } from '../i18n'
 import { LutThumbnail } from './LutThumbnail'
 
 interface Props {
@@ -12,14 +13,15 @@ interface Props {
 }
 
 export function FilmStrip({ items, selected, source, loadPreviewLut, onChange }: Props) {
+  const { language, copy } = useLanguage()
   return (
-    <div className="film-grid" role="radiogroup" aria-label="胶片滤镜">
+    <div className="film-grid" role="radiogroup" aria-label={copy.filmFilters}>
       {items.map((item, index) => (
         <button className={`film-card ${selected === item.id ? 'selected' : ''}`} type="button" role="radio"
           aria-checked={selected === item.id} key={item.id} onClick={() => onChange(item.id)}>
           <LutThumbnail source={source} lutId={item.id} loadPreviewLut={loadPreviewLut} />
           <span className="film-card-copy"><small>{String(index + 1).padStart(2, '0')} · 36</small>
-            <strong>{lutDisplayName(item.id)}</strong></span>
+            <strong>{lutDisplayName(item.id, language)}</strong></span>
         </button>
       ))}
     </div>

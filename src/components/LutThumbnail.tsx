@@ -3,6 +3,7 @@ import type { LutCube } from '../image/lut'
 import { transformPixels } from '../image/pixelEffects'
 import { TaskCancelledError, TaskQueue, thumbnailQueue } from '../image/thumbnailQueue'
 import { DEFAULT_SETTINGS } from '../image/types'
+import { useLanguage } from '../i18n'
 
 interface Props {
   source: ImageData
@@ -18,6 +19,7 @@ function copyPixels(source: ImageData): ImageData {
 }
 
 export function LutThumbnail({ source, lutId, loadPreviewLut, queue = thumbnailQueue }: Props) {
+  const { copy } = useLanguage()
   const canvas = useRef<HTMLCanvasElement>(null)
   const [visible, setVisible] = useState(false)
   const [failed, setFailed] = useState(false)
@@ -71,5 +73,5 @@ export function LutThumbnail({ source, lutId, loadPreviewLut, queue = thumbnailQ
   }, [loadPreviewLut, lutId, queue, source, visible])
 
   return <><canvas ref={canvas} width={source.width} height={source.height} aria-hidden="true" />
-    {failed && <span className="film-thumbnail-error">预览不可用</span>}</>
+    {failed && <span className="film-thumbnail-error">{copy.previewUnavailable}</span>}</>
 }

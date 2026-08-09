@@ -37,6 +37,7 @@ describe('input formats', () => {
   it('adds a safe suffix and requested extension', () => {
     expect(outputFilename('summer.trip.jpeg', 'image/webp')).toBe('summer.trip-胶片模拟.webp')
     expect(outputFilename('.jpeg', 'image/jpeg')).toBe('照片-胶片模拟.jpg')
+    expect(outputFilename('summer.jpeg', 'image/jpeg', 'en')).toBe('summer-film-simulation.jpg')
   })
 })
 

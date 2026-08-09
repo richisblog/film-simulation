@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "assets:previews": "node scripts/generate-preview-luts.mjs",
+    "assets:pwa-icons": "node scripts/generate-pwa-icons.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "deploy:cloudflare": "npm run build && wrangler pages deploy dist --project-name film-simulation --branch main",

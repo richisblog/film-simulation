@@ -18,6 +18,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid #ffb087; outline-
 .brand { letter-spacing: .17em; font-size: 15px; font-weight: 650; }
 .brand strong { color: var(--orange); }
 .header-actions { display: flex; align-items: center; gap: 10px; }
+.language-switch { min-width: 44px; height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: #1c1916; color: #d8cfc5; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.language-switch:hover { border-color: #766a5f; color: #fff; }
 .lut-load-progress { max-width: 1700px; min-height: 58px; margin: 3px auto 8px; padding: 8px 12px; border: 1px solid #3b342d; background: #181512e8; display: grid; grid-template-columns: minmax(190px, 1fr) minmax(160px, 2fr) minmax(210px, 1fr) auto; align-items: center; gap: 14px; font-size: 11px; color: var(--muted); }
 .lut-load-progress.has-failure { border-color: #74412f; }
 .lut-progress-copy, .lut-progress-detail { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -154,6 +156,9 @@ legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
 .social-xhs { background: #ff2442; color: #fff; border: 1px solid rgba(255,255,255,.18); }
 .analytics-privacy-note { max-width: 660px; margin: 12px auto 0; color: #766d64; font-size: 10px; line-height: 1.6; }
 @media (max-width: 640px) {
+  .header-actions { gap: 6px; }
+  .language-switch { padding: 0 8px; }
+  .github-star { padding: 0 10px; }
   .site-footer { margin-top: 40px; padding: 22px 14px max(26px, env(safe-area-inset-bottom)); }
   .support-note { font-size: 12px; }
   .analytics-privacy-note { font-size: 9px; }
