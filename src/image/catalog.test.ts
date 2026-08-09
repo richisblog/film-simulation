@@ -1,5 +1,32 @@
 import { expect, it, vi } from 'vitest'
 import { AssetCatalog } from './catalog'
+import type { LutByteCache } from './persistentLutCache'
+
+class MemoryLutByteCache implements LutByteCache {
+  readonly entries = new Map<string, Uint8Array>()
+  readonly deleted: string[] = []
+
+  private key(id: string, cubeSize: number, byteLength: number) {
+    return `${id}:${cubeSize}:${byteLength}`
+  }
+
+  async get(id: string, cubeSize: number, byteLength: number) {
+    const bytes = this.entries.get(this.key(id, cubeSize, byteLength))
+    return bytes ? Uint8Array.from(bytes) : null
+  }
+
+  async put(id: string, cubeSize: number, byteLength: number, bytes: Uint8Array) {
+    this.entries.set(this.key(id, cubeSize, byteLength), Uint8Array.from(bytes))
+  }
+
+  async delete(id: string, cubeSize: number, byteLength: number) {
+    const key = this.key(id, cubeSize, byteLength)
+    this.deleted.push(key)
+    this.entries.delete(key)
+  }
+
+  async pruneOldVersions() {}
+}
 
 it('calls the browser fetch function with the Window receiver', async () => {
   const original = window.fetch
@@ -17,7 +44,7 @@ it('calls the browser fetch function with the Window receiver', async () => {
   }
 })
 
-it('loads manifests once and selected full LUT bytes on demand', async () => {
+it('loads manifests once and selected canonical 8-cube bytes on demand', async () => {
   const lut = new Uint8Array(2 * 2 * 2 * 3)
   const calls: string[] = []
   const fetcher = async (input: RequestInfo | URL) => {
@@ -28,7 +55,7 @@ it('loads manifests once and selected full LUT bytes on demand', async () => {
       preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: lut.length,
     }] }))
     if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [{ id: 'LEAK_01', asset: 'leak.jpg', byte_length: 3 }] }))
-    if (path.endsWith('/luts/TEST.rgb')) return new Response(lut)
+    if (path.endsWith('/luts/previews/TEST.rgb')) return new Response(lut)
     throw new Error(`unexpected ${path}`)
   }
   const catalog = new AssetCatalog('/assets', fetcher)
@@ -56,32 +83,129 @@ it('rejects an asset with a manifest byte-length mismatch', async () => {
   await expect(catalog.loadLut('BAD')).rejects.toThrow('素材文件不完整')
 })
 
-it('loads lightweight preview and full LUT assets through separate paths', async () => {
+it('shares one canonical preview asset and cube across main and thumbnail APIs', async () => {
   const preview = new Uint8Array(2 ** 3 * 3).fill(2)
-  const full = new Uint8Array(3 ** 3 * 3).fill(3)
   const calls: string[] = []
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
     calls.push(path)
     if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
-      id: 'TEST', asset: 'TEST.full.rgb', cube_size: 3, byte_length: full.length,
+      id: 'TEST', asset: 'TEST.full.rgb', cube_size: 3, byte_length: 81,
       preview_asset: 'previews/TEST.preview.rgb', preview_cube_size: 2, preview_byte_length: preview.length,
     }] }))
     if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [] }))
     if (path.endsWith('/luts/previews/TEST.preview.rgb')) return new Response(preview)
-    if (path.endsWith('/luts/TEST.full.rgb')) return new Response(full)
+    if (path.endsWith('/luts/TEST.full.rgb')) throw new Error('64-cube asset must not be requested')
     throw new Error(`unexpected ${path}`)
   }
   const catalog = new AssetCatalog('/assets', fetcher)
 
-  const previewLut = await catalog.loadPreviewLut('TEST')
-  expect(previewLut.size).toBe(2)
-  expect(calls).toContain('/assets/luts/previews/TEST.preview.rgb')
+  const [mainLut, previewLut] = await Promise.all([
+    catalog.loadLut('TEST'),
+    catalog.loadPreviewLut('TEST'),
+  ])
+  expect(mainLut).toBe(previewLut)
+  expect(mainLut.size).toBe(2)
+  expect(calls.filter((path) => path.endsWith('/luts/previews/TEST.preview.rgb'))).toHaveLength(1)
   expect(calls).not.toContain('/assets/luts/TEST.full.rgb')
+})
 
-  const fullLut = await catalog.loadLut('TEST')
-  expect(fullLut.size).toBe(3)
-  expect(calls).toContain('/assets/luts/TEST.full.rgb')
+it('uses validated persistent bytes without making a binary network request', async () => {
+  const bytes = new Uint8Array(2 ** 3 * 3).fill(7)
+  const byteCache = new MemoryLutByteCache()
+  await byteCache.put('TEST', 2, bytes.length, bytes)
+  const binaryCalls: string[] = []
+  const fetcher = async (input: RequestInfo | URL) => {
+    const path = String(input)
+    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+      id: 'TEST', asset: 'TEST.full.rgb', cube_size: 64, byte_length: 10,
+      preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: bytes.length,
+    }] }))
+    if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [] }))
+    binaryCalls.push(path)
+    throw new Error('persistent hit must not fetch')
+  }
+  const catalog = new AssetCatalog('/assets', fetcher, undefined, byteCache)
+
+  await expect(catalog.loadLut('TEST')).resolves.toMatchObject({ size: 2 })
+  expect(binaryCalls).toEqual([])
+})
+
+it('persists validated network bytes for the next page load', async () => {
+  const bytes = new Uint8Array(2 ** 3 * 3).fill(5)
+  const byteCache = new MemoryLutByteCache()
+  const fetcher = async (input: RequestInfo | URL) => {
+    const path = String(input)
+    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+      id: 'TEST', asset: 'TEST.full.rgb', cube_size: 64, byte_length: 10,
+      preview_asset: 'previews/TEST.rgb', preview_cube_size: 2, preview_byte_length: bytes.length,
+    }] }))
+    if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [] }))
+    return new Response(bytes)
+  }
+  const catalog = new AssetCatalog('/assets', fetcher, undefined, byteCache)
+
+  await catalog.loadLut('TEST')
+
+  expect(await byteCache.get('TEST', 2, bytes.length)).toEqual(bytes)
+})
+
+it('evicts persistent compressed bytes when decompression fails', async () => {
+  const corrupt = new Uint8Array([1, 2, 3, 4])
+  const byteCache = new MemoryLutByteCache()
+  await byteCache.put('BAD', 2, corrupt.length, corrupt)
+  const fetcher = async (input: RequestInfo | URL) => {
+    const path = String(input)
+    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: [{
+      id: 'BAD', asset: 'BAD.full.rgb.deflate', cube_size: 64, byte_length: 10,
+      preview_asset: 'previews/BAD.rgb.deflate', preview_cube_size: 2, preview_byte_length: corrupt.length,
+    }] }))
+    if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [] }))
+    throw new Error('persistent hit must not fetch')
+  }
+  const catalog = new AssetCatalog('/assets', fetcher, undefined, byteCache)
+
+  await expect(catalog.loadLut('BAD')).rejects.toThrow('素材解压失败')
+  expect(byteCache.deleted).toEqual([`BAD:2:${corrupt.length}`])
+})
+
+it('starts all 36 preloads together, isolates failure, and retries only the missing LUT', async () => {
+  const bytes = new Uint8Array(2 ** 3 * 3)
+  const descriptors = Array.from({ length: 36 }, (_, index) => {
+    const id = `LUT${String(index).padStart(2, '0')}`
+    return {
+      id, asset: `${id}.full.rgb`, cube_size: 64, byte_length: 10,
+      preview_asset: `previews/${id}.rgb`, preview_cube_size: 2, preview_byte_length: bytes.length,
+    }
+  })
+  const releases = new Map<string, (response: Response) => void>()
+  const binaryCalls: string[] = []
+  let retrying = false
+  const fetcher = async (input: RequestInfo | URL) => {
+    const path = String(input)
+    if (path.endsWith('/luts/manifest.json')) return new Response(JSON.stringify({ luts: descriptors }))
+    if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [] }))
+    const id = path.match(/(LUT\d{2})\.rgb$/)?.[1]
+    if (!id) throw new Error(`unexpected ${path}`)
+    binaryCalls.push(id)
+    if (retrying) return new Response(bytes)
+    return new Promise<Response>((resolve) => releases.set(id, resolve))
+  }
+  const catalog = new AssetCatalog('/assets', fetcher, undefined, new MemoryLutByteCache())
+  const snapshots: Array<{ completed: number; succeeded: number; failed: number; active: number; done: boolean }> = []
+
+  const preload = catalog.preloadLuts((progress) => snapshots.push(progress))
+  await vi.waitFor(() => expect(releases.size).toBe(36))
+  for (const [id, release] of releases) release(id === 'LUT35' ? new Response(null, { status: 404 }) : new Response(bytes))
+  await preload
+
+  expect(snapshots.at(-1)).toMatchObject({ completed: 36, succeeded: 35, failed: 1, active: 0, done: true })
+  expect(snapshots.map((item) => item.completed)).toEqual([...snapshots.map((_, index) => index)])
+
+  retrying = true
+  binaryCalls.length = 0
+  await catalog.retryFailedLuts(() => undefined)
+  expect(binaryCalls).toEqual(['LUT35'])
 })
 
 it.each([

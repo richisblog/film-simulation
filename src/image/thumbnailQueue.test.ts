@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import { TaskCancelledError, TaskQueue } from './thumbnailQueue'
+import { TaskCancelledError, TaskQueue, thumbnailQueue } from './thumbnailQueue'
 
 it('最多同时执行两个任务，并在失败后继续处理队列', async () => {
   const queue = new TaskQueue(2)
@@ -52,4 +52,17 @@ it('cancels pending work before it starts and keeps cancellation idempotent', as
   releaseFirst()
   await expect(first.promise).resolves.toBe(1)
   expect(started).toEqual([1])
+})
+
+it('starts all 36 default thumbnail tasks without a queue bottleneck', async () => {
+  const releases: Array<() => void> = []
+  let started = 0
+  const handles = Array.from({ length: 36 }, () => thumbnailQueue.add(async () => {
+    started += 1
+    await new Promise<void>((resolve) => releases.push(resolve))
+  }))
+
+  await vi.waitFor(() => expect(started).toBe(36))
+  releases.forEach((release) => release())
+  await Promise.all(handles.map((handle) => handle.promise))
 })

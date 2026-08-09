@@ -1,6 +1,7 @@
 import { assetRoots, type AssetRoot } from '../config/assets'
 import { AssetLoadError, requestAsset, type AssetKind } from './assetRequest'
 import { LutCube } from './lut'
+import { BrowserLutByteCache, type LutByteCache } from './persistentLutCache'
 
 export interface LutDescriptor {
   id: string
@@ -16,6 +17,17 @@ export interface LeakDescriptor { id: string; asset: string; byte_length: number
 interface LutManifest { cube_size?: number; luts: LutDescriptor[] }
 interface LeakManifest { light_leaks: LeakDescriptor[] }
 
+export interface LutPreloadProgress {
+  total: number
+  completed: number
+  succeeded: number
+  failed: number
+  active: number
+  currentId: string | null
+  percent: number
+  done: boolean
+}
+
 const browserFetch: typeof fetch = (input, init) => globalThis.fetch.call(globalThis, input, init)
 
 export class AssetCatalog {
@@ -23,15 +35,16 @@ export class AssetCatalog {
   leaks: LeakDescriptor[] = []
   private loaded?: Promise<void>
   private readonly lutCache = new Map<string, LutCube>()
-  private readonly previewLutCache = new Map<string, LutCube>()
   private readonly leakCache = new Map<string, HTMLImageElement>()
   private readonly lutInflight = new Map<string, Promise<LutCube>>()
-  private readonly previewLutInflight = new Map<string, Promise<LutCube>>()
+  private readonly preloadSucceeded = new Set<string>()
+  private readonly preloadFailed = new Set<string>()
 
   constructor(
     private readonly base = './assets',
     private readonly fetcher: typeof fetch = browserFetch,
     private readonly roots: AssetRoot[] = assetRoots(import.meta.env.VITE_ASSET_BASE_URL, base),
+    private readonly byteCache: LutByteCache = new BrowserLutByteCache(),
   ) {}
 
   load(): Promise<void> {
@@ -49,6 +62,7 @@ export class AssetCatalog {
     const leakManifest = await leakResponse.json() as LeakManifest
     this.luts = lutManifest.luts
     this.leaks = leakManifest.light_leaks
+    await this.byteCache.pruneOldVersions()
   }
 
   async loadLut(id: string): Promise<LutCube> {
@@ -58,10 +72,10 @@ export class AssetCatalog {
     const pending = this.lutInflight.get(id)
     if (pending) return pending
     const descriptor = this.requireLut(id)
-    const request = this.loadCube(
-      id, descriptor.asset, descriptor.cube_size, descriptor.byte_length, 'lut',
+    const request = this.loadCanonicalCube(
+      id, descriptor,
     ).then((lut) => {
-      cacheBounded(this.lutCache, id, lut, 8)
+      cacheBounded(this.lutCache, id, lut, 36)
       return lut
     }).finally(() => this.lutInflight.delete(id))
     this.lutInflight.set(id, request)
@@ -69,30 +83,30 @@ export class AssetCatalog {
   }
 
   async loadPreviewLut(id: string): Promise<LutCube> {
-    await this.load()
-    const cached = this.previewLutCache.get(id)
-    if (cached) return cached
-    const pending = this.previewLutInflight.get(id)
-    if (pending) return pending
-    const descriptor = this.requireLut(id)
-    const request = this.loadCube(
-      id,
-      descriptor.preview_asset,
-      descriptor.preview_cube_size,
-      descriptor.preview_byte_length,
-      'preview-lut',
-    ).then((lut) => {
-      cacheBounded(this.previewLutCache, id, lut, 36)
-      return lut
-    }).finally(() => this.previewLutInflight.delete(id))
-    this.previewLutInflight.set(id, request)
-    return request
+    return this.loadLut(id)
   }
 
   retryLut(id: string): Promise<LutCube> {
     this.lutCache.delete(id)
     this.lutInflight.delete(id)
     return this.loadLut(id)
+  }
+
+  async preloadLuts(onProgress: (progress: LutPreloadProgress) => void): Promise<void> {
+    await this.load()
+    const ids = this.luts.map((item) => item.id).filter((id) => !this.preloadSucceeded.has(id))
+    await this.preloadIds(ids, onProgress)
+  }
+
+  async retryFailedLuts(onProgress: (progress: LutPreloadProgress) => void): Promise<void> {
+    await this.load()
+    const ids = [...this.preloadFailed]
+    for (const id of ids) {
+      this.preloadFailed.delete(id)
+      this.lutCache.delete(id)
+      this.lutInflight.delete(id)
+    }
+    await this.preloadIds(ids, onProgress)
   }
 
   async loadLeak(id: string): Promise<HTMLImageElement> {
@@ -123,22 +137,61 @@ export class AssetCatalog {
     return descriptor
   }
 
-  private async loadCube(
-    id: string,
-    asset: string,
-    cubeSize: number,
-    byteLength: number,
-    assetKind: AssetKind,
-  ): Promise<LutCube> {
-    const bytes = await requestAsset(`luts/${asset}`, {
-      roots: this.roots,
-      assetKind,
-      effectId: id,
-      expectedByteLength: byteLength,
-      fetcher: this.fetcher,
-    })
-    const raw = await this.decompressLut(bytes, asset, id, assetKind)
-    return new LutCube(cubeSize, raw)
+  private async loadCanonicalCube(id: string, descriptor: LutDescriptor): Promise<LutCube> {
+    const asset = descriptor.preview_asset
+    const cubeSize = descriptor.preview_cube_size
+    const byteLength = descriptor.preview_byte_length
+    let bytes = await this.byteCache.get(id, cubeSize, byteLength)
+    if (!bytes) {
+      bytes = await requestAsset(`luts/${asset}`, {
+        roots: this.roots,
+        assetKind: 'lut',
+        effectId: id,
+        expectedByteLength: byteLength,
+        fetcher: this.fetcher,
+      })
+      await this.byteCache.put(id, cubeSize, byteLength, bytes)
+    }
+    try {
+      const raw = await this.decompressLut(bytes, asset, id, 'lut')
+      return new LutCube(cubeSize, raw)
+    } catch (reason) {
+      await this.byteCache.delete(id, cubeSize, byteLength)
+      throw reason
+    }
+  }
+
+  private async preloadIds(ids: string[], onProgress: (progress: LutPreloadProgress) => void): Promise<void> {
+    let active = ids.length
+    const emit = (currentId: string | null) => {
+      const total = this.luts.length
+      const succeeded = this.preloadSucceeded.size
+      const failed = this.preloadFailed.size
+      const completed = succeeded + failed
+      onProgress({
+        total,
+        completed,
+        succeeded,
+        failed,
+        active,
+        currentId,
+        percent: total === 0 ? 100 : Math.round(completed / total * 100),
+        done: active === 0 && completed === total,
+      })
+    }
+    emit(null)
+    await Promise.all(ids.map(async (id) => {
+      try {
+        await this.loadLut(id)
+        this.preloadSucceeded.add(id)
+        this.preloadFailed.delete(id)
+      } catch {
+        this.preloadFailed.add(id)
+      } finally {
+        active -= 1
+        emit(id)
+      }
+    }))
   }
 
   private async decompressLut(bytes: Uint8Array, asset: string, id: string, assetKind: AssetKind): Promise<Uint8Array> {

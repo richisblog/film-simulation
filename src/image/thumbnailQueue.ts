@@ -60,4 +60,5 @@ export class TaskQueue {
   }
 }
 
-export const thumbnailQueue = new TaskQueue(2)
+export const THUMBNAIL_CONCURRENCY = 36
+export const thumbnailQueue = new TaskQueue(THUMBNAIL_CONCURRENCY)
