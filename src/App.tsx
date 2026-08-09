@@ -60,6 +60,7 @@ function AppContent() {
           siteUrl,
           location: window.location,
           window,
+          language,
           lutId,
           lutName: lutId ? lutDisplayName(lutId, language) : null,
         })
@@ -68,7 +69,7 @@ function AppContent() {
       setStatus(copy.generated(anchor.download))
       setShowExport(false)
     } catch (reason) {
-      editor.setError(reason instanceof Error ? reason.message : copy.exportFailed)
+      editor.setError(reason instanceof Error ? reason : copy.exportFailed)
       setStatus(copy.exportFailed)
     } finally {
       renderer.dispose()

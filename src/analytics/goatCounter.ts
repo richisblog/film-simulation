@@ -25,6 +25,7 @@ export interface FilterExportTrackingOptions {
   siteUrl: string
   location: Pick<Location, 'hostname' | 'protocol'>
   window: Window
+  language: Language
   lutId: string | null
   lutName: string | null
   retryIntervalMs?: number
@@ -55,13 +56,15 @@ export function trackFilterExport(options: FilterExportTrackingOptions): boolean
   const event: GoatCounterEvent = options.lutId
     ? {
         path: `export-filter-${options.lutId}`,
-        title: `导出滤镜：${options.lutName ?? options.lutId}`,
+        title: options.language === 'en'
+          ? `Export filter: ${options.lutName ?? options.lutId}`
+          : `导出滤镜：${options.lutName ?? options.lutId}`,
         event: true,
         no_session: true,
       }
     : {
         path: 'export-filter-NONE',
-        title: '导出滤镜：未使用滤镜',
+        title: options.language === 'en' ? 'Export filter: No filter' : '导出滤镜：未使用滤镜',
         event: true,
         no_session: true,
       }
@@ -100,3 +103,4 @@ function isProductionPage(location: Pick<Location, 'hostname' | 'protocol'>): bo
   const hostname = location.hostname.toLowerCase()
   return !['localhost', '127.0.0.1', '0.0.0.0', '::1'].includes(hostname)
 }
+import type { Language } from '../i18n'

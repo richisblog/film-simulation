@@ -49,6 +49,7 @@ describe('trackFilterExport', () => {
       siteUrl,
       location: productionLocation,
       window,
+      language: 'zh-CN',
       lutId: 'INSTWARM',
       lutName: '暖调拍立得',
     })).toBe(true)
@@ -65,11 +66,53 @@ describe('trackFilterExport', () => {
     const count = vi.fn()
     window.goatcounter = { count }
 
-    trackFilterExport({ siteUrl, location: productionLocation, window, lutId: null, lutName: null })
+    trackFilterExport({ siteUrl, location: productionLocation, window, language: 'zh-CN', lutId: null, lutName: null })
 
     expect(count).toHaveBeenCalledWith({
       path: 'export-filter-NONE',
       title: '导出滤镜：未使用滤镜',
+      event: true,
+      no_session: true,
+    })
+  })
+
+  it('localizes English event titles without changing the stable filter path', () => {
+    const count = vi.fn()
+    window.goatcounter = { count }
+
+    trackFilterExport({
+      siteUrl,
+      location: productionLocation,
+      window,
+      language: 'en',
+      lutId: 'INSTWARM',
+      lutName: 'Warm Instant',
+    })
+
+    expect(count).toHaveBeenCalledWith({
+      path: 'export-filter-INSTWARM',
+      title: 'Export filter: Warm Instant',
+      event: true,
+      no_session: true,
+    })
+  })
+
+  it('localizes the English no-filter denominator', () => {
+    const count = vi.fn()
+    window.goatcounter = { count }
+
+    trackFilterExport({
+      siteUrl,
+      location: productionLocation,
+      window,
+      language: 'en',
+      lutId: null,
+      lutName: null,
+    })
+
+    expect(count).toHaveBeenCalledWith({
+      path: 'export-filter-NONE',
+      title: 'Export filter: No filter',
       event: true,
       no_session: true,
     })
@@ -83,6 +126,7 @@ describe('trackFilterExport', () => {
       siteUrl,
       location: productionLocation,
       window,
+      language: 'zh-CN',
       lutId: 'INSTWARM',
       lutName: '暖调拍立得',
       retryIntervalMs: 100,
@@ -103,6 +147,7 @@ describe('trackFilterExport', () => {
         siteUrl,
         location: productionLocation,
         window,
+        language: 'zh-CN',
         lutId: 'INSTWARM',
         lutName: '暖调拍立得',
         retryIntervalMs: 100,
@@ -120,6 +165,7 @@ describe('trackFilterExport', () => {
       siteUrl,
       location: { hostname: 'localhost', protocol: 'https:' },
       window,
+      language: 'zh-CN',
       lutId: 'INSTWARM',
       lutName: '暖调拍立得',
     })).toBe(false)
@@ -127,6 +173,7 @@ describe('trackFilterExport', () => {
       siteUrl: 'http://analytics.invalid',
       location: productionLocation,
       window,
+      language: 'zh-CN',
       lutId: 'INSTWARM',
       lutName: '暖调拍立得',
     })).toBe(false)
