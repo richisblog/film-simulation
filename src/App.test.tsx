@@ -24,3 +24,20 @@ it('keeps the empty state and explains an unsupported file', async () => {
   expect(await screen.findByRole('alert')).toHaveTextContent('请选择 JPEG、PNG、WebP')
   expect(screen.getByRole('button', { name: '选择照片' })).toBeInTheDocument()
 })
+
+it('defaults to Chinese and can switch to persistent English UI', () => {
+  const values = new Map<string, string>()
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: {
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => values.set(key, value),
+    removeItem: (key: string) => values.delete(key),
+  } })
+  window.localStorage.removeItem('film-simulation-language')
+  render(<App />)
+  expect(document.documentElement).toHaveAttribute('lang', 'zh-CN')
+  fireEvent.click(screen.getByRole('button', { name: 'Switch to English' }))
+  expect(screen.getByText('Film Simulation')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Choose Photo' })).toBeInTheDocument()
+  expect(document.documentElement).toHaveAttribute('lang', 'en')
+  expect(window.localStorage.getItem('film-simulation-language')).toBe('en')
+})

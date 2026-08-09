@@ -37,6 +37,18 @@ export const LUT_DISPLAY_NAMES = {
   VS200: '爱克发 Vista 200',
 } as const satisfies Record<string, string>
 
-export function lutDisplayName(id: string): string {
-  return LUT_DISPLAY_NAMES[id as keyof typeof LUT_DISPLAY_NAMES] ?? '未命名胶片'
+export const LUT_DISPLAY_NAMES_EN = {
+  BLUESKETCH: 'Blue Sketch', BW: 'Ilford HP5', BWHC: 'Rollei Retro 80S', BWIR: 'Infrared B&W', BWLC: 'Soft B&W',
+  C41: 'Kodak C-41 Tone', CYBERWARM: 'Cyber Warm', EMBER: 'Ember Warm', FADE: 'Vintage Fade', FJ200: 'Fujifilm C200',
+  FJDISP: 'Fujifilm Disposable', FJEXP: 'Expired Fujifilm C200', FJVIVID: 'Fujifilm Vivid', GL200: 'Kodak Gold 200',
+  GLDISP: 'Kodak Gold Disposable', GLEXP: '80s Kodak Gold 200', GLLC: 'Kodak Gold 200 Soft', GLVIVID: 'Kodak Gold 200 Vivid',
+  GRNSKETCH: 'Green Sketch', HBLUE: 'Deep Ocean Blue', INSTCOOL: 'Cool Instant', INSTWARM: 'Warm Instant', IRCOLOR: 'Color Infrared',
+  LCLOOK: 'Leica Documentary', NEWSPAPER: 'Old Newspaper', OLDWEST: 'Old West', PINK: 'Pink Macaron', PT400: 'Kodak Portra 400',
+  PT400LC: 'Kodak Portra 400 Soft', PURPLE: 'Purple Lomo', REDSCALE: 'Redscale Lomo', REDSKETCH: 'Red Sketch', RETROCINE: 'Retro Cinema',
+  SABATTIER: 'Sabattier', THEHOTEL: 'The Grand Budapest', VS200: 'Agfa Vista 200',
+} as const satisfies Record<keyof typeof LUT_DISPLAY_NAMES, string>
+
+export function lutDisplayName(id: string, language: 'zh-CN' | 'en' = 'zh-CN'): string {
+  const names = language === 'en' ? LUT_DISPLAY_NAMES_EN : LUT_DISPLAY_NAMES
+  return names[id as keyof typeof names] ?? (language === 'en' ? 'Untitled Film' : '未命名胶片')
 }

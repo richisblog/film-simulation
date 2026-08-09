@@ -5,8 +5,10 @@ import { decodeImageFile, type DecodedImage } from '../image/decode'
 import { isAcceptedImageFile } from '../image/formats'
 import { LutCube } from '../image/lut'
 import { DEFAULT_SETTINGS, type EditSettings } from '../image/types'
+import { useLanguage } from '../i18n'
 
 export function useEditor(catalogOverride?: AssetCatalog) {
+  const { copy } = useLanguage()
   const catalog = useMemo(() => catalogOverride ?? new AssetCatalog('./assets'), [catalogOverride])
   const [file, setFile] = useState<File | null>(null)
   const [image, setImage] = useState<DecodedImage | null>(null)
@@ -55,7 +57,7 @@ export function useEditor(catalogOverride?: AssetCatalog) {
 
   const openFile = useCallback(async (nextFile: File) => {
     if (!isAcceptedImageFile(nextFile)) {
-      setError('请选择 JPEG、PNG、WebP，或当前浏览器能够读取的 HEIC 照片。')
+      setError(copy.unsupportedFile)
       return
     }
     const request = ++fileGeneration.current
@@ -71,11 +73,11 @@ export function useEditor(catalogOverride?: AssetCatalog) {
       setLeaks(catalog.leaks)
       setSettings({ ...DEFAULT_SETTINGS, seed: hashName(nextFile.name, nextFile.size) })
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : '无法读取照片')
+      setError(reason instanceof Error ? reason.message : copy.readFailed)
     } finally {
       if (request === fileGeneration.current) setBusy(false)
     }
-  }, [catalog])
+  }, [catalog, copy.readFailed, copy.unsupportedFile])
 
   useEffect(() => {
     const request = ++lutGeneration.current
@@ -87,9 +89,9 @@ export function useEditor(catalogOverride?: AssetCatalog) {
     operation.then((value) => {
       if (request === lutGeneration.current) setLut(value)
     }).catch((reason) => {
-      if (request === lutGeneration.current) reportLoadError(reason, 'LUT 载入失败')
+      if (request === lutGeneration.current) reportLoadError(reason, copy.lutLoadFailed)
     })
-  }, [catalog, loadLut, lutRetryGeneration, reportLoadError, settings.lutId])
+  }, [catalog, copy.lutLoadFailed, loadLut, lutRetryGeneration, reportLoadError, settings.lutId])
 
   useEffect(() => {
     const request = ++leakGeneration.current
@@ -98,9 +100,9 @@ export function useEditor(catalogOverride?: AssetCatalog) {
     catalog.loadLeak(settings.leakId).then((value) => {
       if (request === leakGeneration.current) setLeak(value)
     }).catch((reason) => {
-      if (request === leakGeneration.current) reportLoadError(reason, '漏光载入失败')
+      if (request === leakGeneration.current) reportLoadError(reason, copy.leakLoadFailed)
     })
-  }, [catalog, reportLoadError, settings.leakId])
+  }, [catalog, copy.leakLoadFailed, reportLoadError, settings.leakId])
 
   useEffect(() => () => image?.close(), [image])
 

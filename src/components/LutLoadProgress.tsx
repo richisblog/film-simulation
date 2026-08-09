@@ -1,5 +1,6 @@
 import type { LutPreloadProgress } from '../image/catalog'
 import { lutDisplayName } from '../image/lutNames'
+import { useLanguage } from '../i18n'
 
 interface Props {
   progress: LutPreloadProgress
@@ -7,30 +8,31 @@ interface Props {
 }
 
 export function LutLoadProgress({ progress, onRetry }: Props) {
+  const { language, copy } = useLanguage()
   const total = progress.total || 36
   const title = progress.total === 0
-    ? '正在读取胶片色彩清单'
+    ? copy.loadingManifest
     : progress.done && progress.failed === 0
-      ? `胶片色彩已就绪（${progress.succeeded} / ${progress.total}）`
+      ? copy.colorsReady(progress.succeeded, progress.total)
       : progress.active > 0
-        ? '正在准备胶片色彩'
-        : '部分胶片色彩待重试'
+        ? copy.preparingColors
+        : copy.colorsNeedRetry
 
-  return <section className={`lut-load-progress ${progress.failed > 0 ? 'has-failure' : ''}`} role="status" aria-label="胶片色彩加载状态" aria-live="polite">
+  return <section className={`lut-load-progress ${progress.failed > 0 ? 'has-failure' : ''}`} role="status" aria-label={copy.colorLoadStatus} aria-live="polite">
     <div className="lut-progress-copy">
       <strong>{title}</strong>
       <span>{progress.total > 0
-        ? `已完成 ${progress.completed} / ${progress.total} · ${progress.percent}%`
-        : '正在确认本地缓存…'}</span>
+        ? copy.completed(progress.completed, progress.total, progress.percent)
+        : copy.checkingCache}</span>
     </div>
-    <progress aria-label="胶片色彩加载进度" value={progress.completed} max={total} />
+    <progress aria-label={copy.colorLoadProgress} value={progress.completed} max={total} />
     <div className="lut-progress-detail">
       {progress.currentId
-        ? <span>刚完成第 {progress.completed} 个：{lutDisplayName(progress.currentId)}</span>
-        : <span>{progress.active > 0 ? `正在处理 ${progress.active} 项` : '等待加载'}</span>}
-      {progress.total > 0 && <small>{progress.succeeded} 个可用{progress.failed > 0 ? ` · ${progress.failed} 个待重试` : ''}</small>}
+        ? <span>{copy.justCompleted(progress.completed, lutDisplayName(progress.currentId, language))}</span>
+        : <span>{progress.active > 0 ? copy.processingItems(progress.active) : copy.waiting}</span>}
+      {progress.total > 0 && <small>{copy.availableItems(progress.succeeded, progress.failed)}</small>}
     </div>
     {progress.failed > 0 && progress.active === 0
-      && <button type="button" onClick={onRetry} aria-label="重试未完成色彩">重试未完成</button>}
+      && <button type="button" onClick={onRetry} aria-label={copy.retryColors}>{copy.retryColors}</button>}
   </section>
 }
