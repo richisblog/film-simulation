@@ -74,7 +74,7 @@ export default function App() {
         <div className="workspace"><div className="file-meta"><span>{editor.file?.name}</span><span>{editor.image.width} × {editor.image.height}</span></div>
           <Preview image={editor.image} settings={editor.settings} lut={editor.lut} leak={editor.leak} /></div>
         <Controls settings={editor.settings} luts={editor.luts} leaks={editor.leaks}
-          thumbnailSource={thumbnailSource!} loadLut={editor.loadLut}
+          thumbnailSource={thumbnailSource!} loadPreviewLut={editor.loadPreviewLut}
           onChange={editor.setSettings} onReset={editor.reset} />
       </div>}
       {editor.error && <div role="alert" className="error-toast"><strong>出现问题</strong><span>{editor.error}</span>

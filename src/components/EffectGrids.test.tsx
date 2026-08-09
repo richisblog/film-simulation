@@ -34,7 +34,7 @@ it('胶片和漏光分别组成三列纵向网格', () => {
     luts={luts}
     leaks={leaks}
     thumbnailSource={thumbnailSource}
-    loadLut={vi.fn()}
+    loadPreviewLut={vi.fn()}
     onChange={vi.fn()}
     onReset={vi.fn()}
   />)
@@ -53,7 +53,7 @@ it('标题旁的原图按钮取消当前 LUT', () => {
     luts={luts}
     leaks={leaks}
     thumbnailSource={thumbnailSource}
-    loadLut={vi.fn()}
+    loadPreviewLut={vi.fn()}
     onChange={onChange}
     onReset={vi.fn()}
   />)

@@ -20,6 +20,7 @@ export function useEditor() {
   const lutGeneration = useRef(0)
   const leakGeneration = useRef(0)
   const loadLut = useCallback((id: string) => catalog.loadLut(id), [catalog])
+  const loadPreviewLut = useCallback((id: string) => catalog.loadPreviewLut(id), [catalog])
 
   const openFile = useCallback(async (nextFile: File) => {
     if (!isAcceptedImageFile(nextFile)) {
@@ -70,7 +71,7 @@ export function useEditor() {
   useEffect(() => () => image?.close(), [image])
 
   return {
-    file, image, settings, setSettings, luts, leaks, lut, leak, loadLut, busy, error, setError, openFile,
+    file, image, settings, setSettings, luts, leaks, lut, leak, loadLut, loadPreviewLut, busy, error, setError, openFile,
     reset: () => setSettings((current) => ({ ...DEFAULT_SETTINGS, seed: current.seed })),
   }
 }

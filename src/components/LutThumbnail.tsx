@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import type { LutCube } from '../image/lut'
 import { transformPixels } from '../image/pixelEffects'
-import { thumbnailQueue } from '../image/thumbnailQueue'
+import { TaskCancelledError, TaskQueue, thumbnailQueue } from '../image/thumbnailQueue'
 import { DEFAULT_SETTINGS } from '../image/types'
 
 interface Props {
   source: ImageData
   lutId: string
-  loadLut(id: string): Promise<LutCube>
+  loadPreviewLut(id: string): Promise<LutCube>
+  queue?: TaskQueue
 }
 
 function copyPixels(source: ImageData): ImageData {
@@ -16,9 +17,10 @@ function copyPixels(source: ImageData): ImageData {
   return { data, width: source.width, height: source.height, colorSpace: 'srgb' } as ImageData
 }
 
-export function LutThumbnail({ source, lutId, loadLut }: Props) {
+export function LutThumbnail({ source, lutId, loadPreviewLut, queue = thumbnailQueue }: Props) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const [visible, setVisible] = useState(false)
+  const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     const element = canvas.current
@@ -40,10 +42,11 @@ export function LutThumbnail({ source, lutId, loadLut }: Props) {
     const element = canvas.current
     if (!element || !visible) return
     let cancelled = false
+    setFailed(false)
     element.width = source.width
     element.height = source.height
-    thumbnailQueue.add(async () => {
-      const lut = await loadLut(lutId)
+    const handle = queue.add(async () => {
+      const lut = await loadPreviewLut(lutId)
       return transformPixels(copyPixels(source), {
         ...DEFAULT_SETTINGS,
         lutId,
@@ -53,13 +56,20 @@ export function LutThumbnail({ source, lutId, loadLut }: Props) {
         leakId: null,
         leakStrength: 0,
       }, lut, null)
-    }).then((pixels) => {
+    })
+    handle.promise.then((pixels) => {
       if (cancelled) return
       const context = element.getContext('2d')
       context?.putImageData(pixels, 0, 0)
-    }).catch(() => undefined)
-    return () => { cancelled = true }
-  }, [loadLut, lutId, source, visible])
+    }).catch((reason) => {
+      if (!cancelled && !(reason instanceof TaskCancelledError)) setFailed(true)
+    })
+    return () => {
+      cancelled = true
+      handle.cancel()
+    }
+  }, [loadPreviewLut, lutId, queue, source, visible])
 
-  return <canvas ref={canvas} width={source.width} height={source.height} aria-hidden="true" />
+  return <><canvas ref={canvas} width={source.width} height={source.height} aria-hidden="true" />
+    {failed && <span className="film-thumbnail-error">预览不可用</span>}</>
 }

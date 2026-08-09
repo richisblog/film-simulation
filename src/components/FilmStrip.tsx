@@ -7,17 +7,17 @@ interface Props {
   items: LutDescriptor[]
   selected: string | null
   source: ImageData
-  loadLut(id: string): Promise<LutCube>
+  loadPreviewLut(id: string): Promise<LutCube>
   onChange(id: string): void
 }
 
-export function FilmStrip({ items, selected, source, loadLut, onChange }: Props) {
+export function FilmStrip({ items, selected, source, loadPreviewLut, onChange }: Props) {
   return (
     <div className="film-grid" role="radiogroup" aria-label="胶片滤镜">
       {items.map((item, index) => (
         <button className={`film-card ${selected === item.id ? 'selected' : ''}`} type="button" role="radio"
           aria-checked={selected === item.id} key={item.id} onClick={() => onChange(item.id)}>
-          <LutThumbnail source={source} lutId={item.id} loadLut={loadLut} />
+          <LutThumbnail source={source} lutId={item.id} loadPreviewLut={loadPreviewLut} />
           <span className="film-card-copy"><small>{String(index + 1).padStart(2, '0')} · 36</small>
             <strong>{lutDisplayName(item.id)}</strong></span>
         </button>

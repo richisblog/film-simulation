@@ -5,7 +5,7 @@ import { FilmStrip } from './FilmStrip'
 
 interface Props {
   settings: EditSettings; luts: LutDescriptor[]; leaks: LeakDescriptor[]
-  thumbnailSource: ImageData; loadLut(id: string): Promise<LutCube>
+  thumbnailSource: ImageData; loadPreviewLut(id: string): Promise<LutCube>
   onChange(settings: EditSettings): void; onReset(): void
 }
 
@@ -15,7 +15,7 @@ function Range({ label, value, onChange }: { label: string; value: number; onCha
   </label>
 }
 
-export function Controls({ settings, luts, leaks, thumbnailSource, loadLut, onChange, onReset }: Props) {
+export function Controls({ settings, luts, leaks, thumbnailSource, loadPreviewLut, onChange, onReset }: Props) {
   const patch = (next: Partial<EditSettings>) => onChange({ ...settings, ...next })
   return (
     <aside className="controls-panel">
@@ -23,7 +23,7 @@ export function Controls({ settings, luts, leaks, thumbnailSource, loadLut, onCh
         <div className="panel-actions"><button type="button" className="text-button" aria-label="选择原图"
           aria-pressed={!settings.lutId} onClick={() => patch({ lutId: null })}>原图</button>
           <button type="button" className="text-button" onClick={onReset}>重置</button></div></div>
-      <FilmStrip items={luts} selected={settings.lutId} source={thumbnailSource} loadLut={loadLut}
+      <FilmStrip items={luts} selected={settings.lutId} source={thumbnailSource} loadPreviewLut={loadPreviewLut}
         onChange={(lutId) => patch({ lutId })} />
       <Range label="滤镜强度" value={settings.lutStrength} onChange={(lutStrength) => patch({ lutStrength })} />
       <div className="panel-heading sub"><div><span className="section-index">02</span><h2>胶片质感</h2></div></div>
