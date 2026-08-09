@@ -9,6 +9,9 @@ const luts: LutDescriptor[] = Array.from({ length: 36 }, (_, index) => ({
   asset: `lut-${index}.rgb`,
   cube_size: 64,
   byte_length: 786432,
+  preview_asset: `previews/lut-${index}.rgb`,
+  preview_cube_size: 16,
+  preview_byte_length: 12288,
 }))
 
 const leaks: LeakDescriptor[] = Array.from({ length: 20 }, (_, index) => ({
