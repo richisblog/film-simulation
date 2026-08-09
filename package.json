@@ -5,10 +5,12 @@
   "license": "CC-BY-NC-4.0",
   "type": "module",
   "scripts": {
+    "assets:previews": "node scripts/generate-preview-luts.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:assets": "node --test scripts/preview-luts.test.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
