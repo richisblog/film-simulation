@@ -62,6 +62,28 @@ it('标题旁的原图按钮取消当前 LUT', () => {
   expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ lutId: null }))
 })
 
+it('曝光拉杆使用 EV 范围并在选择原图时保留曝光', () => {
+  vi.stubGlobal('IntersectionObserver', class { observe() {}; disconnect() {} })
+  const onChange = vi.fn()
+  render(<Controls
+    settings={{ ...DEFAULT_SETTINGS, lutId: 'PT400', exposure: 0 }}
+    luts={luts} leaks={leaks} thumbnailSource={thumbnailSource}
+    loadPreviewLut={vi.fn()} onChange={onChange} onReset={vi.fn()}
+  />)
+
+  const exposure = screen.getByRole('slider', { name: '曝光' })
+  expect(exposure).toHaveAttribute('min', '-2')
+  expect(exposure).toHaveAttribute('max', '2')
+  expect(exposure).toHaveAttribute('step', '0.1')
+  expect(screen.getByText('0 EV')).toBeInTheDocument()
+
+  fireEvent.change(exposure, { target: { value: '1.2' } })
+  expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ exposure: 1.2 }))
+  onChange.mockClear()
+  fireEvent.click(screen.getByRole('button', { name: '选择原图' }))
+  expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ lutId: null, exposure: 0 }))
+})
+
 it('按 Dazz 相机分类，并为多配方相机打开二级菜单', () => {
   vi.stubGlobal('IntersectionObserver', class { observe() {}; disconnect() {} })
   const onChange = vi.fn()

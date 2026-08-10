@@ -7,6 +7,20 @@ import { useEditor } from './useEditor'
 
 afterEach(() => vi.restoreAllMocks())
 
+it('reset restores neutral exposure', () => {
+  const catalog = {
+    luts: [], leaks: [], load: vi.fn(async () => undefined),
+    preloadLuts: vi.fn(async () => undefined), retryFailedLuts: vi.fn(async () => undefined),
+    loadLut: vi.fn(), retryLut: vi.fn(), loadPreviewLut: vi.fn(), loadLeak: vi.fn(),
+  } as unknown as AssetCatalog
+  const { result } = renderHook(() => useEditor(catalog))
+
+  act(() => result.current.setSettings({ ...result.current.settings, exposure: 1.7 }))
+  act(() => result.current.reset())
+
+  expect(result.current.settings.exposure).toBe(0)
+})
+
 it('retries the currently selected LUT without changing editor settings', async () => {
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   const failure = new AssetLoadError('timeout', 'lut', 'INSTWARM', '本站', 2, undefined, 40_000)

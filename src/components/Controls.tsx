@@ -12,11 +12,16 @@ interface Props {
   onChange(settings: EditSettings): void; onReset(): void
 }
 
-function Range({ label, value, onChange }: { label: string; value: number; onChange(value: number): void }) {
-  return <label className="range-control"><span><strong>{label}</strong><output>{value}</output></span>
-    <input type="range" min="0" max="100" value={value} aria-label={label} onChange={(event) => onChange(Number(event.target.value))} />
+function Range({ label, value, onChange, min = 0, max = 100, step = 1, formatValue = String }: {
+  label: string; value: number; min?: number; max?: number; step?: number
+  formatValue?(value: number): string; onChange(value: number): void
+}) {
+  return <label className="range-control"><span><strong>{label}</strong><output>{formatValue(value)}</output></span>
+    <input type="range" min={min} max={max} step={step} value={value} aria-label={label} onChange={(event) => onChange(Number(event.target.value))} />
   </label>
 }
+
+const formatExposure = (value: number) => value === 0 ? '0 EV' : `${value > 0 ? '+' : ''}${value.toFixed(1)} EV`
 
 export function Controls({ settings, luts, leaks, cameras = [], lutGroups, leakGroups, thumbnailSource, loadPreviewLut, onChange, onReset }: Props) {
   const { language, copy } = useLanguage()
@@ -32,6 +37,8 @@ export function Controls({ settings, luts, leaks, cameras = [], lutGroups, leakG
         <div className="panel-actions"><button type="button" className="text-button" aria-label={copy.selectOriginal}
           aria-pressed={!settings.lutId} onClick={() => patch({ lutId: null })}>{copy.original}</button>
           <button type="button" className="text-button" onClick={onReset}>{copy.reset}</button></div></div>
+      <Range label={copy.exposure} value={settings.exposure} min={-2} max={2} step={0.1} formatValue={formatExposure}
+        onChange={(exposure) => patch({ exposure })} />
       <p className="effect-library-label">{copy.classicFilmCount}</p>
       <FilmStrip items={classicLuts} selected={settings.lutId} source={thumbnailSource} loadPreviewLut={loadPreviewLut}
         onChange={(lutId) => patch({ lutId })} />
