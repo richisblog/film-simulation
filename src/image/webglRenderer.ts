@@ -119,6 +119,7 @@ export class WebGlRenderer {
     uniform1i('u_lut', 1)
     uniform1i('u_leak', 2)
     uniform1i('u_source_flip_y', isImageBitmap ? 1 : 0)
+    uniform1f('u_exposure_multiplier', 2 ** settings.exposure)
     uniform1f('u_lut_strength', lut ? settings.lutStrength / 100 : 0)
     uniform1f('u_grain', settings.grain / 100)
     uniform1f('u_vignette', settings.vignette / 100)

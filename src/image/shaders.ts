@@ -15,6 +15,7 @@ out vec4 out_color;
 uniform sampler2D u_source;
 uniform sampler3D u_lut;
 uniform sampler2D u_leak;
+uniform float u_exposure_multiplier;
 uniform float u_lut_strength;
 uniform float u_grain;
 uniform float u_vignette;
@@ -45,7 +46,7 @@ vec2 leakUv(vec2 uv) {
 void main() {
   vec2 sourceUv = u_source_flip_y ? vec2(v_uv.x, 1.0 - v_uv.y) : v_uv;
   vec4 source = texture(u_source, sourceUv);
-  vec3 color = source.rgb;
+  vec3 color = source.rgb * u_exposure_multiplier;
   if (u_leak_strength > 0.0) {
     vec3 leak = texture(u_leak, leakUv(v_uv)).rgb;
     color = mix(color, 1.0 - (1.0 - color) * (1.0 - leak), u_leak_strength);
