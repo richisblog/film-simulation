@@ -3,6 +3,35 @@
   "cube_format": "rgb8-deflate-red-fastest",
   "cameras": [
     {
+      "id": "KV80",
+      "name_zh": "KV80",
+      "name_en": "KV80",
+      "default_recipe_id": "DAZZ_KV80_KG200",
+      "recipe_ids": [
+        "DAZZ_KV80_KG200"
+      ]
+    },
+    {
+      "id": "GRF",
+      "name_zh": "GRF",
+      "name_en": "GRF",
+      "default_recipe_id": "DAZZ_GRF_400TX",
+      "recipe_ids": [
+        "DAZZ_GRF_400TX",
+        "DAZZ_GRF_NEOP100",
+        "DAZZ_GRF_VELVIA"
+      ]
+    },
+    {
+      "id": "FQS",
+      "name_zh": "FQS",
+      "name_en": "FQS",
+      "default_recipe_id": "DAZZ_FQS_DEFAULT",
+      "recipe_ids": [
+        "DAZZ_FQS_DEFAULT"
+      ]
+    },
+    {
       "id": "CT2F",
       "name_zh": "CT2F",
       "name_en": "CT2F",
@@ -114,15 +143,6 @@
       "default_recipe_id": "DAZZ_KINO_DEFAULT",
       "recipe_ids": [
         "DAZZ_KINO_DEFAULT"
-      ]
-    },
-    {
-      "id": "KV80",
-      "name_zh": "KV80",
-      "name_en": "KV80",
-      "default_recipe_id": "DAZZ_KV80_KG200",
-      "recipe_ids": [
-        "DAZZ_KV80_KG200"
       ]
     },
     {
@@ -413,6 +433,25 @@
       "preview_sha256": "150092d3ce11e5b6881225acaaf96eb5e8eefd8116c5953d6a1bbc958a16d622"
     },
     {
+      "id": "DAZZ_FQS_DEFAULT",
+      "name_zh": "成片",
+      "name_en": "Final",
+      "stages": [
+        "lookup_ou_light",
+        "lookup_ou_color"
+      ],
+      "pipeline_id": "DAZZ_PIPELINE_FQS",
+      "camera_id": "FQS",
+      "asset": "full/DAZZ_FQS_DEFAULT.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 294610,
+      "sha256": "10c4cf17cd839e78f80df5cccf0c2182285ca67356d3d7ffffbdf6dc6de88bc1",
+      "preview_asset": "preview/DAZZ_FQS_DEFAULT.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 1152,
+      "preview_sha256": "4dbbeb2d67ed54e0262a2d9e626a35214572f24cecd2cd239b78614021ed9c48"
+    },
+    {
       "id": "DAZZ_FXN_ORIGINAL",
       "name_zh": "Original",
       "name_en": "Original",
@@ -462,6 +501,60 @@
       "preview_cube_size": 8,
       "preview_byte_length": 1186,
       "preview_sha256": "513fd8919ea0ba242e73a8e74ea899f71deb0361927bc59b3661d42253a26b48"
+    },
+    {
+      "id": "DAZZ_GRF_400TX",
+      "name_zh": "400TX",
+      "name_en": "400TX",
+      "stages": [
+        "lookup_dblack_1"
+      ],
+      "pipeline_id": "DAZZ_PIPELINE_GRF_400TX",
+      "camera_id": "GRF",
+      "asset": "full/DAZZ_GRF_400TX.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 142299,
+      "sha256": "d4e0cf57801f484324fba719a81bcc4e051f93a28b2c8f5dff6952c050dee9d5",
+      "preview_asset": "preview/DAZZ_GRF_400TX.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 949,
+      "preview_sha256": "2898e09c6a0cb54beb8da0e655c5eb7eca27f2d1660c59fd0b4a149a0fa6c514"
+    },
+    {
+      "id": "DAZZ_GRF_NEOP100",
+      "name_zh": "NEOP100",
+      "name_en": "NEOP100",
+      "stages": [
+        "lookup_dblack_2"
+      ],
+      "pipeline_id": "DAZZ_PIPELINE_GRF_NEOP100",
+      "camera_id": "GRF",
+      "asset": "full/DAZZ_GRF_NEOP100.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 133438,
+      "sha256": "423395f6406747e7633f435b9f4e5f07f42003616fd05f9060b5c9267466f549",
+      "preview_asset": "preview/DAZZ_GRF_NEOP100.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 961,
+      "preview_sha256": "7149c82c56b8dad3eb41e8578f32c094e2bd3cfb6de24e55a32db6ed9e8a2fcb"
+    },
+    {
+      "id": "DAZZ_GRF_VELVIA",
+      "name_zh": "VELVIA",
+      "name_en": "VELVIA",
+      "stages": [
+        "lookup_velvia_x5"
+      ],
+      "pipeline_id": "DAZZ_PIPELINE_GRF_VELVIA",
+      "camera_id": "GRF",
+      "asset": "full/DAZZ_GRF_VELVIA.rgb.deflate",
+      "cube_size": 64,
+      "byte_length": 590277,
+      "sha256": "8bbd774e1cbaf43b7cad49271020646126022deda4dc555aac334bc3b124fd9c",
+      "preview_asset": "preview/DAZZ_GRF_VELVIA.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 1492,
+      "preview_sha256": "41b10d22aa2609e18efc557b385c9c7258b56f51fd26e53a6c97f24ef8fe9a8a"
     },
     {
       "id": "DAZZ_GRDR_DEFAULT",
@@ -589,6 +682,7 @@
       "stages": [
         "lookup_kv80_kg200"
       ],
+      "pipeline_id": "DAZZ_PIPELINE_KV80",
       "camera_id": "KV80",
       "asset": "full/DAZZ_KV80_KG200.rgb.deflate",
       "cube_size": 64,
@@ -958,6 +1052,143 @@
       "preview_cube_size": 8,
       "preview_byte_length": 1417,
       "preview_sha256": "ff14aed78b3437b443d4303e10641024f4d9e00eadfbec396d1e08ba7504a6e8"
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "DAZZ_PIPELINE_KV80",
+      "stages": [
+        {
+          "type": "lut",
+          "lut_id": "DAZZ_STAGE_LOOKUP_KV80_KG200",
+          "source": "lookup_kv80_kg200",
+          "input_encoding": "linear-srgb"
+        },
+        {
+          "type": "grain",
+          "texture_id": "GRAIN_OFM",
+          "amount": 1,
+          "kernel": "dazz-grain"
+        }
+      ]
+    },
+    {
+      "id": "DAZZ_PIPELINE_GRF_400TX",
+      "stages": [
+        {
+          "type": "lut",
+          "lut_id": "DAZZ_STAGE_LOOKUP_DBLACK_1",
+          "source": "lookup_dblack_1",
+          "input_encoding": "linear-srgb"
+        }
+      ]
+    },
+    {
+      "id": "DAZZ_PIPELINE_GRF_NEOP100",
+      "stages": [
+        {
+          "type": "lut",
+          "lut_id": "DAZZ_STAGE_LOOKUP_DBLACK_2",
+          "source": "lookup_dblack_2",
+          "input_encoding": "linear-srgb"
+        }
+      ]
+    },
+    {
+      "id": "DAZZ_PIPELINE_GRF_VELVIA",
+      "stages": [
+        {
+          "type": "lut",
+          "lut_id": "DAZZ_STAGE_LOOKUP_VELVIA_X5",
+          "source": "lookup_velvia_x5",
+          "input_encoding": "linear-srgb"
+        }
+      ]
+    },
+    {
+      "id": "DAZZ_PIPELINE_FQS",
+      "stages": [
+        {
+          "type": "optical-blur",
+          "blur_scale": 6,
+          "start": 0,
+          "samples": 5
+        },
+        {
+          "type": "grain",
+          "texture_id": "GRAIN_OU",
+          "amount": 1,
+          "kernel": "dazz-grain"
+        },
+        {
+          "type": "lut",
+          "lut_id": "DAZZ_STAGE_LOOKUP_OU_LIGHT",
+          "source": "lookup_ou_light",
+          "input_encoding": "linear-srgb"
+        },
+        {
+          "type": "lowlight-grain",
+          "texture_id": "GRAIN_OU_LOWLIGHT",
+          "parameter": null,
+          "kernel": "dazz-lowlight"
+        },
+        {
+          "type": "lut",
+          "lut_id": "DAZZ_STAGE_LOOKUP_OU_COLOR",
+          "source": "lookup_ou_color",
+          "input_encoding": "linear-srgb"
+        }
+      ]
+    }
+  ],
+  "stage_luts": [
+    {
+      "id": "DAZZ_STAGE_LOOKUP_KV80_KG200",
+      "source": "lookup_kv80_kg200",
+      "preview_asset": "preview/DAZZ_STAGE_LOOKUP_KV80_KG200.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 1399,
+      "preview_sha256": "3990efb6fbe6dad3424acdd5d27a891147f1ff2375da6577a1e48a7556007ec2"
+    },
+    {
+      "id": "DAZZ_STAGE_LOOKUP_DBLACK_1",
+      "source": "lookup_dblack_1",
+      "preview_asset": "preview/DAZZ_STAGE_LOOKUP_DBLACK_1.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 949,
+      "preview_sha256": "2898e09c6a0cb54beb8da0e655c5eb7eca27f2d1660c59fd0b4a149a0fa6c514"
+    },
+    {
+      "id": "DAZZ_STAGE_LOOKUP_DBLACK_2",
+      "source": "lookup_dblack_2",
+      "preview_asset": "preview/DAZZ_STAGE_LOOKUP_DBLACK_2.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 961,
+      "preview_sha256": "7149c82c56b8dad3eb41e8578f32c094e2bd3cfb6de24e55a32db6ed9e8a2fcb"
+    },
+    {
+      "id": "DAZZ_STAGE_LOOKUP_VELVIA_X5",
+      "source": "lookup_velvia_x5",
+      "preview_asset": "preview/DAZZ_STAGE_LOOKUP_VELVIA_X5.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 1492,
+      "preview_sha256": "41b10d22aa2609e18efc557b385c9c7258b56f51fd26e53a6c97f24ef8fe9a8a"
+    },
+    {
+      "id": "DAZZ_STAGE_LOOKUP_OU_LIGHT",
+      "source": "lookup_ou_light",
+      "preview_asset": "preview/DAZZ_STAGE_LOOKUP_OU_LIGHT.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 809,
+      "preview_sha256": "b0a3f73401eb7eada551674abb99f395eceaeb37d4c1c00c88398f6e24d379e5"
+    },
+    {
+      "id": "DAZZ_STAGE_LOOKUP_OU_COLOR",
+      "source": "lookup_ou_color",
+      "preview_asset": "preview/DAZZ_STAGE_LOOKUP_OU_COLOR.rgb.deflate",
+      "preview_cube_size": 8,
+      "preview_byte_length": 1547,
+      "preview_sha256": "637252f955a18719b7155bf49d779f78814191b5b2050e18543c14c3e10b2dd1"
     }
   ]
 }

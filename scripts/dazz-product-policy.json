@@ -9,12 +9,16 @@
     "DAM",
     "DBLACK",
     "DCR",
-    "FQS",
     "GLOW",
     "GOLF",
     "INSTC"
   ],
   "inactive_recipe_ids": [
     "DAZZ_FXN_FX3_3"
+  ],
+  "promoted_camera_ids": [
+    "KV80",
+    "GRF",
+    "FQS"
   ]
 }

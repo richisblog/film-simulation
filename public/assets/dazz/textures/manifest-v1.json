@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "textures": [
+    {
+      "id": "GRAIN_OFM",
+      "source_name": "grain_ofm.jpg",
+      "asset": "grain_ofm.webp",
+      "width": 2138,
+      "height": 3207,
+      "byte_length": 1117070,
+      "sha256": "5b5d9f3859054f95fea59d6704e26694015f9274c85b9c5d157bf65ab4ceb8d5"
+    },
+    {
+      "id": "GRAIN_OU",
+      "source_name": "grain_ou.jpg",
+      "asset": "grain_ou.webp",
+      "width": 2043,
+      "height": 3070,
+      "byte_length": 163036,
+      "sha256": "9871c860363e0fc5a49d8f3cd6e70f23632af1be0778aeb01aaa70c69af5d26d"
+    },
+    {
+      "id": "GRAIN_OU_LOWLIGHT",
+      "source_name": "grain_ou_lowlight.jpg",
+      "asset": "grain_ou_lowlight.webp",
+      "width": 2043,
+      "height": 3070,
+      "byte_length": 2230012,
+      "sha256": "d17b49dff61f8747e3277b2b97223b9887c2a84afc278b607d8eae7dfcd3e954"
+    }
+  ]
+}

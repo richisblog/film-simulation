@@ -17,11 +17,13 @@ const specification = JSON.parse(await readFile(path.join(root, 'scripts/dazz-re
 const productPolicy = JSON.parse(await readFile(path.join(root, 'scripts/dazz-product-policy.json'), 'utf8'))
 const lutRoot = path.join(root, 'public/assets/dazz/luts')
 const leakRoot = path.join(root, 'public/assets/dazz/light_leaks')
+const textureRoot = path.join(root, 'public/assets/dazz/textures')
 await Promise.all([
   mkdir(path.join(lutRoot, 'full'), { recursive: true }),
   mkdir(path.join(lutRoot, 'preview'), { recursive: true }),
   mkdir(path.join(leakRoot, 'general'), { recursive: true }),
   mkdir(path.join(leakRoot, 'instant'), { recursive: true }),
+  mkdir(textureRoot, { recursive: true }),
 ])
 
 const cubeCache = new Map()
@@ -115,7 +117,15 @@ for (const camera of specification.cameras) {
 
 const inactiveCameras = new Set(productPolicy.inactive_camera_ids)
 const inactiveRecipes = new Set(productPolicy.inactive_recipe_ids)
-const activeCameras = specification.cameras.filter(({ id }) => !inactiveCameras.has(id)).map((camera) => {
+const promotedOrder = new Map(productPolicy.promoted_camera_ids.map((id, index) => [id, index]))
+const activeCameraDefinitions = specification.cameras
+  .filter(({ id }) => !inactiveCameras.has(id))
+  .sort((left, right) => {
+    const leftPriority = promotedOrder.get(left.id) ?? Number.MAX_SAFE_INTEGER
+    const rightPriority = promotedOrder.get(right.id) ?? Number.MAX_SAFE_INTEGER
+    return leftPriority - rightPriority
+  })
+const activeCameras = activeCameraDefinitions.map((camera) => {
   const recipeIds = camera.recipes.map(({ id }) => id).filter((id) => !inactiveRecipes.has(id))
   return {
     id: camera.id,
@@ -126,13 +136,58 @@ const activeCameras = specification.cameras.filter(({ id }) => !inactiveCameras.
   }
 })
 const activeRecipeIds = new Set(activeCameras.flatMap(({ recipe_ids }) => recipe_ids))
+const activePipelineIds = new Set(recipes.filter(({ id }) => activeRecipeIds.has(id)).map(({ pipeline_id }) => pipeline_id).filter(Boolean))
+const activePipelines = specification.pipelines.filter(({ id }) => activePipelineIds.has(id))
+const stageLutDefinitions = new Map()
+for (const pipeline of activePipelines) {
+  for (const stage of pipeline.stages) {
+    if (stage.type === 'lut') stageLutDefinitions.set(stage.lut_id, stage)
+  }
+}
+const stage_luts = []
+for (const [id, stage] of stageLutDefinitions) {
+  const preview = deflateSync(bake([await loadCube(stage.source)], 8), { level: 9 })
+  const previewAsset = `preview/${id}.rgb.deflate`
+  await writeFile(path.join(lutRoot, previewAsset), preview)
+  stage_luts.push({
+    id,
+    source: stage.source,
+    preview_asset: previewAsset,
+    preview_cube_size: 8,
+    preview_byte_length: preview.length,
+    preview_sha256: sha256(preview),
+  })
+}
 
 await writeFile(path.join(lutRoot, 'manifest-v1.json'), `${JSON.stringify({
   version: 1,
   cube_format: 'rgb8-deflate-red-fastest',
   cameras: activeCameras,
   recipes: recipes.filter(({ id }) => activeRecipeIds.has(id)),
+  pipelines: activePipelines,
+  stage_luts,
 }, null, 2)}\n`)
+
+const textureSources = [
+  { id: 'GRAIN_OFM', source_name: 'grain_ofm.jpg', asset: 'grain_ofm.webp' },
+  { id: 'GRAIN_OU', source_name: 'grain_ou.jpg', asset: 'grain_ou.webp' },
+  { id: 'GRAIN_OU_LOWLIGHT', source_name: 'grain_ou_lowlight.jpg', asset: 'grain_ou_lowlight.webp' },
+]
+const textures = []
+for (const descriptor of textureSources) {
+  const source = sharp(path.join(appDir, descriptor.source_name))
+  const metadata = await source.metadata()
+  const buffer = await source.webp({ quality: 92 }).toBuffer()
+  await writeFile(path.join(textureRoot, descriptor.asset), buffer)
+  textures.push({
+    ...descriptor,
+    width: metadata.width,
+    height: metadata.height,
+    byte_length: buffer.length,
+    sha256: sha256(buffer),
+  })
+}
+await writeFile(path.join(textureRoot, 'manifest-v1.json'), `${JSON.stringify({ version: 1, textures }, null, 2)}\n`)
 
 async function convertLeaks({ id, count, source, output, prefix }) {
   const light_leaks = []

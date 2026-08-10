@@ -59,7 +59,7 @@
       { "id": "DAZZ_DSLIDE_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["dslide_lookup"] }
     ]},
     { "id": "FQS", "name_zh": "FQS", "name_en": "FQS", "default_recipe_id": "DAZZ_FQS_DEFAULT", "recipes": [
-      { "id": "DAZZ_FQS_DEFAULT", "name_zh": "成片", "name_en": "Final", "stages": ["lookup_ou_light", "lookup_ou_color"] }
+      { "id": "DAZZ_FQS_DEFAULT", "name_zh": "成片", "name_en": "Final", "stages": ["lookup_ou_light", "lookup_ou_color"], "pipeline_id": "DAZZ_PIPELINE_FQS" }
     ]},
     { "id": "FXN", "name_zh": "FXN", "name_en": "FXN", "default_recipe_id": "DAZZ_FXN_ORIGINAL", "recipes": [
       { "id": "DAZZ_FXN_ORIGINAL", "name_zh": "Original", "name_en": "Original", "stages": ["lookup_fxnr"] },
@@ -72,6 +72,11 @@
     ]},
     { "id": "GOLF", "name_zh": "GOLF", "name_en": "GOLF", "default_recipe_id": "DAZZ_GOLF_VELVIA_X5", "recipes": [
       { "id": "DAZZ_GOLF_VELVIA_X5", "name_zh": "Velvia X5", "name_en": "Velvia X5", "stages": ["lookup_velvia_x5"] }
+    ]},
+    { "id": "GRF", "name_zh": "GRF", "name_en": "GRF", "default_recipe_id": "DAZZ_GRF_400TX", "recipes": [
+      { "id": "DAZZ_GRF_400TX", "name_zh": "400TX", "name_en": "400TX", "stages": ["lookup_dblack_1"], "pipeline_id": "DAZZ_PIPELINE_GRF_400TX" },
+      { "id": "DAZZ_GRF_NEOP100", "name_zh": "NEOP100", "name_en": "NEOP100", "stages": ["lookup_dblack_2"], "pipeline_id": "DAZZ_PIPELINE_GRF_NEOP100" },
+      { "id": "DAZZ_GRF_VELVIA", "name_zh": "VELVIA", "name_en": "VELVIA", "stages": ["lookup_velvia_x5"], "pipeline_id": "DAZZ_PIPELINE_GRF_VELVIA" }
     ]},
     { "id": "GRDR", "name_zh": "GRDR", "name_en": "GRDR", "default_recipe_id": "DAZZ_GRDR_DEFAULT", "recipes": [
       { "id": "DAZZ_GRDR_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_grdr"] }
@@ -94,7 +99,7 @@
       { "id": "DAZZ_KINO_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_kino"] }
     ]},
     { "id": "KV80", "name_zh": "KV80", "name_en": "KV80", "default_recipe_id": "DAZZ_KV80_KG200", "recipes": [
-      { "id": "DAZZ_KV80_KG200", "name_zh": "KG200", "name_en": "KG200", "stages": ["lookup_kv80_kg200"] }
+      { "id": "DAZZ_KV80_KG200", "name_zh": "KG200", "name_en": "KG200", "stages": ["lookup_kv80_kg200"], "pipeline_id": "DAZZ_PIPELINE_KV80" }
     ]},
     { "id": "KV88", "name_zh": "KV88", "name_en": "KV88", "default_recipe_id": "DAZZ_KV88_DEFAULT", "recipes": [
       { "id": "DAZZ_KV88_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_kv88"] }
@@ -148,6 +153,28 @@
     ]},
     { "id": "VINSTSS", "name_zh": "V Inst SS", "name_en": "V Inst SS", "default_recipe_id": "DAZZ_VINSTSS_DEFAULT", "recipes": [
       { "id": "DAZZ_VINSTSS_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_instss"] }
+    ]}
+  ],
+  "pipelines": [
+    { "id": "DAZZ_PIPELINE_KV80", "stages": [
+      { "type": "lut", "lut_id": "DAZZ_STAGE_LOOKUP_KV80_KG200", "source": "lookup_kv80_kg200", "input_encoding": "linear-srgb" },
+      { "type": "grain", "texture_id": "GRAIN_OFM", "amount": 1.0, "kernel": "dazz-grain" }
+    ]},
+    { "id": "DAZZ_PIPELINE_GRF_400TX", "stages": [
+      { "type": "lut", "lut_id": "DAZZ_STAGE_LOOKUP_DBLACK_1", "source": "lookup_dblack_1", "input_encoding": "linear-srgb" }
+    ]},
+    { "id": "DAZZ_PIPELINE_GRF_NEOP100", "stages": [
+      { "type": "lut", "lut_id": "DAZZ_STAGE_LOOKUP_DBLACK_2", "source": "lookup_dblack_2", "input_encoding": "linear-srgb" }
+    ]},
+    { "id": "DAZZ_PIPELINE_GRF_VELVIA", "stages": [
+      { "type": "lut", "lut_id": "DAZZ_STAGE_LOOKUP_VELVIA_X5", "source": "lookup_velvia_x5", "input_encoding": "linear-srgb" }
+    ]},
+    { "id": "DAZZ_PIPELINE_FQS", "stages": [
+      { "type": "optical-blur", "blur_scale": 6.0, "start": 0.0, "samples": 5.0 },
+      { "type": "grain", "texture_id": "GRAIN_OU", "amount": 1.0, "kernel": "dazz-grain" },
+      { "type": "lut", "lut_id": "DAZZ_STAGE_LOOKUP_OU_LIGHT", "source": "lookup_ou_light", "input_encoding": "linear-srgb" },
+      { "type": "lowlight-grain", "texture_id": "GRAIN_OU_LOWLIGHT", "parameter": null, "kernel": "dazz-lowlight" },
+      { "type": "lut", "lut_id": "DAZZ_STAGE_LOOKUP_OU_COLOR", "source": "lookup_ou_color", "input_encoding": "linear-srgb" }
     ]}
   ]
 }
