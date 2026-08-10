@@ -11,16 +11,29 @@ async function readJson(relativePath) {
   return JSON.parse(await readFile(path.join(root, relativePath), 'utf8'))
 }
 
-test('ships 42 Dazz cameras and 64 user-facing recipes with valid LUT payloads', async () => {
+test('keeps the 42/64 archive while shipping only the approved 29/40 product catalog', async () => {
   const specification = await readJson('scripts/dazz-recipes.json')
+  const policy = await readJson('scripts/dazz-product-policy.json')
   const manifest = await readJson('public/assets/dazz/luts/manifest-v1.json')
 
   assert.equal(specification.cameras.length, 42)
-  assert.equal(manifest.cameras.length, 42)
-  assert.equal(manifest.recipes.length, 64)
-  assert.equal(new Set(manifest.cameras.map(({ id }) => id)).size, 42)
-  assert.equal(new Set(manifest.recipes.map(({ id }) => id)).size, 64)
-  assert.deepEqual(manifest.recipes.map(({ id }) => id), specification.cameras.flatMap(({ recipes }) => recipes.map(({ id }) => id)))
+  assert.equal(specification.cameras.flatMap(({ recipes }) => recipes).length, 64)
+  assert.deepEqual(policy.inactive_camera_ids, ['135NE', '135SR', '3D', 'CCDR', 'COLLAGE', 'CPM35', 'DAM', 'DBLACK', 'DCR', 'FQS', 'GLOW', 'GOLF', 'INSTC'])
+  assert.deepEqual(policy.inactive_recipe_ids, ['DAZZ_FXN_FX3_3'])
+  assert.equal(manifest.cameras.length, 29)
+  assert.equal(manifest.recipes.length, 40)
+  assert.equal(new Set(manifest.cameras.map(({ id }) => id)).size, 29)
+  assert.equal(new Set(manifest.recipes.map(({ id }) => id)).size, 40)
+  assert.ok(!manifest.cameras.some(({ id }) => policy.inactive_camera_ids.includes(id)))
+  assert.ok(!manifest.recipes.some(({ id }) => policy.inactive_recipe_ids.includes(id)))
+  assert.deepEqual(manifest.cameras.find(({ id }) => id === 'FXN').recipe_ids, [
+    'DAZZ_FXN_ORIGINAL', 'DAZZ_FXN_FXN2', 'DAZZ_FXN_FX3_2',
+  ])
+
+  for (const archivedId of ['DAZZ_135NE_07FF', 'DAZZ_FXN_FX3_3']) {
+    await stat(path.join(root, 'public/assets/dazz/luts/full', `${archivedId}.rgb.deflate`))
+    await stat(path.join(root, 'public/assets/dazz/luts/preview', `${archivedId}.rgb.deflate`))
+  }
 
   for (const recipe of manifest.recipes) {
     assert.match(recipe.id, /^DAZZ_[A-Z0-9]+(?:_[A-Z0-9]+)*$/)

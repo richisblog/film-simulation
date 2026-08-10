@@ -3,65 +3,6 @@
   "cube_format": "rgb8-deflate-red-fastest",
   "cameras": [
     {
-      "id": "135NE",
-      "name_zh": "135NE",
-      "name_en": "135NE",
-      "default_recipe_id": "DAZZ_135NE_07FF",
-      "recipe_ids": [
-        "DAZZ_135NE_07FF",
-        "DAZZ_135NE_19M",
-        "DAZZ_135NE_19P",
-        "DAZZ_135NE_19P2",
-        "DAZZ_135NE_22M"
-      ]
-    },
-    {
-      "id": "135SR",
-      "name_zh": "135SR",
-      "name_en": "135SR",
-      "default_recipe_id": "DAZZ_135SR_DEFAULT",
-      "recipe_ids": [
-        "DAZZ_135SR_DEFAULT"
-      ]
-    },
-    {
-      "id": "3D",
-      "name_zh": "3D",
-      "name_en": "3D",
-      "default_recipe_id": "DAZZ_3D_D3D1",
-      "recipe_ids": [
-        "DAZZ_3D_D3D1",
-        "DAZZ_3D_D3D2"
-      ]
-    },
-    {
-      "id": "CCDR",
-      "name_zh": "CCDR",
-      "name_en": "CCDR",
-      "default_recipe_id": "DAZZ_CCDR_DEFAULT",
-      "recipe_ids": [
-        "DAZZ_CCDR_DEFAULT"
-      ]
-    },
-    {
-      "id": "COLLAGE",
-      "name_zh": "Collage",
-      "name_en": "Collage",
-      "default_recipe_id": "DAZZ_COLLAGE_COLOR",
-      "recipe_ids": [
-        "DAZZ_COLLAGE_COLOR"
-      ]
-    },
-    {
-      "id": "CPM35",
-      "name_zh": "CPM35",
-      "name_en": "CPM35",
-      "default_recipe_id": "DAZZ_CPM35_DEFAULT",
-      "recipe_ids": [
-        "DAZZ_CPM35_DEFAULT"
-      ]
-    },
-    {
       "id": "CT2F",
       "name_zh": "CT2F",
       "name_en": "CT2F",
@@ -71,44 +12,12 @@
       ]
     },
     {
-      "id": "DAM",
-      "name_zh": "DAM",
-      "name_en": "DAM",
-      "default_recipe_id": "DAZZ_DAM_STD",
-      "recipe_ids": [
-        "DAZZ_DAM_A709",
-        "DAZZ_DAM_GRDP",
-        "DAZZ_DAM_KV2",
-        "DAZZ_DAM_STD",
-        "DAZZ_DAM_VS2"
-      ]
-    },
-    {
-      "id": "DBLACK",
-      "name_zh": "DBLACK",
-      "name_en": "DBLACK",
-      "default_recipe_id": "DAZZ_DBLACK_1",
-      "recipe_ids": [
-        "DAZZ_DBLACK_1",
-        "DAZZ_DBLACK_2"
-      ]
-    },
-    {
       "id": "DCLASSIC",
       "name_zh": "D Classic",
       "name_en": "D Classic",
       "default_recipe_id": "DAZZ_DCLASSIC_DEFAULT",
       "recipe_ids": [
         "DAZZ_DCLASSIC_DEFAULT"
-      ]
-    },
-    {
-      "id": "DCR",
-      "name_zh": "DCR",
-      "name_en": "DCR",
-      "default_recipe_id": "DAZZ_DCR_DEFAULT",
-      "recipe_ids": [
-        "DAZZ_DCR_DEFAULT"
       ]
     },
     {
@@ -150,15 +59,6 @@
       ]
     },
     {
-      "id": "FQS",
-      "name_zh": "FQS",
-      "name_en": "FQS",
-      "default_recipe_id": "DAZZ_FQS_DEFAULT",
-      "recipe_ids": [
-        "DAZZ_FQS_DEFAULT"
-      ]
-    },
-    {
       "id": "FXN",
       "name_zh": "FXN",
       "name_en": "FXN",
@@ -166,26 +66,7 @@
       "recipe_ids": [
         "DAZZ_FXN_ORIGINAL",
         "DAZZ_FXN_FXN2",
-        "DAZZ_FXN_FX3_2",
-        "DAZZ_FXN_FX3_3"
-      ]
-    },
-    {
-      "id": "GLOW",
-      "name_zh": "Glow",
-      "name_en": "Glow",
-      "default_recipe_id": "DAZZ_GLOW_DEFAULT",
-      "recipe_ids": [
-        "DAZZ_GLOW_DEFAULT"
-      ]
-    },
-    {
-      "id": "GOLF",
-      "name_zh": "GOLF",
-      "name_en": "GOLF",
-      "default_recipe_id": "DAZZ_GOLF_VELVIA_X5",
-      "recipe_ids": [
-        "DAZZ_GOLF_VELVIA_X5"
+        "DAZZ_FXN_FX3_2"
       ]
     },
     {
@@ -205,15 +86,6 @@
       "recipe_ids": [
         "DAZZ_HOGA_DEFAULT",
         "DAZZ_HOGA_FF100"
-      ]
-    },
-    {
-      "id": "INSTC",
-      "name_zh": "Inst C",
-      "name_en": "Inst C",
-      "default_recipe_id": "DAZZ_INSTC_DEFAULT",
-      "recipe_ids": [
-        "DAZZ_INSTC_DEFAULT"
       ]
     },
     {
@@ -405,193 +277,6 @@
   ],
   "recipes": [
     {
-      "id": "DAZZ_135NE_07FF",
-      "name_zh": "07FF",
-      "name_en": "07FF",
-      "stages": [
-        "lookup_07FF"
-      ],
-      "camera_id": "135NE",
-      "asset": "full/DAZZ_135NE_07FF.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 486584,
-      "sha256": "7d4f19f09ef37ba4cb562e165d24c2a12b3c8c4827ca1ac5641dc61cccf3c8ad",
-      "preview_asset": "preview/DAZZ_135NE_07FF.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1464,
-      "preview_sha256": "64b048e2b0bfd0ae5b31fd85b6e116c34d20470f9b2af7dafcb6f189eaf0d070"
-    },
-    {
-      "id": "DAZZ_135NE_19M",
-      "name_zh": "19M",
-      "name_en": "19M",
-      "stages": [
-        "lookup_19M"
-      ],
-      "camera_id": "135NE",
-      "asset": "full/DAZZ_135NE_19M.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 564540,
-      "sha256": "96788aba8418d93da7e24a2a7898282242cc0f9b5baeb1343b02aa81d378de48",
-      "preview_asset": "preview/DAZZ_135NE_19M.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1373,
-      "preview_sha256": "4717dad66cc3b69f6d21f65d71a49db74f575fab36f9bd56a07592e18dfd7d5d"
-    },
-    {
-      "id": "DAZZ_135NE_19P",
-      "name_zh": "19P",
-      "name_en": "19P",
-      "stages": [
-        "lookup_19P"
-      ],
-      "camera_id": "135NE",
-      "asset": "full/DAZZ_135NE_19P.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 595920,
-      "sha256": "3cd2d3266cb2a9d210bd7d31b89902ccb53568191cf452cc780080e7dfd25e82",
-      "preview_asset": "preview/DAZZ_135NE_19P.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1497,
-      "preview_sha256": "8fa2df4a28c8fb744cc06305723e950d722960063771faa88ecbed848ad17ba8"
-    },
-    {
-      "id": "DAZZ_135NE_19P2",
-      "name_zh": "19P2",
-      "name_en": "19P2",
-      "stages": [
-        "lookup_19P2"
-      ],
-      "camera_id": "135NE",
-      "asset": "full/DAZZ_135NE_19P2.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 526889,
-      "sha256": "7cd5c5c69e5bc2a2cac931601f09515f3986b204a5cb1893af4b527d6668e915",
-      "preview_asset": "preview/DAZZ_135NE_19P2.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1531,
-      "preview_sha256": "74a0996f6f6e82c21b2d24f9896d453304be1d1a6bb927e7874fcdea616a2268"
-    },
-    {
-      "id": "DAZZ_135NE_22M",
-      "name_zh": "22M",
-      "name_en": "22M",
-      "stages": [
-        "lookup_22M"
-      ],
-      "camera_id": "135NE",
-      "asset": "full/DAZZ_135NE_22M.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 87546,
-      "sha256": "9d3bcca1200c829071c3862d7ca9e0a775c95d28a11d8296acaafdd262c756cb",
-      "preview_asset": "preview/DAZZ_135NE_22M.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 656,
-      "preview_sha256": "497d7823263e81b7dc0fd27fcf9acfbc3c3b6ab09ac710cdbf7fb52cf95e1d1f"
-    },
-    {
-      "id": "DAZZ_135SR_DEFAULT",
-      "name_zh": "默认",
-      "name_en": "Default",
-      "stages": [
-        "lookup_135sr"
-      ],
-      "camera_id": "135SR",
-      "asset": "full/DAZZ_135SR_DEFAULT.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 622002,
-      "sha256": "359ba5125a5cc00ce969666c09e3fb338b30c9738be897fb2ab7b008e4d46db6",
-      "preview_asset": "preview/DAZZ_135SR_DEFAULT.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1523,
-      "preview_sha256": "9f426d98179ce3051b5151c207db7a2e108cc9ae9ba1f0be6ed4d9161ecd5d74"
-    },
-    {
-      "id": "DAZZ_3D_D3D1",
-      "name_zh": "D3D 1",
-      "name_en": "D3D 1",
-      "stages": [
-        "lookup_d3d"
-      ],
-      "camera_id": "3D",
-      "asset": "full/DAZZ_3D_D3D1.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 653435,
-      "sha256": "0199cb1f91025391bd29fe35e1cc3ee736183e3a4c02a144bd70d350aa6f31e7",
-      "preview_asset": "preview/DAZZ_3D_D3D1.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1491,
-      "preview_sha256": "54b5cad695b2c0de3f7d6776202bf04688278531064c61b30c1de84dc51167c8"
-    },
-    {
-      "id": "DAZZ_3D_D3D2",
-      "name_zh": "D3D 2",
-      "name_en": "D3D 2",
-      "stages": [
-        "lookup_d3d2"
-      ],
-      "camera_id": "3D",
-      "asset": "full/DAZZ_3D_D3D2.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 151122,
-      "sha256": "0b77318f59e83e44294fb454e7b8e05ec500efa1203a308571f02c78549db69e",
-      "preview_asset": "preview/DAZZ_3D_D3D2.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 997,
-      "preview_sha256": "9088f8349555dbeee67a1d55be11e2d729a09daddc214a840da5b68e4860671b"
-    },
-    {
-      "id": "DAZZ_CCDR_DEFAULT",
-      "name_zh": "默认",
-      "name_en": "Default",
-      "stages": [
-        "lookup_ccdr"
-      ],
-      "camera_id": "CCDR",
-      "asset": "full/DAZZ_CCDR_DEFAULT.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 621661,
-      "sha256": "b42cbed60713206410d49cbd6d812eefa0ecbce23a0f271b0f8996bbb4509b55",
-      "preview_asset": "preview/DAZZ_CCDR_DEFAULT.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1425,
-      "preview_sha256": "8d604b502b56c77888ee339da5bf8d4536ea20643cddba7948999f33bb8caf6e"
-    },
-    {
-      "id": "DAZZ_COLLAGE_COLOR",
-      "name_zh": "色彩",
-      "name_en": "Color",
-      "stages": [
-        "lookup_collage"
-      ],
-      "camera_id": "COLLAGE",
-      "asset": "full/DAZZ_COLLAGE_COLOR.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 589579,
-      "sha256": "f073f4f6238fe141e33395db2e84add655be782ecc443b1fb73a841dc5c32424",
-      "preview_asset": "preview/DAZZ_COLLAGE_COLOR.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1455,
-      "preview_sha256": "7610c74b4f6b2a4319bba31a13024687d90647aa6f7a5735d1ecbaff141a714d"
-    },
-    {
-      "id": "DAZZ_CPM35_DEFAULT",
-      "name_zh": "默认",
-      "name_en": "Default",
-      "stages": [
-        "lookup_cpm35"
-      ],
-      "camera_id": "CPM35",
-      "asset": "full/DAZZ_CPM35_DEFAULT.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 624803,
-      "sha256": "d530c114937983ae70c448722d963f3473ab559b2fff53f0a6da7b3bb61be244",
-      "preview_asset": "preview/DAZZ_CPM35_DEFAULT.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1488,
-      "preview_sha256": "cf863e89581f739693a68dfbbdce27ef7f59703a3ba4eb7b8a501def6520de89"
-    },
-    {
       "id": "DAZZ_CT2F_DEFAULT",
       "name_zh": "默认",
       "name_en": "Default",
@@ -609,125 +294,6 @@
       "preview_sha256": "63284747ac11207792a760f9ff4ef9a6ad88694caaedea8b39db9efe50a1186a"
     },
     {
-      "id": "DAZZ_DAM_A709",
-      "name_zh": "A709",
-      "name_en": "A709",
-      "stages": [
-        "dam_lookup_a709"
-      ],
-      "camera_id": "DAM",
-      "asset": "full/DAZZ_DAM_A709.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 158476,
-      "sha256": "d41af0b2e96d43f0d39d3ae319ba03fc0e8f1061660f25aafbeee83d4407a106",
-      "preview_asset": "preview/DAZZ_DAM_A709.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 632,
-      "preview_sha256": "e9c1f7e2d081bb4a0454c72a77c47d8a3ebfc4664d2ec6ee1248289ed28ea300"
-    },
-    {
-      "id": "DAZZ_DAM_GRDP",
-      "name_zh": "GRDP",
-      "name_en": "GRDP",
-      "stages": [
-        "dam_lookup_grdp"
-      ],
-      "camera_id": "DAM",
-      "asset": "full/DAZZ_DAM_GRDP.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 148128,
-      "sha256": "efd515dd206608e926bd487e635e5122f24c50a6c49d4f25e0de0060dde9b376",
-      "preview_asset": "preview/DAZZ_DAM_GRDP.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 620,
-      "preview_sha256": "a4190cd8b5a8bc90ed6080e18aea8fac3aab36713dc90a0fcbdf6db12141a622"
-    },
-    {
-      "id": "DAZZ_DAM_KV2",
-      "name_zh": "KV2",
-      "name_en": "KV2",
-      "stages": [
-        "dam_lookup_kv2"
-      ],
-      "camera_id": "DAM",
-      "asset": "full/DAZZ_DAM_KV2.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 141309,
-      "sha256": "9c3b0ebf5eda08077b447678b38bafcbfffe6ec7f32921201ca5639269b08cf9",
-      "preview_asset": "preview/DAZZ_DAM_KV2.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 539,
-      "preview_sha256": "45ada4939ba0e669f26e6a808bd6b3e8e102beed21f6bea0678c23764e7bb3df"
-    },
-    {
-      "id": "DAZZ_DAM_STD",
-      "name_zh": "STD",
-      "name_en": "STD",
-      "stages": [
-        "dam_lookup_std"
-      ],
-      "camera_id": "DAM",
-      "asset": "full/DAZZ_DAM_STD.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 128212,
-      "sha256": "a7399ee567ec02bcba38701a8e81ced31ae13167c784a0a32e7541048f57325b",
-      "preview_asset": "preview/DAZZ_DAM_STD.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 648,
-      "preview_sha256": "c17f1afed11e931a0729c87c5301fe8d19c24747c936f9c3b7f659f8f1f52df0"
-    },
-    {
-      "id": "DAZZ_DAM_VS2",
-      "name_zh": "VS2",
-      "name_en": "VS2",
-      "stages": [
-        "dam_lookup_vs2"
-      ],
-      "camera_id": "DAM",
-      "asset": "full/DAZZ_DAM_VS2.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 101375,
-      "sha256": "83a47a8dd0a56b95eeedbd90f72b3d65cdc47d5196fbc675fad034bfa795da4a",
-      "preview_asset": "preview/DAZZ_DAM_VS2.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 481,
-      "preview_sha256": "fa1428038f351ddabf88dc4592f254f9de9bacdaebb02d8faf3eb1d1e83cd260"
-    },
-    {
-      "id": "DAZZ_DBLACK_1",
-      "name_zh": "Black 1",
-      "name_en": "Black 1",
-      "stages": [
-        "lookup_dblack_1"
-      ],
-      "camera_id": "DBLACK",
-      "asset": "full/DAZZ_DBLACK_1.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 142299,
-      "sha256": "d4e0cf57801f484324fba719a81bcc4e051f93a28b2c8f5dff6952c050dee9d5",
-      "preview_asset": "preview/DAZZ_DBLACK_1.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 949,
-      "preview_sha256": "2898e09c6a0cb54beb8da0e655c5eb7eca27f2d1660c59fd0b4a149a0fa6c514"
-    },
-    {
-      "id": "DAZZ_DBLACK_2",
-      "name_zh": "Black 2",
-      "name_en": "Black 2",
-      "stages": [
-        "lookup_dblack_2"
-      ],
-      "camera_id": "DBLACK",
-      "asset": "full/DAZZ_DBLACK_2.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 133438,
-      "sha256": "423395f6406747e7633f435b9f4e5f07f42003616fd05f9060b5c9267466f549",
-      "preview_asset": "preview/DAZZ_DBLACK_2.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 961,
-      "preview_sha256": "7149c82c56b8dad3eb41e8578f32c094e2bd3cfb6de24e55a32db6ed9e8a2fcb"
-    },
-    {
       "id": "DAZZ_DCLASSIC_DEFAULT",
       "name_zh": "默认",
       "name_en": "Default",
@@ -743,23 +309,6 @@
       "preview_cube_size": 8,
       "preview_byte_length": 1547,
       "preview_sha256": "d8ba12a98204ed55eb5c5b943d2914ffb61a5a8d8069bc8072d63f1981bb0367"
-    },
-    {
-      "id": "DAZZ_DCR_DEFAULT",
-      "name_zh": "默认",
-      "name_en": "Default",
-      "stages": [
-        "lookup_dcr"
-      ],
-      "camera_id": "DCR",
-      "asset": "full/DAZZ_DCR_DEFAULT.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 583269,
-      "sha256": "24d03809c3a1738f196bc616f6cd4216c885aeb0db897ff582aa132f9e2edf33",
-      "preview_asset": "preview/DAZZ_DCR_DEFAULT.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1462,
-      "preview_sha256": "62431580c421722e65689ae22d8f962fa590fa385d3a65ec1a29e766698898fe"
     },
     {
       "id": "DAZZ_DEXP_DEFAULT",
@@ -864,24 +413,6 @@
       "preview_sha256": "150092d3ce11e5b6881225acaaf96eb5e8eefd8116c5953d6a1bbc958a16d622"
     },
     {
-      "id": "DAZZ_FQS_DEFAULT",
-      "name_zh": "成片",
-      "name_en": "Final",
-      "stages": [
-        "lookup_ou_light",
-        "lookup_ou_color"
-      ],
-      "camera_id": "FQS",
-      "asset": "full/DAZZ_FQS_DEFAULT.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 294610,
-      "sha256": "10c4cf17cd839e78f80df5cccf0c2182285ca67356d3d7ffffbdf6dc6de88bc1",
-      "preview_asset": "preview/DAZZ_FQS_DEFAULT.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1152,
-      "preview_sha256": "4dbbeb2d67ed54e0262a2d9e626a35214572f24cecd2cd239b78614021ed9c48"
-    },
-    {
       "id": "DAZZ_FXN_ORIGINAL",
       "name_zh": "Original",
       "name_en": "Original",
@@ -933,57 +464,6 @@
       "preview_sha256": "513fd8919ea0ba242e73a8e74ea899f71deb0361927bc59b3661d42253a26b48"
     },
     {
-      "id": "DAZZ_FXN_FX3_3",
-      "name_zh": "FX3-3",
-      "name_en": "FX3-3",
-      "stages": [
-        "lookup_fx3_3"
-      ],
-      "camera_id": "FXN",
-      "asset": "full/DAZZ_FXN_FX3_3.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 690819,
-      "sha256": "8e7eae3eeb3fab4ab659e97da2c42416ba3184ed1aec51ed41ef0e1fb59f71fc",
-      "preview_asset": "preview/DAZZ_FXN_FX3_3.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1490,
-      "preview_sha256": "0b32ab8eb66d096fc42cb4d5c7c7cfe5e8d458cbcfeb0d73197c7ef337887f77"
-    },
-    {
-      "id": "DAZZ_GLOW_DEFAULT",
-      "name_zh": "默认",
-      "name_en": "Default",
-      "stages": [
-        "lookup_glow"
-      ],
-      "camera_id": "GLOW",
-      "asset": "full/DAZZ_GLOW_DEFAULT.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 602823,
-      "sha256": "333dcb2fb65ccc9291fdfe3be726f87b852bd52cf8ce8a7e0bf6dff8e681d64f",
-      "preview_asset": "preview/DAZZ_GLOW_DEFAULT.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1482,
-      "preview_sha256": "5cf39b49f11fe78fd4f45fd1e22d52cd742478dcdd241662106f009f763185f4"
-    },
-    {
-      "id": "DAZZ_GOLF_VELVIA_X5",
-      "name_zh": "Velvia X5",
-      "name_en": "Velvia X5",
-      "stages": [
-        "lookup_velvia_x5"
-      ],
-      "camera_id": "GOLF",
-      "asset": "full/DAZZ_GOLF_VELVIA_X5.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 590277,
-      "sha256": "8bbd774e1cbaf43b7cad49271020646126022deda4dc555aac334bc3b124fd9c",
-      "preview_asset": "preview/DAZZ_GOLF_VELVIA_X5.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1492,
-      "preview_sha256": "41b10d22aa2609e18efc557b385c9c7258b56f51fd26e53a6c97f24ef8fe9a8a"
-    },
-    {
       "id": "DAZZ_GRDR_DEFAULT",
       "name_zh": "默认",
       "name_en": "Default",
@@ -1033,23 +513,6 @@
       "preview_cube_size": 8,
       "preview_byte_length": 1526,
       "preview_sha256": "ecbb2cc2bf30fb9bdfd301473b1867539ba905d5ce2ac4001d7f66ec0ce10a65"
-    },
-    {
-      "id": "DAZZ_INSTC_DEFAULT",
-      "name_zh": "默认",
-      "name_en": "Default",
-      "stages": [
-        "lookup_instc"
-      ],
-      "camera_id": "INSTC",
-      "asset": "full/DAZZ_INSTC_DEFAULT.rgb.deflate",
-      "cube_size": 64,
-      "byte_length": 555231,
-      "sha256": "4da023d6ddae0d260907180647bf5227c17c0626da4d637aad020a36ea83dcfb",
-      "preview_asset": "preview/DAZZ_INSTC_DEFAULT.rgb.deflate",
-      "preview_cube_size": 8,
-      "preview_byte_length": 1544,
-      "preview_sha256": "6165eec78a8e887e44676821443de3997e1131a847d75acb13a281bb718ef9b4"
     },
     {
       "id": "DAZZ_INSTSQ_DEFAULT",

@@ -14,6 +14,7 @@ if (!cubeDir || !appDir) {
 }
 
 const specification = JSON.parse(await readFile(path.join(root, 'scripts/dazz-recipes.json'), 'utf8'))
+const productPolicy = JSON.parse(await readFile(path.join(root, 'scripts/dazz-product-policy.json'), 'utf8'))
 const lutRoot = path.join(root, 'public/assets/dazz/luts')
 const leakRoot = path.join(root, 'public/assets/dazz/light_leaks')
 await Promise.all([
@@ -112,14 +113,25 @@ for (const camera of specification.cameras) {
   }
 }
 
+const inactiveCameras = new Set(productPolicy.inactive_camera_ids)
+const inactiveRecipes = new Set(productPolicy.inactive_recipe_ids)
+const activeCameras = specification.cameras.filter(({ id }) => !inactiveCameras.has(id)).map((camera) => {
+  const recipeIds = camera.recipes.map(({ id }) => id).filter((id) => !inactiveRecipes.has(id))
+  return {
+    id: camera.id,
+    name_zh: camera.name_zh,
+    name_en: camera.name_en,
+    default_recipe_id: recipeIds.includes(camera.default_recipe_id) ? camera.default_recipe_id : recipeIds[0],
+    recipe_ids: recipeIds,
+  }
+})
+const activeRecipeIds = new Set(activeCameras.flatMap(({ recipe_ids }) => recipe_ids))
+
 await writeFile(path.join(lutRoot, 'manifest-v1.json'), `${JSON.stringify({
   version: 1,
   cube_format: 'rgb8-deflate-red-fastest',
-  cameras: specification.cameras.map(({ recipes: cameraRecipes, ...camera }) => ({
-    ...camera,
-    recipe_ids: cameraRecipes.map(({ id }) => id),
-  })),
-  recipes,
+  cameras: activeCameras,
+  recipes: recipes.filter(({ id }) => activeRecipeIds.has(id)),
 }, null, 2)}\n`)
 
 async function convertLeaks({ id, count, source, output, prefix }) {
