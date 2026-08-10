@@ -182,7 +182,7 @@ it('evicts persistent compressed bytes when decompression fails', async () => {
   expect(byteCache.deleted).toEqual([`BAD:2:${corrupt.length}`])
 })
 
-it('starts all 36 preloads together, isolates failure, and retries only the missing LUT', async () => {
+it('starts all 76 classic and Dazz preloads together, isolates failure, and retries only the missing LUT', async () => {
   const bytes = new Uint8Array(2 ** 3 * 3)
   const descriptors = Array.from({ length: 36 }, (_, index) => {
     const id = `LUT${String(index).padStart(2, '0')}`
@@ -191,35 +191,46 @@ it('starts all 36 preloads together, isolates failure, and retries only the miss
       preview_asset: `previews/${id}.rgb`, preview_cube_size: 2, preview_byte_length: bytes.length,
     }
   })
+  const dazzDescriptors = Array.from({ length: 40 }, (_, index) => {
+    const id = `DZ${String(index).padStart(2, '0')}`
+    return {
+      id, camera_id: 'DZ', asset: `full/${id}.rgb`, cube_size: 64, byte_length: 10,
+      preview_asset: `preview/${id}.rgb`, preview_cube_size: 2, preview_byte_length: bytes.length,
+    }
+  })
   const releases = new Map<string, (response: Response) => void>()
   const binaryCalls: string[] = []
   let retrying = false
   const fetcher = async (input: RequestInfo | URL) => {
     const path = String(input)
-    if (emptyDazzManifest(path)) return emptyDazzManifest(path)!
     if (path.endsWith('/luts/manifest-8cube-v1.json')) return new Response(JSON.stringify({ luts: descriptors }))
     if (path.endsWith('/light_leaks/manifest.json')) return new Response(JSON.stringify({ light_leaks: [] }))
-    const id = path.match(/(LUT\d{2})\.rgb$/)?.[1]
+    if (path.endsWith('/dazz/luts/manifest-v1.json')) return Response.json({
+      cameras: [{ id: 'DZ', name_zh: 'DZ', name_en: 'DZ', default_recipe_id: 'DZ00', recipe_ids: dazzDescriptors.map(({ id }) => id) }],
+      recipes: dazzDescriptors,
+    })
+    if (path.endsWith('/dazz/light_leaks/manifest-v1.json')) return Response.json({ groups: [] })
+    const id = path.match(/((?:LUT|DZ)\d{2})\.rgb$/)?.[1]
     if (!id) throw new Error(`unexpected ${path}`)
     binaryCalls.push(id)
     if (retrying) return new Response(bytes)
     return new Promise<Response>((resolve) => releases.set(id, resolve))
   }
   const catalog = new AssetCatalog('/assets', fetcher, undefined, new MemoryLutByteCache())
-  const snapshots: Array<{ completed: number; succeeded: number; failed: number; active: number; done: boolean }> = []
+  const snapshots: Array<{ total: number; completed: number; succeeded: number; failed: number; active: number; done: boolean }> = []
 
   const preload = catalog.preloadLuts((progress) => snapshots.push(progress))
-  await vi.waitFor(() => expect(releases.size).toBe(36))
-  for (const [id, release] of releases) release(id === 'LUT35' ? new Response(null, { status: 404 }) : new Response(bytes))
+  await vi.waitFor(() => expect(releases.size).toBe(76))
+  for (const [id, release] of releases) release(id === 'DZ39' ? new Response(null, { status: 404 }) : new Response(bytes))
   await preload
 
-  expect(snapshots.at(-1)).toMatchObject({ completed: 36, succeeded: 35, failed: 1, active: 0, done: true })
+  expect(snapshots.at(-1)).toMatchObject({ total: 76, completed: 76, succeeded: 75, failed: 1, active: 0, done: true })
   expect(snapshots.map((item) => item.completed)).toEqual([...snapshots.map((_, index) => index)])
 
   retrying = true
   binaryCalls.length = 0
   await catalog.retryFailedLuts(() => undefined)
-  expect(binaryCalls).toEqual(['LUT35'])
+  expect(binaryCalls).toEqual(['DZ39'])
 })
 
 it.each([
@@ -272,9 +283,8 @@ it('removes rejected in-flight work so an explicit retry can request again', asy
   expect(binaryCalls).toBe(2)
 })
 
-it('merges Dazz camera and leak manifests while loading preview and full LUTs separately', async () => {
+it('merges Dazz manifests while sharing one 8-cube across main and preview APIs', async () => {
   const preview = new Uint8Array(2 ** 3 * 3).fill(3)
-  const full = new Uint8Array(3 ** 3 * 3).fill(7)
   const calls: string[] = []
   const fetcher = async (input: RequestInfo | URL) => {
     const url = String(input)
@@ -285,7 +295,7 @@ it('merges Dazz camera and leak manifests while loading preview and full LUTs se
       cameras: [{ id: 'FXN', name_zh: 'FXN', name_en: 'FXN', default_recipe_id: 'DAZZ_FXN_ORIGINAL', recipe_ids: ['DAZZ_FXN_ORIGINAL'] }],
       recipes: [{
         id: 'DAZZ_FXN_ORIGINAL', camera_id: 'FXN', name_zh: '原版', name_en: 'Original', stages: ['lookup_fxn'],
-        asset: 'full/DAZZ_FXN_ORIGINAL.rgb', cube_size: 3, byte_length: full.length,
+        asset: 'full/DAZZ_FXN_ORIGINAL.rgb', cube_size: 3, byte_length: 81,
         preview_asset: 'preview/DAZZ_FXN_ORIGINAL.rgb', preview_cube_size: 2, preview_byte_length: preview.length,
       }],
     })
@@ -293,7 +303,7 @@ it('merges Dazz camera and leak manifests while loading preview and full LUTs se
       id: 'dazz-general', light_leaks: [{ id: 'DAZZ_LEAK_GENERAL_01', asset: 'general/01.webp', byte_length: 4 }],
     }] })
     if (url.endsWith('/dazz/luts/preview/DAZZ_FXN_ORIGINAL.rgb')) return new Response(preview)
-    if (url.endsWith('/dazz/luts/full/DAZZ_FXN_ORIGINAL.rgb')) return new Response(full)
+    if (url.endsWith('/dazz/luts/full/DAZZ_FXN_ORIGINAL.rgb')) throw new Error('64-cube archive must not be requested')
     throw new Error(`unexpected ${url}`)
   }
   const catalog = new AssetCatalog('/assets', fetcher, undefined, new MemoryLutByteCache())
@@ -305,9 +315,10 @@ it('merges Dazz camera and leak manifests while loading preview and full LUTs se
     ['classic', 0], ['dazz-general', 1],
   ])
   const previewCube = await catalog.loadPreviewLut('DAZZ_FXN_ORIGINAL')
-  const fullCube = await catalog.loadLut('DAZZ_FXN_ORIGINAL')
+  const mainCube = await catalog.loadLut('DAZZ_FXN_ORIGINAL')
   expect(previewCube.size).toBe(2)
-  expect(fullCube.size).toBe(3)
-  expect(previewCube).not.toBe(fullCube)
-  expect(calls.filter((url) => url.includes('DAZZ_FXN_ORIGINAL.rgb'))).toHaveLength(2)
+  expect(mainCube.size).toBe(2)
+  expect(previewCube).toBe(mainCube)
+  expect(calls.filter((url) => url.includes('DAZZ_FXN_ORIGINAL.rgb'))).toHaveLength(1)
+  expect(calls.some((url) => url.includes('/full/'))).toBe(false)
 })

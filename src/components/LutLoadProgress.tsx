@@ -9,7 +9,7 @@ interface Props {
 
 export function LutLoadProgress({ progress, onRetry }: Props) {
   const { language, copy } = useLanguage()
-  const total = progress.total || 36
+  const total = progress.total || 1
   const title = progress.total === 0
     ? copy.loadingManifest
     : progress.done && progress.failed === 0

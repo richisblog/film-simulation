@@ -58,8 +58,6 @@ export class AssetCatalog {
   private readonly lutCache = new Map<string, LutCube>()
   private readonly leakCache = new Map<string, HTMLImageElement>()
   private readonly lutInflight = new Map<string, Promise<LutCube>>()
-  private readonly previewLutCache = new Map<string, LutCube>()
-  private readonly previewLutInflight = new Map<string, Promise<LutCube>>()
   private readonly preloadSucceeded = new Set<string>()
   private readonly preloadFailed = new Set<string>()
 
@@ -110,10 +108,8 @@ export class AssetCatalog {
     const pending = this.lutInflight.get(id)
     if (pending) return pending
     const descriptor = this.requireLut(id)
-    const request = this.loadCubeAsset(
-      id, descriptor, descriptor.source === 'dazz' ? 'full' : 'preview',
-    ).then((lut) => {
-      cacheBounded(this.lutCache, id, lut, 36)
+    const request = this.loadCubeAsset(id, descriptor, 'preview').then((lut) => {
+      cacheBounded(this.lutCache, id, lut, Math.max(76, this.luts.length))
       return lut
     }).finally(() => this.lutInflight.delete(id))
     this.lutInflight.set(id, request)
@@ -121,19 +117,7 @@ export class AssetCatalog {
   }
 
   async loadPreviewLut(id: string): Promise<LutCube> {
-    await this.load()
-    const descriptor = this.requireLut(id)
-    if (descriptor.source !== 'dazz') return this.loadLut(id)
-    const cached = this.previewLutCache.get(id)
-    if (cached) return cached
-    const pending = this.previewLutInflight.get(id)
-    if (pending) return pending
-    const request = this.loadCubeAsset(id, descriptor, 'preview').then((lut) => {
-      cacheBounded(this.previewLutCache, id, lut, 24)
-      return lut
-    }).finally(() => this.previewLutInflight.delete(id))
-    this.previewLutInflight.set(id, request)
-    return request
+    return this.loadLut(id)
   }
 
   retryLut(id: string): Promise<LutCube> {
@@ -144,7 +128,7 @@ export class AssetCatalog {
 
   async preloadLuts(onProgress: (progress: LutPreloadProgress) => void): Promise<void> {
     await this.load()
-    const ids = this.luts.filter((item) => item.source === 'classic').map((item) => item.id).filter((id) => !this.preloadSucceeded.has(id))
+    const ids = this.luts.map((item) => item.id).filter((id) => !this.preloadSucceeded.has(id))
     await this.preloadIds(ids, onProgress)
   }
 
@@ -218,7 +202,7 @@ export class AssetCatalog {
   private async preloadIds(ids: string[], onProgress: (progress: LutPreloadProgress) => void): Promise<void> {
     let active = ids.length
     const emit = (currentId: string | null) => {
-      const total = this.luts.filter((item) => item.source === 'classic').length
+      const total = this.luts.length
       const succeeded = this.preloadSucceeded.size
       const failed = this.preloadFailed.size
       const completed = succeeded + failed

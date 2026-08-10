@@ -33,11 +33,11 @@ it('keeps successful items usable and offers retry when part of the preload fail
 
 it('announces when every LUT is ready', () => {
   const progress: LutPreloadProgress = {
-    total: 36, completed: 36, succeeded: 36, failed: 0,
+    total: 76, completed: 76, succeeded: 76, failed: 0,
     active: 0, currentId: 'VS200', percent: 100, done: true,
   }
 
   render(<LutLoadProgress progress={progress} onRetry={vi.fn()} />)
 
-  expect(screen.getByRole('status')).toHaveTextContent('胶片色彩已就绪（36 / 36）')
+  expect(screen.getByRole('status')).toHaveTextContent('胶片色彩已就绪（76 / 76）')
 })
