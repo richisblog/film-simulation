@@ -56,13 +56,16 @@ function AppContent() {
       const siteUrl = import.meta.env.VITE_GOATCOUNTER_URL
       if (siteUrl) {
         const lutId = editor.settings.lutId
+        const descriptor = editor.luts.find(({ id }) => id === lutId)
         trackFilterExport({
           siteUrl,
           location: window.location,
           window,
           language,
           lutId,
-          lutName: lutId ? lutDisplayName(lutId, language) : null,
+          lutName: lutId ? descriptor?.source === 'dazz'
+            ? (language === 'en' ? descriptor.name_en : descriptor.name_zh) ?? lutId
+            : lutDisplayName(lutId, language) : null,
         })
       }
       setTimeout(() => URL.revokeObjectURL(url), 1000)

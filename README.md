@@ -9,7 +9,7 @@
 ## 功能
 
 - 输入：JPEG、PNG、WebP；HEIC/HEIF 仅在当前浏览器能够原生解码时使用。
-- 效果：原图与 36 个 8³ LUT、LUT 强度、确定性颗粒、暗角、20 个 Screen 漏光与漏光强度。
+- 效果：原图、36 个经典 LUT，以及按 42 个相机分类的 64 个 Dazz 配方；支持 LUT 强度、确定性颗粒、暗角、20 个原有漏光和 27 个 Dazz 漏光。
 - 输出：JPEG、PNG、WebP；原尺寸或 4096、3072、2048、1080 长边，不放大小图。
 - 设备：响应式电脑/手机界面、键盘和触控操作、PWA 安装与按需离线效果缓存。
 
@@ -28,6 +28,7 @@ npm run dev
 
 ```bash
 npm run test:assets
+npm run test:dazz-assets
 npm run test:pwa-assets
 npm test
 npm run test:e2e
@@ -44,6 +45,8 @@ npx playwright install chromium
 生产文件位于 `dist/`。它是纯静态站点，可部署到任意支持 HTTPS 的静态托管服务。部署时把 `dist/` 内容作为站点根目录；无需自建 API、数据库或服务端路由。
 
 可选的 `VITE_ASSET_BASE_URL` 能把 LUT 与漏光优先放到 CDN；CDN 失败时应用会自动回退到随站点发布的素材。Cloudflare Pages 的部署、`film-cdn.richis.top` 配置与回滚步骤见 [Cloudflare CDN 指南](./docs/CLOUDFLARE_CDN.md)。
+
+Dazz 素材的来源判定、相机映射、组合配方、生成命令和最终目录见 [Dazz 素材记录](./docs/DAZZ_ASSETS.md)。
 
 可选的 `VITE_GOATCOUNTER_URL` 用于启用无 Cookie 的匿名访问与导出滤镜统计。统计仅在私有后台查看，前台不展示浏览量或滤镜排名。生产统计配置、后台查询与停用方法见 [流量统计指南](./docs/ANALYTICS.md)。
 
