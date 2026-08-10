@@ -1,6 +1,6 @@
 import type { AssetRoot, AssetSourceLabel } from '../config/assets'
 
-export type AssetKind = 'lut' | 'preview-lut' | 'leak'
+export type AssetKind = 'lut' | 'preview-lut' | 'leak' | 'texture'
 export type AssetFailureCategory = 'timeout' | 'network' | 'http' | 'integrity' | 'decompression' | 'unsupported'
 
 export interface AssetDiagnostic {

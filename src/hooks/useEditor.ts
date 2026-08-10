@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AssetCatalog, type DazzCameraDescriptor, type LeakDescriptor, type LeakGroup, type LutDescriptor, type LutGroup, type LutPreloadProgress } from '../image/catalog'
+import { AssetCatalog, type DazzCameraDescriptor, type LeakDescriptor, type LeakGroup, type LoadedDazzPipeline, type LutDescriptor, type LutGroup, type LutPreloadProgress } from '../image/catalog'
 import { AssetLoadError } from '../image/assetRequest'
 import { decodeImageFile, type DecodedImage } from '../image/decode'
 import { isAcceptedImageFile } from '../image/formats'
@@ -19,6 +19,7 @@ export function useEditor(catalogOverride?: AssetCatalog) {
   const [lutGroups, setLutGroups] = useState<LutGroup[]>([])
   const [leakGroups, setLeakGroups] = useState<LeakGroup[]>([])
   const [lut, setLut] = useState<LutCube | null>(null)
+  const [pipeline, setPipeline] = useState<LoadedDazzPipeline | null>(null)
   const [leak, setLeak] = useState<HTMLImageElement | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | Error | null>(null)
@@ -90,13 +91,23 @@ export function useEditor(catalogOverride?: AssetCatalog) {
 
   useEffect(() => {
     const request = ++lutGeneration.current
-    if (!settings.lutId) { setLut(null); return }
+    if (!settings.lutId) { setLut(null); setPipeline(null); return }
     setLut(null)
+    setPipeline(null)
     const shouldRetry = retryLutId.current === settings.lutId
     retryLutId.current = null
-    const operation = shouldRetry ? catalog.retryLut(settings.lutId) : loadLut(settings.lutId)
+    const operation = shouldRetry
+      ? catalog.retryLut(settings.lutId).then((value) => ({ lut: value, pipeline: null }))
+      : (typeof catalog.loadPipeline === 'function'
+          ? catalog.loadPipeline(settings.lutId).then(async (value) => value
+            ? { lut: null, pipeline: value }
+            : { lut: await loadLut(settings.lutId!), pipeline: null })
+          : loadLut(settings.lutId).then((value) => ({ lut: value, pipeline: null })))
     operation.then((value) => {
-      if (request === lutGeneration.current) setLut(value)
+      if (request === lutGeneration.current) {
+        setLut(value.lut)
+        setPipeline(value.pipeline)
+      }
     }).catch((reason) => {
       if (request === lutGeneration.current) reportLoadError(reason, copy.lutLoadFailed)
     })
@@ -116,7 +127,7 @@ export function useEditor(catalogOverride?: AssetCatalog) {
   useEffect(() => () => image?.close(), [image])
 
   return {
-    file, image, settings, setSettings, luts, leaks, cameras, lutGroups, leakGroups, lut, leak, loadLut, loadPreviewLut,
+    file, image, settings, setSettings, luts, leaks, cameras, lutGroups, leakGroups, lut, pipeline, leak, loadLut, loadPreviewLut,
     lutProgress, busy, error, setError, openFile,
     retryFailedLuts: () => { void catalog.retryFailedLuts(setLutProgress) },
     retryError: () => {

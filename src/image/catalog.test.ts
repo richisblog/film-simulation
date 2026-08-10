@@ -6,7 +6,74 @@ const emptyDazzManifest = (path: string) => path.endsWith('/dazz/luts/manifest-v
   ? Response.json({ cameras: [], recipes: [] })
   : path.endsWith('/dazz/light_leaks/manifest-v1.json')
     ? Response.json({ groups: [] })
+    : path.endsWith('/dazz/textures/manifest-v1.json')
+      ? Response.json({ textures: [] })
     : null
+
+it('loads an FQS native pipeline in exact stage order and deduplicates its stage assets', async () => {
+  const lutBytes = new Uint8Array(2 ** 3 * 3)
+  const textureBytes = new Uint8Array([1, 2, 3])
+  const binaryCalls: string[] = []
+  const fetcher = async (input: RequestInfo | URL) => {
+    const path = String(input)
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return Response.json({ luts: [] })
+    if (path.endsWith('/light_leaks/manifest.json')) return Response.json({ light_leaks: [] })
+    if (path.endsWith('/dazz/light_leaks/manifest-v1.json')) return Response.json({ groups: [] })
+    if (path.endsWith('/dazz/textures/manifest-v1.json')) return Response.json({ textures: [{ id: 'GRAIN_OU', asset: 'GRAIN_OU.webp', byte_length: 3 }] })
+    if (path.endsWith('/dazz/luts/manifest-v1.json')) return Response.json({
+      cameras: [{ id: 'FQS', name_zh: 'FQS', name_en: 'FQS', default_recipe_id: 'DAZZ_FQS_DEFAULT', recipe_ids: ['DAZZ_FQS_DEFAULT'] }],
+      recipes: [{ id: 'DAZZ_FQS_DEFAULT', camera_id: 'FQS', pipeline_id: 'DAZZ_PIPELINE_FQS' }],
+      stage_luts: [
+        { id: 'OU_LIGHT', preview_asset: 'preview/OU_LIGHT.rgb', preview_cube_size: 2, preview_byte_length: lutBytes.length },
+        { id: 'OU_COLOR', preview_asset: 'preview/OU_COLOR.rgb', preview_cube_size: 2, preview_byte_length: lutBytes.length },
+      ],
+      pipelines: [{ id: 'DAZZ_PIPELINE_FQS', stages: [
+        { type: 'optical_blur', radius: 6, angle: 0, quality: 5 },
+        { type: 'grain', texture_id: 'GRAIN_OU', amount: 1 },
+        { type: 'lut', lut_id: 'OU_LIGHT', input_encoding: 'srgb' },
+        { type: 'grain', texture_id: 'GRAIN_OU', amount: null },
+        { type: 'lut', lut_id: 'OU_COLOR', input_encoding: 'srgb' },
+      ] }],
+    })
+    binaryCalls.push(path)
+    return new Response(path.endsWith('.webp') ? textureBytes : lutBytes)
+  }
+  const catalog = new AssetCatalog('/assets', fetcher, undefined, new MemoryLutByteCache())
+
+  const [first, second] = await Promise.all([
+    catalog.loadPipeline('DAZZ_FQS_DEFAULT'),
+    catalog.loadPipeline('DAZZ_FQS_DEFAULT'),
+  ])
+
+  expect(first).toBe(second)
+  expect(first?.stages.map((stage) => stage.type)).toEqual(['optical_blur', 'grain', 'lut', 'grain', 'lut'])
+  expect(binaryCalls.filter((path) => path.endsWith('GRAIN_OU.webp'))).toHaveLength(1)
+  expect(binaryCalls.filter((path) => path.endsWith('OU_LIGHT.rgb'))).toHaveLength(1)
+  expect(binaryCalls.filter((path) => path.endsWith('OU_COLOR.rgb'))).toHaveLength(1)
+})
+
+it('includes unique native stage LUTs and textures in preload progress', async () => {
+  const bytes = new Uint8Array(2 ** 3 * 3)
+  const fetcher = async (input: RequestInfo | URL) => {
+    const path = String(input)
+    if (path.endsWith('/luts/manifest-8cube-v1.json')) return Response.json({ luts: [] })
+    if (path.endsWith('/light_leaks/manifest.json')) return Response.json({ light_leaks: [] })
+    if (path.endsWith('/dazz/light_leaks/manifest-v1.json')) return Response.json({ groups: [] })
+    if (path.endsWith('/dazz/textures/manifest-v1.json')) return Response.json({ textures: [{ id: 'GRAIN', asset: 'GRAIN.webp', byte_length: bytes.length }] })
+    if (path.endsWith('/dazz/luts/manifest-v1.json')) return Response.json({
+      cameras: [], pipelines: [],
+      recipes: [{ id: 'RECIPE', camera_id: 'TEST', asset: 'full.rgb', cube_size: 64, byte_length: 1, preview_asset: 'preview/recipe.rgb', preview_cube_size: 2, preview_byte_length: bytes.length }],
+      stage_luts: [{ id: 'STAGE', preview_asset: 'preview/stage.rgb', preview_cube_size: 2, preview_byte_length: bytes.length }],
+    })
+    return new Response(bytes)
+  }
+  const catalog = new AssetCatalog('/assets', fetcher, undefined, new MemoryLutByteCache())
+  const snapshots: Array<{ total: number; completed: number; done: boolean }> = []
+
+  await catalog.preloadLuts((progress) => snapshots.push(progress))
+
+  expect(snapshots.at(-1)).toMatchObject({ total: 3, completed: 3, done: true })
+})
 
 class MemoryLutByteCache implements LutByteCache {
   readonly entries = new Map<string, Uint8Array>()
@@ -44,7 +111,7 @@ it('calls the browser fetch function with the Window receiver', async () => {
   }
   try {
     await new AssetCatalog('/assets').load()
-    expect(receivers).toEqual([window, window, window, window])
+    expect(receivers).toEqual([window, window, window, window, window])
   } finally {
     window.fetch = original
   }
@@ -71,7 +138,7 @@ it('loads manifests once and selected canonical 8-cube bytes on demand', async (
   const second = await catalog.loadLut('TEST')
   expect(first).toBe(second)
   expect(first.size).toBe(2)
-  expect(calls.filter((path) => path.includes('manifest'))).toHaveLength(4)
+  expect(calls.filter((path) => path.includes('manifest'))).toHaveLength(5)
   expect(calls).toContain('/assets/luts/manifest-8cube-v1.json')
   expect(calls.filter((path) => path.endsWith('TEST.rgb'))).toHaveLength(1)
 })
