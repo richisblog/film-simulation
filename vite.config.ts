@@ -9,18 +9,18 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icons/icon.svg', 'icons/apple-touch-icon.png', 'assets/luts/manifest.json', 'assets/light_leaks/manifest.json'],
+      includeAssets: ['icons/icon.svg', 'icons/apple-touch-icon.png', 'assets/luts/manifest.json', 'assets/light_leaks/manifest.json', 'assets/dazz/luts/manifest-v1.json', 'assets/dazz/light_leaks/manifest-v1.json'],
       manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,json}'],
-        globIgnores: ['**/assets/luts/*.deflate', '**/assets/light_leaks/*.webp'],
+        globIgnores: ['**/assets/luts/*.deflate', '**/assets/light_leaks/*.webp', '**/assets/dazz/luts/**/*.deflate', '**/assets/dazz/light_leaks/**/*.webp'],
         runtimeCaching: [{
           urlPattern: ({ url }) => isEffectAssetUrl(url),
           handler: 'CacheFirst',
           options: {
             cacheName: EFFECT_CACHE_NAME,
             cacheableResponse: { statuses: [200] },
-            expiration: { maxEntries: 64, maxAgeSeconds: 31536000 },
+            expiration: { maxEntries: 180, maxAgeSeconds: 31536000 },
           },
         }],
       },

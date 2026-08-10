@@ -11,11 +11,28 @@ export interface LutDescriptor {
   preview_asset: string
   preview_cube_size: number
   preview_byte_length: number
+  source?: 'classic' | 'dazz'
+  camera_id?: string
+  name_zh?: string
+  name_en?: string
+  stages?: string[]
 }
-export interface LeakDescriptor { id: string; asset: string; byte_length: number }
+export interface LeakDescriptor { id: string; asset: string; byte_length: number; source?: 'classic' | 'dazz' }
+
+export interface DazzCameraDescriptor {
+  id: string
+  name_zh: string
+  name_en: string
+  default_recipe_id: string
+  recipe_ids: string[]
+}
+export interface LutGroup { id: 'classic' | 'dazz'; luts: LutDescriptor[] }
+export interface LeakGroup { id: string; leaks: LeakDescriptor[] }
 
 interface LutManifest { cube_size?: number; luts: LutDescriptor[] }
 interface LeakManifest { light_leaks: LeakDescriptor[] }
+interface DazzLutManifest { cameras?: DazzCameraDescriptor[]; recipes?: LutDescriptor[] }
+interface DazzLeakManifest { groups?: Array<{ id: string; light_leaks: LeakDescriptor[] }> }
 
 export interface LutPreloadProgress {
   total: number
@@ -34,10 +51,15 @@ const LUT_MANIFEST = 'manifest-8cube-v1.json'
 export class AssetCatalog {
   luts: LutDescriptor[] = []
   leaks: LeakDescriptor[] = []
+  cameras: DazzCameraDescriptor[] = []
+  lutGroups: LutGroup[] = []
+  leakGroups: LeakGroup[] = []
   private loaded?: Promise<void>
   private readonly lutCache = new Map<string, LutCube>()
   private readonly leakCache = new Map<string, HTMLImageElement>()
   private readonly lutInflight = new Map<string, Promise<LutCube>>()
+  private readonly previewLutCache = new Map<string, LutCube>()
+  private readonly previewLutInflight = new Map<string, Promise<LutCube>>()
   private readonly preloadSucceeded = new Set<string>()
   private readonly preloadFailed = new Set<string>()
 
@@ -54,15 +76,30 @@ export class AssetCatalog {
   }
 
   private async loadManifests(): Promise<void> {
-    const [lutResponse, leakResponse] = await Promise.all([
+    const optionalFetch = (url: string) => Promise.resolve().then(() => this.fetcher(url)).catch(() => new Response(null, { status: 404 }))
+    const [lutResponse, leakResponse, dazzLutResponse, dazzLeakResponse] = await Promise.all([
       this.fetcher(`${this.base}/luts/${LUT_MANIFEST}`),
       this.fetcher(`${this.base}/light_leaks/manifest.json`),
+      optionalFetch(`${this.base}/dazz/luts/manifest-v1.json`),
+      optionalFetch(`${this.base}/dazz/light_leaks/manifest-v1.json`),
     ])
     if (!lutResponse.ok || !leakResponse.ok) throw new Error('无法载入效果素材清单')
     const lutManifest = await lutResponse.json() as LutManifest
     const leakManifest = await leakResponse.json() as LeakManifest
-    this.luts = lutManifest.luts
-    this.leaks = leakManifest.light_leaks
+    const dazzLutManifest = dazzLutResponse.ok ? await dazzLutResponse.json().catch(() => ({})) as DazzLutManifest : {}
+    const dazzLeakManifest = dazzLeakResponse.ok ? await dazzLeakResponse.json().catch(() => ({})) as DazzLeakManifest : {}
+    const classicLuts = (lutManifest.luts ?? []).map((item) => ({ ...item, source: 'classic' as const }))
+    const dazzLuts = (dazzLutManifest.recipes ?? []).map((item) => ({ ...item, source: 'dazz' as const }))
+    const classicLeaks = (leakManifest.light_leaks ?? []).map((item) => ({ ...item, source: 'classic' as const }))
+    const dazzLeakGroups = (dazzLeakManifest.groups ?? []).map((group) => ({
+      id: group.id,
+      leaks: group.light_leaks.map((item) => ({ ...item, source: 'dazz' as const })),
+    }))
+    this.cameras = dazzLutManifest.cameras ?? []
+    this.lutGroups = [{ id: 'classic', luts: classicLuts }, { id: 'dazz', luts: dazzLuts }]
+    this.leakGroups = [{ id: 'classic', leaks: classicLeaks }, ...dazzLeakGroups]
+    this.luts = [...classicLuts, ...dazzLuts]
+    this.leaks = this.leakGroups.flatMap(({ leaks }) => leaks)
     await this.byteCache.pruneOldVersions()
   }
 
@@ -73,8 +110,8 @@ export class AssetCatalog {
     const pending = this.lutInflight.get(id)
     if (pending) return pending
     const descriptor = this.requireLut(id)
-    const request = this.loadCanonicalCube(
-      id, descriptor,
+    const request = this.loadCubeAsset(
+      id, descriptor, descriptor.source === 'dazz' ? 'full' : 'preview',
     ).then((lut) => {
       cacheBounded(this.lutCache, id, lut, 36)
       return lut
@@ -84,7 +121,19 @@ export class AssetCatalog {
   }
 
   async loadPreviewLut(id: string): Promise<LutCube> {
-    return this.loadLut(id)
+    await this.load()
+    const descriptor = this.requireLut(id)
+    if (descriptor.source !== 'dazz') return this.loadLut(id)
+    const cached = this.previewLutCache.get(id)
+    if (cached) return cached
+    const pending = this.previewLutInflight.get(id)
+    if (pending) return pending
+    const request = this.loadCubeAsset(id, descriptor, 'preview').then((lut) => {
+      cacheBounded(this.previewLutCache, id, lut, 24)
+      return lut
+    }).finally(() => this.previewLutInflight.delete(id))
+    this.previewLutInflight.set(id, request)
+    return request
   }
 
   retryLut(id: string): Promise<LutCube> {
@@ -95,7 +144,7 @@ export class AssetCatalog {
 
   async preloadLuts(onProgress: (progress: LutPreloadProgress) => void): Promise<void> {
     await this.load()
-    const ids = this.luts.map((item) => item.id).filter((id) => !this.preloadSucceeded.has(id))
+    const ids = this.luts.filter((item) => item.source === 'classic').map((item) => item.id).filter((id) => !this.preloadSucceeded.has(id))
     await this.preloadIds(ids, onProgress)
   }
 
@@ -116,7 +165,8 @@ export class AssetCatalog {
     if (cached) return cached
     const descriptor = this.leaks.find((item) => item.id === id)
     if (!descriptor) throw new Error(`未知漏光：${id}`)
-    const bytes = await requestAsset(`light_leaks/${descriptor.asset}`, {
+    const assetPath = descriptor.source === 'dazz' ? `dazz/light_leaks/${descriptor.asset}` : `light_leaks/${descriptor.asset}`
+    const bytes = await requestAsset(assetPath, {
       roots: this.roots,
       assetKind: 'leak',
       effectId: id,
@@ -138,26 +188,29 @@ export class AssetCatalog {
     return descriptor
   }
 
-  private async loadCanonicalCube(id: string, descriptor: LutDescriptor): Promise<LutCube> {
-    const asset = descriptor.preview_asset
-    const cubeSize = descriptor.preview_cube_size
-    const byteLength = descriptor.preview_byte_length
-    let bytes = await this.byteCache.get(id, cubeSize, byteLength)
+  private async loadCubeAsset(id: string, descriptor: LutDescriptor, kind: 'full' | 'preview'): Promise<LutCube> {
+    const preview = kind === 'preview'
+    const asset = preview ? descriptor.preview_asset : descriptor.asset
+    const cubeSize = preview ? descriptor.preview_cube_size : descriptor.cube_size
+    const byteLength = preview ? descriptor.preview_byte_length : descriptor.byte_length
+    const cacheId = descriptor.source === 'dazz' ? `${id}:${kind}` : id
+    let bytes = await this.byteCache.get(cacheId, cubeSize, byteLength)
     if (!bytes) {
-      bytes = await requestAsset(`luts/${asset}`, {
+      const assetPath = descriptor.source === 'dazz' ? `dazz/luts/${asset}` : `luts/${asset}`
+      bytes = await requestAsset(assetPath, {
         roots: this.roots,
         assetKind: 'lut',
         effectId: id,
         expectedByteLength: byteLength,
         fetcher: this.fetcher,
       })
-      await this.byteCache.put(id, cubeSize, byteLength, bytes)
+      await this.byteCache.put(cacheId, cubeSize, byteLength, bytes)
     }
     try {
       const raw = await this.decompressLut(bytes, asset, id, 'lut')
       return new LutCube(cubeSize, raw)
     } catch (reason) {
-      await this.byteCache.delete(id, cubeSize, byteLength)
+      await this.byteCache.delete(cacheId, cubeSize, byteLength)
       throw reason
     }
   }
@@ -165,7 +218,7 @@ export class AssetCatalog {
   private async preloadIds(ids: string[], onProgress: (progress: LutPreloadProgress) => void): Promise<void> {
     let active = ids.length
     const emit = (currentId: string | null) => {
-      const total = this.luts.length
+      const total = this.luts.filter((item) => item.source === 'classic').length
       const succeeded = this.preloadSucceeded.size
       const failed = this.preloadFailed.size
       const completed = succeeded + failed
