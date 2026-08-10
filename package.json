@@ -5,6 +5,7 @@
   "license": "CC-BY-NC-4.0",
   "type": "module",
   "scripts": {
+    "assets:dazz": "node scripts/generate-dazz-assets.mjs",
     "assets:previews": "node scripts/generate-preview-luts.mjs",
     "assets:pwa-icons": "node scripts/generate-pwa-icons.mjs",
     "dev": "vite",
@@ -13,6 +14,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:assets": "node --test scripts/preview-luts.test.mjs",
+    "test:dazz-assets": "node --test scripts/dazz-assets.test.mjs",
     "test:pwa-assets": "node --test scripts/pwa-assets.test.mjs",
     "test:e2e": "playwright test"
   },

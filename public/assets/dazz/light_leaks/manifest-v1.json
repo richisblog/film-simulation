@@ -1,0 +1,204 @@
+{
+  "version": 1,
+  "groups": [
+    {
+      "id": "dazz-general",
+      "light_leaks": [
+        {
+          "id": "DAZZ_LEAK_GENERAL_01",
+          "asset": "general/dazz_general_01.webp",
+          "source_name": "lightleaks1.jpg",
+          "byte_length": 16484,
+          "sha256": "60273ef06b3cb71b7e74621c87dea36e1a308f619032d002512a3f134b6d5913"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_02",
+          "asset": "general/dazz_general_02.webp",
+          "source_name": "lightleaks2.jpg",
+          "byte_length": 11982,
+          "sha256": "9da32f659b5605595da2626407f32d7fe40de133a1a247a2f7613ed4dbd08512"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_03",
+          "asset": "general/dazz_general_03.webp",
+          "source_name": "lightleaks3.jpg",
+          "byte_length": 12856,
+          "sha256": "6560e789fa83956d6a7a5ef58909eb36b1fe3383421c1d8822381253e9696e7c"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_04",
+          "asset": "general/dazz_general_04.webp",
+          "source_name": "lightleaks4.jpg",
+          "byte_length": 14970,
+          "sha256": "76e8a1b37352d1f95a5ef630013599e36649e585852c28c9aa22b79f21a02eac"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_05",
+          "asset": "general/dazz_general_05.webp",
+          "source_name": "lightleaks5.jpg",
+          "byte_length": 12248,
+          "sha256": "1c22de543e6b3593f43514e148a63b70aa5b6ed0a30f6f06d9d981e1d6a812cd"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_06",
+          "asset": "general/dazz_general_06.webp",
+          "source_name": "lightleaks6.jpg",
+          "byte_length": 6896,
+          "sha256": "219b641c45f299ebbab14c9a0813373439f2c11b46cc5a5e8813bb1a4e3891ff"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_07",
+          "asset": "general/dazz_general_07.webp",
+          "source_name": "lightleaks7.jpg",
+          "byte_length": 22652,
+          "sha256": "de66ad0da58c4bed0e526b79033f71533b2c5674cd81f15c6fd2623c7d3e4991"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_08",
+          "asset": "general/dazz_general_08.webp",
+          "source_name": "lightleaks8.jpg",
+          "byte_length": 13548,
+          "sha256": "743483dcf46e29bb22ac67d39e25d6cb4251a92c74bd983c22eb90a8ca8aa0dd"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_09",
+          "asset": "general/dazz_general_09.webp",
+          "source_name": "lightleaks9.jpg",
+          "byte_length": 12526,
+          "sha256": "6cb9b6e0b5cf5372242e4071603218b850c4095a20f458141ebaefce877e1b2c"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_10",
+          "asset": "general/dazz_general_10.webp",
+          "source_name": "lightleaks10.jpg",
+          "byte_length": 12164,
+          "sha256": "efab5a585f9c8c1d71f8b87e02f53ce0c03af8f37848db2bd88996825374e24b"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_11",
+          "asset": "general/dazz_general_11.webp",
+          "source_name": "lightleaks11.jpg",
+          "byte_length": 11594,
+          "sha256": "49137548e2f124e6894962525b7131e535ee7a926437ad71dc7160c071f381a8"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_12",
+          "asset": "general/dazz_general_12.webp",
+          "source_name": "lightleaks12.jpg",
+          "byte_length": 14106,
+          "sha256": "ffc1fdf2168893a6758a487fbcf88a1811f987f67acb2ecfa7bdbd084a10dff3"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_13",
+          "asset": "general/dazz_general_13.webp",
+          "source_name": "lightleaks13.jpg",
+          "byte_length": 8822,
+          "sha256": "5182aa30bafd256555665df74f2f6f8c150e5f867fefd3606f5cedb435187b44"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_14",
+          "asset": "general/dazz_general_14.webp",
+          "source_name": "lightleaks14.jpg",
+          "byte_length": 10326,
+          "sha256": "bc7d579e7519bd38874f5f80f692d9cda0f2b955da7c5102a7589f09bce6ea24"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_15",
+          "asset": "general/dazz_general_15.webp",
+          "source_name": "lightleaks15.jpg",
+          "byte_length": 15142,
+          "sha256": "61161c1ef5ef4ed0f0001a4f684900ac06314b23142f156cda98207bf63e68bb"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_16",
+          "asset": "general/dazz_general_16.webp",
+          "source_name": "lightleaks16.jpg",
+          "byte_length": 13556,
+          "sha256": "8b73d45740eb590f50b3a87277351878087c104fcf76811b7922673407599ff1"
+        },
+        {
+          "id": "DAZZ_LEAK_GENERAL_17",
+          "asset": "general/dazz_general_17.webp",
+          "source_name": "lightleaks17.jpg",
+          "byte_length": 10702,
+          "sha256": "e7ae013a8a650be56266d9a4678644c870b99949c25f3e4ccffb6426c7be62d0"
+        }
+      ]
+    },
+    {
+      "id": "dazz-instant",
+      "light_leaks": [
+        {
+          "id": "DAZZ_LEAK_INSTANT_01",
+          "asset": "instant/dazz_instant_01.webp",
+          "source_name": "lightleaks_inst_01.jpg",
+          "byte_length": 16354,
+          "sha256": "127faeafbcdf96482c3f4dd53bf43f67ffdccb02c626990efd472bdf3972c69d"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_02",
+          "asset": "instant/dazz_instant_02.webp",
+          "source_name": "lightleaks_inst_02.jpg",
+          "byte_length": 8144,
+          "sha256": "537dc69bb30a2068a2bdd743284bafdfb3bd117e5540325dfe3a4ba8608d0638"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_03",
+          "asset": "instant/dazz_instant_03.webp",
+          "source_name": "lightleaks_inst_03.jpg",
+          "byte_length": 5276,
+          "sha256": "6f4fd1a88161cbacfd6e204c86d8d34889e5b68ea17b1d368728cf555a6d2e53"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_04",
+          "asset": "instant/dazz_instant_04.webp",
+          "source_name": "lightleaks_inst_04.jpg",
+          "byte_length": 12230,
+          "sha256": "f4178367b5941885f783d59dbf1f721689e3e850306ed6ff58db900ffe1748db"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_05",
+          "asset": "instant/dazz_instant_05.webp",
+          "source_name": "lightleaks_inst_05.jpg",
+          "byte_length": 12016,
+          "sha256": "586729b2175d4c966bda7829e3d993a8c8f9cb55e59f821d7ea3f1deb9694cbe"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_06",
+          "asset": "instant/dazz_instant_06.webp",
+          "source_name": "lightleaks_inst_06.jpg",
+          "byte_length": 20650,
+          "sha256": "2b51a79270584ea5e5761cb159a8dee20c3a2ab4bdbf8fb3bfb05d4a243da2ba"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_07",
+          "asset": "instant/dazz_instant_07.webp",
+          "source_name": "lightleaks_inst_07.jpg",
+          "byte_length": 21802,
+          "sha256": "33aef34b76cdb0cb0bac926aca351b6d082bc2b0f2979c3ab047983e6d5a875b"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_08",
+          "asset": "instant/dazz_instant_08.webp",
+          "source_name": "lightleaks_inst_08.jpg",
+          "byte_length": 21928,
+          "sha256": "e1f21063cfbf3077610bbdb78b438a687bb037380cd27572ad8fb412d7679898"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_09",
+          "asset": "instant/dazz_instant_09.webp",
+          "source_name": "lightleaks_inst_09.jpg",
+          "byte_length": 23586,
+          "sha256": "8a8607fc3fd277747068f4dc42eb263045e5b295faf8dee00f0d2b16e200df6d"
+        },
+        {
+          "id": "DAZZ_LEAK_INSTANT_10",
+          "asset": "instant/dazz_instant_10.webp",
+          "source_name": "lightleaks_inst_10.jpg",
+          "byte_length": 12204,
+          "sha256": "93ffb77a443fb458bdb5fd184ecfe28e71f0c1ca3da676a12f33ee248a64c6df"
+        }
+      ]
+    }
+  ]
+}

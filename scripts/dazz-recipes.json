@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "cameras": [
+    { "id": "135NE", "name_zh": "135NE", "name_en": "135NE", "default_recipe_id": "DAZZ_135NE_07FF", "recipes": [
+      { "id": "DAZZ_135NE_07FF", "name_zh": "07FF", "name_en": "07FF", "stages": ["lookup_07FF"] },
+      { "id": "DAZZ_135NE_19M", "name_zh": "19M", "name_en": "19M", "stages": ["lookup_19M"] },
+      { "id": "DAZZ_135NE_19P", "name_zh": "19P", "name_en": "19P", "stages": ["lookup_19P"] },
+      { "id": "DAZZ_135NE_19P2", "name_zh": "19P2", "name_en": "19P2", "stages": ["lookup_19P2"] },
+      { "id": "DAZZ_135NE_22M", "name_zh": "22M", "name_en": "22M", "stages": ["lookup_22M"] }
+    ]},
+    { "id": "135SR", "name_zh": "135SR", "name_en": "135SR", "default_recipe_id": "DAZZ_135SR_DEFAULT", "recipes": [
+      { "id": "DAZZ_135SR_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_135sr"] }
+    ]},
+    { "id": "3D", "name_zh": "3D", "name_en": "3D", "default_recipe_id": "DAZZ_3D_D3D1", "recipes": [
+      { "id": "DAZZ_3D_D3D1", "name_zh": "D3D 1", "name_en": "D3D 1", "stages": ["lookup_d3d"] },
+      { "id": "DAZZ_3D_D3D2", "name_zh": "D3D 2", "name_en": "D3D 2", "stages": ["lookup_d3d2"] }
+    ]},
+    { "id": "CCDR", "name_zh": "CCDR", "name_en": "CCDR", "default_recipe_id": "DAZZ_CCDR_DEFAULT", "recipes": [
+      { "id": "DAZZ_CCDR_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_ccdr"] }
+    ]},
+    { "id": "COLLAGE", "name_zh": "Collage", "name_en": "Collage", "default_recipe_id": "DAZZ_COLLAGE_COLOR", "recipes": [
+      { "id": "DAZZ_COLLAGE_COLOR", "name_zh": "色彩", "name_en": "Color", "stages": ["lookup_collage"] }
+    ]},
+    { "id": "CPM35", "name_zh": "CPM35", "name_en": "CPM35", "default_recipe_id": "DAZZ_CPM35_DEFAULT", "recipes": [
+      { "id": "DAZZ_CPM35_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_cpm35"] }
+    ]},
+    { "id": "CT2F", "name_zh": "CT2F", "name_en": "CT2F", "default_recipe_id": "DAZZ_CT2F_DEFAULT", "recipes": [
+      { "id": "DAZZ_CT2F_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_ct2f"] }
+    ]},
+    { "id": "DAM", "name_zh": "DAM", "name_en": "DAM", "default_recipe_id": "DAZZ_DAM_STD", "recipes": [
+      { "id": "DAZZ_DAM_A709", "name_zh": "A709", "name_en": "A709", "stages": ["dam_lookup_a709"] },
+      { "id": "DAZZ_DAM_GRDP", "name_zh": "GRDP", "name_en": "GRDP", "stages": ["dam_lookup_grdp"] },
+      { "id": "DAZZ_DAM_KV2", "name_zh": "KV2", "name_en": "KV2", "stages": ["dam_lookup_kv2"] },
+      { "id": "DAZZ_DAM_STD", "name_zh": "STD", "name_en": "STD", "stages": ["dam_lookup_std"] },
+      { "id": "DAZZ_DAM_VS2", "name_zh": "VS2", "name_en": "VS2", "stages": ["dam_lookup_vs2"] }
+    ]},
+    { "id": "DBLACK", "name_zh": "DBLACK", "name_en": "DBLACK", "default_recipe_id": "DAZZ_DBLACK_1", "recipes": [
+      { "id": "DAZZ_DBLACK_1", "name_zh": "Black 1", "name_en": "Black 1", "stages": ["lookup_dblack_1"] },
+      { "id": "DAZZ_DBLACK_2", "name_zh": "Black 2", "name_en": "Black 2", "stages": ["lookup_dblack_2"] }
+    ]},
+    { "id": "DCLASSIC", "name_zh": "D Classic", "name_en": "D Classic", "default_recipe_id": "DAZZ_DCLASSIC_DEFAULT", "recipes": [
+      { "id": "DAZZ_DCLASSIC_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_classic"] }
+    ]},
+    { "id": "DCR", "name_zh": "DCR", "name_en": "DCR", "default_recipe_id": "DAZZ_DCR_DEFAULT", "recipes": [
+      { "id": "DAZZ_DCR_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_dcr"] }
+    ]},
+    { "id": "DEXP", "name_zh": "D Exp", "name_en": "D Exp", "default_recipe_id": "DAZZ_DEXP_DEFAULT", "recipes": [
+      { "id": "DAZZ_DEXP_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_dexp"] },
+      { "id": "DAZZ_DEXP_CCF400", "name_zh": "CCF400", "name_en": "CCF400", "stages": ["lookup_dexp3"] },
+      { "id": "DAZZ_DEXP_KG100", "name_zh": "KG100", "name_en": "KG100", "stages": ["lookup_kg100"] }
+    ]},
+    { "id": "DFUNS", "name_zh": "D Funs", "name_en": "D Funs", "default_recipe_id": "DAZZ_DFUNS_DEFAULT", "recipes": [
+      { "id": "DAZZ_DFUNS_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_dfuns"] }
+    ]},
+    { "id": "DQS", "name_zh": "DQS", "name_en": "DQS", "default_recipe_id": "DAZZ_DQS_DEFAULT", "recipes": [
+      { "id": "DAZZ_DQS_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_dqs"] }
+    ]},
+    { "id": "DSLIDE", "name_zh": "D Slide", "name_en": "D Slide", "default_recipe_id": "DAZZ_DSLIDE_DEFAULT", "recipes": [
+      { "id": "DAZZ_DSLIDE_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["dslide_lookup"] }
+    ]},
+    { "id": "FQS", "name_zh": "FQS", "name_en": "FQS", "default_recipe_id": "DAZZ_FQS_DEFAULT", "recipes": [
+      { "id": "DAZZ_FQS_DEFAULT", "name_zh": "成片", "name_en": "Final", "stages": ["lookup_ou_light", "lookup_ou_color"] }
+    ]},
+    { "id": "FXN", "name_zh": "FXN", "name_en": "FXN", "default_recipe_id": "DAZZ_FXN_ORIGINAL", "recipes": [
+      { "id": "DAZZ_FXN_ORIGINAL", "name_zh": "Original", "name_en": "Original", "stages": ["lookup_fxnr"] },
+      { "id": "DAZZ_FXN_FXN2", "name_zh": "FXN2", "name_en": "FXN2", "stages": ["lookup_fxn2"] },
+      { "id": "DAZZ_FXN_FX3_2", "name_zh": "FX3-2", "name_en": "FX3-2", "stages": ["lookup_fx3_2"] },
+      { "id": "DAZZ_FXN_FX3_3", "name_zh": "FX3-3", "name_en": "FX3-3", "stages": ["lookup_fx3_3"] }
+    ]},
+    { "id": "GLOW", "name_zh": "Glow", "name_en": "Glow", "default_recipe_id": "DAZZ_GLOW_DEFAULT", "recipes": [
+      { "id": "DAZZ_GLOW_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_glow"] }
+    ]},
+    { "id": "GOLF", "name_zh": "GOLF", "name_en": "GOLF", "default_recipe_id": "DAZZ_GOLF_VELVIA_X5", "recipes": [
+      { "id": "DAZZ_GOLF_VELVIA_X5", "name_zh": "Velvia X5", "name_en": "Velvia X5", "stages": ["lookup_velvia_x5"] }
+    ]},
+    { "id": "GRDR", "name_zh": "GRDR", "name_en": "GRDR", "default_recipe_id": "DAZZ_GRDR_DEFAULT", "recipes": [
+      { "id": "DAZZ_GRDR_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_grdr"] }
+    ]},
+    { "id": "HOGA", "name_zh": "HOGA", "name_en": "HOGA", "default_recipe_id": "DAZZ_HOGA_DEFAULT", "recipes": [
+      { "id": "DAZZ_HOGA_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_hoga"] },
+      { "id": "DAZZ_HOGA_FF100", "name_zh": "FF100", "name_en": "FF100", "stages": ["lookup_ff100"] }
+    ]},
+    { "id": "INSTC", "name_zh": "Inst C", "name_en": "Inst C", "default_recipe_id": "DAZZ_INSTC_DEFAULT", "recipes": [
+      { "id": "DAZZ_INSTC_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_instc"] }
+    ]},
+    { "id": "INSTSQ", "name_zh": "Inst SQ", "name_en": "Inst SQ", "default_recipe_id": "DAZZ_INSTSQ_DEFAULT", "recipes": [
+      { "id": "DAZZ_INSTSQ_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_instsq"] }
+    ]},
+    { "id": "IR", "name_zh": "IR", "name_en": "IR", "default_recipe_id": "DAZZ_IR_01", "recipes": [
+      { "id": "DAZZ_IR_01", "name_zh": "IR01", "name_en": "IR01", "stages": ["lookup_IR01"] },
+      { "id": "DAZZ_IR_02", "name_zh": "IR02", "name_en": "IR02", "stages": ["lookup_IR02"] }
+    ]},
+    { "id": "KINO", "name_zh": "Kino", "name_en": "Kino", "default_recipe_id": "DAZZ_KINO_DEFAULT", "recipes": [
+      { "id": "DAZZ_KINO_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_kino"] }
+    ]},
+    { "id": "KV80", "name_zh": "KV80", "name_en": "KV80", "default_recipe_id": "DAZZ_KV80_KG200", "recipes": [
+      { "id": "DAZZ_KV80_KG200", "name_zh": "KG200", "name_en": "KG200", "stages": ["lookup_kv80_kg200"] }
+    ]},
+    { "id": "KV88", "name_zh": "KV88", "name_en": "KV88", "default_recipe_id": "DAZZ_KV88_DEFAULT", "recipes": [
+      { "id": "DAZZ_KV88_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_kv88"] }
+    ]},
+    { "id": "NT16", "name_zh": "NT16", "name_en": "NT16", "default_recipe_id": "DAZZ_NT16_1", "recipes": [
+      { "id": "DAZZ_NT16_1", "name_zh": "NT16-1", "name_en": "NT16-1", "stages": ["lookup_nt16"] },
+      { "id": "DAZZ_NT16_2", "name_zh": "NT16-2", "name_en": "NT16-2", "stages": ["lookup_nt16_2"] }
+    ]},
+    { "id": "OFM", "name_zh": "OFM", "name_en": "OFM", "default_recipe_id": "DAZZ_OFM_DEFAULT", "recipes": [
+      { "id": "DAZZ_OFM_DEFAULT", "name_zh": "成片", "name_en": "Final", "stages": ["lookup_ofm_light", "lookup_ofm_color"] }
+    ]},
+    { "id": "ORIGINAL", "name_zh": "Original", "name_en": "Original", "default_recipe_id": "DAZZ_ORIGINAL_DEFAULT", "recipes": [
+      { "id": "DAZZ_ORIGINAL_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_d"] }
+    ]},
+    { "id": "PAF", "name_zh": "PAF", "name_en": "PAF", "default_recipe_id": "DAZZ_PAF_EC100", "recipes": [
+      { "id": "DAZZ_PAF_EC100", "name_zh": "EC100", "name_en": "EC100", "stages": ["lookup_paf_ec100_light", "lookup_paf_ec100_color"] },
+      { "id": "DAZZ_PAF_EB3000", "name_zh": "EB3000", "name_en": "EB3000", "stages": ["lookup_paf_eb3000_light", "lookup_paf_eb3000_color"] }
+    ]},
+    { "id": "PULI", "name_zh": "Puli", "name_en": "Puli", "default_recipe_id": "DAZZ_PULI_COLOR", "recipes": [
+      { "id": "DAZZ_PULI_COLOR", "name_zh": "色彩", "name_en": "Color", "stages": ["puli_lookup"] }
+    ]},
+    { "id": "S67", "name_zh": "S67", "name_en": "S67", "default_recipe_id": "DAZZ_S67_DEFAULT", "recipes": [
+      { "id": "DAZZ_S67_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_s67"] }
+    ]},
+    { "id": "SCLASSIC", "name_zh": "S Classic", "name_en": "S Classic", "default_recipe_id": "DAZZ_SCLASSIC_120_1", "recipes": [
+      { "id": "DAZZ_SCLASSIC_120_1", "name_zh": "120-1", "name_en": "120-1", "stages": ["lookup_120_1"] },
+      { "id": "DAZZ_SCLASSIC_120_2", "name_zh": "120-2", "name_en": "120-2", "stages": ["lookup_120_2"] },
+      { "id": "DAZZ_SCLASSIC_120_3", "name_zh": "120-3", "name_en": "120-3", "stages": ["lookup_120_3"] }
+    ]},
+    { "id": "SLIDEP", "name_zh": "Slide P", "name_en": "Slide P", "default_recipe_id": "DAZZ_SLIDEP_REA100", "recipes": [
+      { "id": "DAZZ_SLIDEP_REA100", "name_zh": "REA100", "name_en": "REA100", "stages": ["lookup_slidep"] }
+    ]},
+    { "id": "UCLASSIC", "name_zh": "U Classic", "name_en": "U Classic", "default_recipe_id": "DAZZ_UCLASSIC_DEFAULT", "recipes": [
+      { "id": "DAZZ_UCLASSIC_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_classicu"] }
+    ]},
+    { "id": "V16MM", "name_zh": "V16MM", "name_en": "V16MM", "default_recipe_id": "DAZZ_V16MM_EKTAC", "recipes": [
+      { "id": "DAZZ_V16MM_EKTAC", "name_zh": "Ektac", "name_en": "Ektac", "stages": ["lookup_16mm"] }
+    ]},
+    { "id": "V8MM", "name_zh": "V8MM", "name_en": "V8MM", "default_recipe_id": "DAZZ_V8MM_VS3", "recipes": [
+      { "id": "DAZZ_V8MM_VS3", "name_zh": "VS3", "name_en": "VS3", "stages": ["lookup_8mm"] },
+      { "id": "DAZZ_V8MM_EKTAC", "name_zh": "Ektac", "name_en": "Ektac", "stages": ["lookup_8mm_2"] }
+    ]},
+    { "id": "VCLASSIC", "name_zh": "V Classic", "name_en": "V Classic", "default_recipe_id": "DAZZ_VCLASSIC_DEFAULT", "recipes": [
+      { "id": "DAZZ_VCLASSIC_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_vclassic"] }
+    ]},
+    { "id": "VFUNS", "name_zh": "V Funs", "name_en": "V Funs", "default_recipe_id": "DAZZ_VFUNS_DEFAULT", "recipes": [
+      { "id": "DAZZ_VFUNS_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_vfuns"] }
+    ]},
+    { "id": "VHS", "name_zh": "VHS", "name_en": "VHS", "default_recipe_id": "DAZZ_VHS_DEFAULT", "recipes": [
+      { "id": "DAZZ_VHS_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["vhs_lookup"] }
+    ]},
+    { "id": "VINSTSS", "name_zh": "V Inst SS", "name_en": "V Inst SS", "default_recipe_id": "DAZZ_VINSTSS_DEFAULT", "recipes": [
+      { "id": "DAZZ_VINSTSS_DEFAULT", "name_zh": "默认", "name_en": "Default", "stages": ["lookup_instss"] }
+    ]}
+  ]
+}
