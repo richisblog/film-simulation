@@ -21,14 +21,14 @@ async function uploadPhoto(page: Page) {
 }
 
 async function waitForAllLuts(page: Page) {
-  await expect(page.getByRole('status', { name: '胶片色彩加载状态' })).toContainText('胶片色彩已就绪（76 / 76）', { timeout: 15_000 })
+  await expect(page.getByRole('status', { name: '胶片色彩加载状态' })).toContainText('胶片色彩已就绪（89 / 89）', { timeout: 15_000 })
 }
 
 async function blockCdn(context: BrowserContext) {
   await context.route('https://cdn.invalid/**', (route) => route.abort('connectionfailed'))
 }
 
-test('reopens with all 76 LUTs from persistent local cache and no LUT network requests', async ({ context, page }) => {
+test('reopens with all native dependencies from persistent local cache and no LUT network requests', async ({ context, page }) => {
   const requests: string[] = []
   context.on('request', (request) => {
     if (isLutBinary(request.url())) requests.push(request.url())
@@ -38,7 +38,7 @@ test('reopens with all 76 LUTs from persistent local cache and no LUT network re
   await page.goto('/')
   await waitForAllLuts(page)
 
-  expect(new Set(requests).size).toBe(152)
+  expect(new Set(requests).size).toBe(172)
   expect(requests.every((url) => url.includes('/luts/8cube-v1/') || url.includes('/dazz/luts/preview/'))).toBe(true)
   expect(requests.some((url) => url.includes('/full/'))).toBe(false)
 
@@ -66,7 +66,7 @@ test('after a partial failure, refresh requests only the missing LUT', async ({ 
 
   await page.goto('/')
   const progress = page.getByRole('status', { name: '胶片色彩加载状态' })
-  await expect(progress).toContainText('75 个可用 · 1 个待重试', { timeout: 15_000 })
+  await expect(progress).toContainText('88 个可用 · 1 个待重试', { timeout: 15_000 })
   await expect(page.getByRole('button', { name: '重试未完成色彩' })).toBeVisible()
 
   await context.unroute(missingPattern, failOrigin)
