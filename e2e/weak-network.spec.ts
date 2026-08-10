@@ -21,14 +21,14 @@ async function uploadPhoto(page: Page) {
 }
 
 async function waitForAllLuts(page: Page) {
-  await expect(page.getByRole('status', { name: '胶片色彩加载状态' })).toContainText('胶片色彩已就绪（36 / 36）', { timeout: 15_000 })
+  await expect(page.getByRole('status', { name: '胶片色彩加载状态' })).toContainText('胶片色彩已就绪（76 / 76）', { timeout: 15_000 })
 }
 
 async function blockCdn(context: BrowserContext) {
   await context.route('https://cdn.invalid/**', (route) => route.abort('connectionfailed'))
 }
 
-test('reopens with all 36 LUTs from persistent local cache and no LUT network requests', async ({ context, page }) => {
+test('reopens with all 76 LUTs from persistent local cache and no LUT network requests', async ({ context, page }) => {
   const requests: string[] = []
   context.on('request', (request) => {
     if (isLutBinary(request.url())) requests.push(request.url())
@@ -38,8 +38,9 @@ test('reopens with all 36 LUTs from persistent local cache and no LUT network re
   await page.goto('/')
   await waitForAllLuts(page)
 
-  expect(new Set(requests.filter((url) => url.includes('/luts/8cube-v1/'))).size).toBe(72)
-  expect(requests.every((url) => url.includes('/luts/8cube-v1/'))).toBe(true)
+  expect(new Set(requests).size).toBe(152)
+  expect(requests.every((url) => url.includes('/luts/8cube-v1/') || url.includes('/dazz/luts/preview/'))).toBe(true)
+  expect(requests.some((url) => url.includes('/full/'))).toBe(false)
 
   requests.length = 0
   await page.close()
@@ -65,7 +66,7 @@ test('after a partial failure, refresh requests only the missing LUT', async ({ 
 
   await page.goto('/')
   const progress = page.getByRole('status', { name: '胶片色彩加载状态' })
-  await expect(progress).toContainText('35 个可用 · 1 个待重试', { timeout: 15_000 })
+  await expect(progress).toContainText('75 个可用 · 1 个待重试', { timeout: 15_000 })
   await expect(page.getByRole('button', { name: '重试未完成色彩' })).toBeVisible()
 
   await context.unroute(missingPattern, failOrigin)
@@ -99,7 +100,6 @@ test('main preview and export use the preloaded 8-cube asset without a full LUT 
   await download
 
   expect(requests).toHaveLength(networkCountBeforeExport)
-  expect(requests.every((url) => url.includes('/luts/8cube-v1/'))).toBe(true)
-  expect(requests.some((url) => /\/luts\/[A-Z0-9]+\.rgb\.deflate$/.test(url))).toBe(false)
+  expect(requests.some((url) => url.includes('/full/'))).toBe(false)
   await expect(page.getByRole('alert')).toHaveCount(0)
 })

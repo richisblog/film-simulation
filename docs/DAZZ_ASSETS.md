@@ -2,8 +2,8 @@
 
 ## 最终结果
 
-- 42 个相机分类，64 个用户可选配方。
-- 每条配方同时保存 64³ 正式 LUT 和 8³ 缩略图 LUT，格式为 RGB8、red-fastest、Deflate。
+- GitHub 归档保留 42 个相机、64 条配方及其全部 64³/8³ 文件；产品启用 29 个相机、40 条配方。
+- 每条归档配方同时保存 64³ 和 8³ LUT，格式为 RGB8、red-fastest、Deflate；运行时只使用并预加载启用配方的 8³ 文件。
 - 27 张确认属于漏光的原始素材：通用 17 张、Instant 10 张，转换为 WebP；`flashc_*.jpg` 是样片，没有混入漏光。
 - 原网站的 36 个 LUT 和 20 个漏光未被覆盖。
 
@@ -16,7 +16,7 @@
 - `public/assets/dazz/light_leaks/general/`
 - `public/assets/dazz/light_leaks/instant/`
 
-相机名称、二级配方名称与原始 LUT 阶段映射保存在 `scripts/dazz-recipes.json`。生成后的 manifest 还记录了文件尺寸和 SHA-256，便于核验。
+相机名称、二级配方名称与原始 LUT 阶段映射保存在 `scripts/dazz-recipes.json`；产品下架策略保存在 `scripts/dazz-product-policy.json`。生成后的 manifest 只列启用项，并记录文件尺寸和 SHA-256。
 
 ## 逆向与归类过程
 
@@ -43,6 +43,6 @@ npm run test:dazz-assets
 
 ## 网站处理链
 
-照片在浏览器本地解码；选中的 3D LUT 先完成颜色映射，然后依次叠加可调颗粒、暗角和 Screen 模式漏光，最后在本地编码导出。Dazz 菜单只加载 8³ 预览；用户真正选中某配方后才下载对应 64³ LUT。
+照片在浏览器本地解码，处理顺序为曝光、漏光、3D LUT、颗粒、暗角，最后在本地编码导出。36 个经典 LUT 与 40 个启用 Dazz LUT 会统一预加载 8³ 文件；选中 Dazz 后不会下载归档的 64³ LUT。
 
 这些素材可能受原作者版权、商标或许可限制。本仓库声明为非商业学习与研究用途；公开部署或再分发前，应自行确认并取得所需授权。
