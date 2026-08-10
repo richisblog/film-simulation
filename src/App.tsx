@@ -46,7 +46,7 @@ function AppContent() {
     try {
       const size = targetSize(editor.image, options.maxLongEdge)
       if (Math.max(size.width, size.height) > renderer.maxSize) throw new Error(copy.deviceMax(renderer.maxSize))
-      await renderer.render(editor.image.source, editor.settings, editor.lut, editor.leak, size)
+      await renderer.render(editor.image.source, editor.settings, editor.lut, editor.pipeline, editor.leak, size)
       const blob = await canvasToBlob(canvas, options.mime, options.quality)
       const url = URL.createObjectURL(blob)
       const anchor = document.createElement('a')
@@ -106,7 +106,7 @@ function AppContent() {
         <div className="format-note"><span>{copy.supported}</span> JPEG · PNG · WebP · HEIC*</div>
       </section> : <div className="editor-grid">
         <div className="workspace"><div className="file-meta"><span>{editor.file?.name}</span><span>{editor.image.width} × {editor.image.height}</span></div>
-          <Preview image={editor.image} settings={editor.settings} lut={editor.lut} leak={editor.leak} /></div>
+          <Preview image={editor.image} settings={editor.settings} lut={editor.lut} pipeline={editor.pipeline} leak={editor.leak} /></div>
         <Controls settings={editor.settings} luts={editor.luts} leaks={editor.leaks} cameras={editor.cameras} lutGroups={editor.lutGroups} leakGroups={editor.leakGroups}
           thumbnailSource={thumbnailSource!} loadPreviewLut={editor.loadPreviewLut}
           onChange={editor.setSettings} onReset={editor.reset} />

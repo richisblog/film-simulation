@@ -1,17 +1,18 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { DecodedImage } from '../image/decode'
 import { LutCube } from '../image/lut'
+import type { LoadedDazzPipeline } from '../image/catalog'
 import { createRenderer } from '../image/renderer'
 import type { EditSettings } from '../image/types'
 import { useLanguage } from '../i18n'
 import { localizedError } from '../i18n/errors'
 
-interface Props { image: DecodedImage; settings: EditSettings; lut: LutCube | null; leak: HTMLImageElement | null }
+interface Props { image: DecodedImage; settings: EditSettings; lut: LutCube | null; pipeline: LoadedDazzPipeline | null; leak: HTMLImageElement | null }
 
 // 预览窗口长边封顶：取 1200 与屏幕可用尺寸的较小值
 const PREVIEW_MAX_LONG_EDGE = 1200
 
-export function Preview({ image, settings, lut, leak }: Props) {
+export function Preview({ image, settings, lut, pipeline, leak }: Props) {
   const { language, copy } = useLanguage()
   const canvas = useRef<HTMLCanvasElement>(null)
   const originalCanvas = useRef<HTMLCanvasElement>(null)
@@ -33,7 +34,7 @@ export function Preview({ image, settings, lut, leak }: Props) {
     const scale = Math.min(1, PREVIEW_MAX_LONG_EDGE / Math.max(image.width, image.height))
     const size = { width: Math.max(1, Math.round(image.width * scale)), height: Math.max(1, Math.round(image.height * scale)) }
     const frame = requestAnimationFrame(() => {
-      renderer.render(image.source, settings, lut, leak, size).catch((reason) => {
+      renderer.render(image.source, settings, lut, pipeline, leak, size).catch((reason) => {
         setError(reason instanceof Error ? localizedError(reason, language) : copy.previewFailed)
       })
     })
@@ -42,7 +43,7 @@ export function Preview({ image, settings, lut, leak }: Props) {
       currentCanvas.removeEventListener('webglcontextlost', handleContextLost)
       renderer.dispose()
     }
-  }, [image, settings, lut, leak, forceCpu, language, copy.previewFailed])
+  }, [image, settings, lut, pipeline, leak, forceCpu, language, copy.previewFailed])
 
   // 原图画布：对比模式下用 2D 直接绘制原图（无需滤镜渲染）
   useEffect(() => {

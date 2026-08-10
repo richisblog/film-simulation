@@ -1,12 +1,13 @@
 import { CpuRenderer } from './cpuRenderer'
 import { LutCube } from './lut'
+import type { LoadedDazzPipeline } from './catalog'
 import type { EditSettings, ImageSize } from './types'
 import { WebGlRenderer } from './webglRenderer'
 
 export interface Renderer {
   readonly mode: 'webgl2' | 'cpu'
   readonly maxSize: number
-  render(source: CanvasImageSource, settings: EditSettings, lut: LutCube | null, leak: CanvasImageSource | null, size: ImageSize): Promise<void>
+  render(source: CanvasImageSource, settings: EditSettings, lut: LutCube | null, pipeline: LoadedDazzPipeline | null, leak: CanvasImageSource | null, size: ImageSize): Promise<void>
   dispose(): void
 }
 
@@ -33,12 +34,18 @@ class AutoRenderer implements Renderer {
   get mode(): 'webgl2' | 'cpu' { return this.gpu && !this.lost ? 'webgl2' : 'cpu' }
   get maxSize(): number { return this.gpu?.maxSize ?? 8192 }
 
-  async render(source: CanvasImageSource, settings: EditSettings, lut: LutCube | null, leak: CanvasImageSource | null, size: ImageSize): Promise<void> {
+  async render(source: CanvasImageSource, settings: EditSettings, lut: LutCube | null, pipeline: LoadedDazzPipeline | null, leak: CanvasImageSource | null, size: ImageSize): Promise<void> {
+    if (pipeline && this.gpu && !this.lost) {
+      const intermediate = document.createElement('canvas')
+      await this.cpu.render(source, intermediate, settings, null, pipeline, leak, size)
+      this.gpu.render(intermediate, { ...settings, exposure: 0, lutStrength: 0, grain: 0, vignette: 0, leakStrength: 0 }, null, null, size)
+      return
+    }
     if (this.gpu && !this.lost) {
       this.gpu.render(source, settings, lut, leak, size)
       return
     }
-    await this.cpu.render(source, this.canvas, settings, lut, leak, size)
+    await this.cpu.render(source, this.canvas, settings, lut, pipeline, leak, size)
   }
 
   dispose(): void {
