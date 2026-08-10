@@ -7,6 +7,7 @@ import type { EditSettings } from './types'
 
 const defaults: EditSettings = {
   lutId: null,
+  exposure: 0,
   lutStrength: 100,
   grain: 0,
   vignette: 0,
@@ -68,6 +69,26 @@ describe('LUT and effects', () => {
     const inverted = new LutCube(2, new Uint8Array(identity2.map((value) => 255 - value)))
     transformPixels(image, { ...defaults, lutStrength: 0 }, inverted, null)
     expect([...image.data]).toEqual([20, 40, 60, 255])
+  })
+
+  it('adjusts source channels by photographic exposure stops', () => {
+    const brighter = imageData([60, 100, 140, 255], 1, 1)
+    const darker = imageData([60, 100, 140, 255], 1, 1)
+
+    transformPixels(brighter, { ...defaults, exposure: 1 }, null, null)
+    transformPixels(darker, { ...defaults, exposure: -1 }, null, null)
+
+    expect([...brighter.data]).toEqual([120, 200, 255, 255])
+    expect([...darker.data]).toEqual([30, 50, 70, 255])
+  })
+
+  it('applies exposure before LUT color mapping', () => {
+    const image = imageData([64, 64, 64, 255], 1, 1)
+    const inverted = new LutCube(2, new Uint8Array(identity2.map((value) => 255 - value)))
+
+    transformPixels(image, { ...defaults, exposure: 1 }, inverted, null)
+
+    expect([...image.data]).toEqual([127, 127, 127, 255])
   })
 
   it('uses deterministic monochrome grain for the same seed', () => {

@@ -2,6 +2,7 @@ export interface ImageSize { width: number; height: number }
 
 export interface EditSettings {
   lutId: string | null
+  exposure: number
   lutStrength: number
   grain: number
   vignette: number
@@ -20,6 +21,7 @@ export interface ExportOptions {
 
 export const DEFAULT_SETTINGS: EditSettings = {
   lutId: null,
+  exposure: 0,
   lutStrength: 100,
   grain: 12,
   vignette: 8,

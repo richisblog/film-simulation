@@ -34,6 +34,7 @@ export function transformPixels(
   leak: ImageData | null,
 ): ImageData {
   const lutAmount = settings.lutStrength / 100
+  const exposureMultiplier = 2 ** settings.exposure
   const grainAmount = settings.grain / 100
   const vignetteAmount = settings.vignette / 100
   const leakAmount = settings.leakStrength / 100
@@ -43,6 +44,9 @@ export function transformPixels(
       let red = image.data[offset]
       let green = image.data[offset + 1]
       let blue = image.data[offset + 2]
+      red *= exposureMultiplier
+      green *= exposureMultiplier
+      blue *= exposureMultiplier
       if (leak && leakAmount > 0) {
         const leakOffset = leakCoordinate(x, y, image.width, image.height, leak)
         red = mix(red, screenChannel(red, leak.data[leakOffset]), leakAmount)
