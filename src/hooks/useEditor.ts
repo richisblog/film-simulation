@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AssetCatalog, type LeakDescriptor, type LutDescriptor, type LutPreloadProgress } from '../image/catalog'
+import { AssetCatalog, type DazzCameraDescriptor, type LeakDescriptor, type LeakGroup, type LutDescriptor, type LutGroup, type LutPreloadProgress } from '../image/catalog'
 import { AssetLoadError } from '../image/assetRequest'
 import { decodeImageFile, type DecodedImage } from '../image/decode'
 import { isAcceptedImageFile } from '../image/formats'
@@ -15,6 +15,9 @@ export function useEditor(catalogOverride?: AssetCatalog) {
   const [settings, setSettings] = useState<EditSettings>(DEFAULT_SETTINGS)
   const [luts, setLuts] = useState<LutDescriptor[]>([])
   const [leaks, setLeaks] = useState<LeakDescriptor[]>([])
+  const [cameras, setCameras] = useState<DazzCameraDescriptor[]>([])
+  const [lutGroups, setLutGroups] = useState<LutGroup[]>([])
+  const [leakGroups, setLeakGroups] = useState<LeakGroup[]>([])
   const [lut, setLut] = useState<LutCube | null>(null)
   const [leak, setLeak] = useState<HTMLImageElement | null>(null)
   const [busy, setBusy] = useState(false)
@@ -48,6 +51,9 @@ export function useEditor(catalogOverride?: AssetCatalog) {
       if (!active) return
       setLuts(catalog.luts)
       setLeaks(catalog.leaks)
+      setCameras(catalog.cameras ?? [])
+      setLutGroups(catalog.lutGroups ?? [])
+      setLeakGroups(catalog.leakGroups ?? [])
       return catalog.preloadLuts(publish)
     }).catch(() => {
       // Background preparation must not overwrite a newer user-facing editor error.
@@ -71,6 +77,9 @@ export function useEditor(catalogOverride?: AssetCatalog) {
       setFile(nextFile)
       setLuts(catalog.luts)
       setLeaks(catalog.leaks)
+      setCameras(catalog.cameras ?? [])
+      setLutGroups(catalog.lutGroups ?? [])
+      setLeakGroups(catalog.leakGroups ?? [])
       setSettings({ ...DEFAULT_SETTINGS, seed: hashName(nextFile.name, nextFile.size) })
     } catch (reason) {
       setError(reason instanceof Error ? reason : copy.readFailed)
@@ -107,7 +116,7 @@ export function useEditor(catalogOverride?: AssetCatalog) {
   useEffect(() => () => image?.close(), [image])
 
   return {
-    file, image, settings, setSettings, luts, leaks, lut, leak, loadLut, loadPreviewLut,
+    file, image, settings, setSettings, luts, leaks, cameras, lutGroups, leakGroups, lut, leak, loadLut, loadPreviewLut,
     lutProgress, busy, error, setError, openFile,
     retryFailedLuts: () => { void catalog.retryFailedLuts(setLutProgress) },
     retryError: () => {

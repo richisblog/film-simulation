@@ -104,7 +104,7 @@ function AppContent() {
       </section> : <div className="editor-grid">
         <div className="workspace"><div className="file-meta"><span>{editor.file?.name}</span><span>{editor.image.width} × {editor.image.height}</span></div>
           <Preview image={editor.image} settings={editor.settings} lut={editor.lut} leak={editor.leak} /></div>
-        <Controls settings={editor.settings} luts={editor.luts} leaks={editor.leaks}
+        <Controls settings={editor.settings} luts={editor.luts} leaks={editor.leaks} cameras={editor.cameras} lutGroups={editor.lutGroups} leakGroups={editor.leakGroups}
           thumbnailSource={thumbnailSource!} loadPreviewLut={editor.loadPreviewLut}
           onChange={editor.setSettings} onReset={editor.reset} />
       </div>}

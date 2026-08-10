@@ -69,6 +69,24 @@ h1 { margin: 18px 0 28px; font-family: Georgia, "Songti SC", serif; font-size: c
 .section-index { color: var(--orange); font-family: Georgia, serif; font-size: 12px; }
 .panel-heading h2 { font-family: Georgia, "Songti SC", serif; font-weight: 500; font-size: 22px; margin: 0; }
 .panel-actions { display: flex; align-items: center; gap: 12px; }
+.effect-library-label { margin: 0 3px 8px; color: var(--muted); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+.effect-library-divider { display: flex; align-items: center; gap: 10px; margin: 24px 3px 12px; color: var(--orange); font-size: 10px; font-weight: 700; letter-spacing: .17em; }
+.effect-library-divider::before, .effect-library-divider::after { content: ''; height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--orange)); }
+.effect-library-divider::after { background: linear-gradient(90deg, var(--orange), transparent); }
+.effect-library-divider.minor { color: var(--muted); margin-top: 14px; }
+.effect-library-divider.minor::before, .effect-library-divider.minor::after { background: var(--line); }
+.camera-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; max-height: 240px; overflow-y: auto; padding: 3px; }
+.camera-grid button { min-width: 0; min-height: 62px; padding: 10px 8px; border: 1px solid var(--line); background: #24211d; text-align: left; cursor: pointer; }
+.camera-grid button strong, .camera-grid button small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.camera-grid button strong { color: var(--paper); font-size: 11px; }
+.camera-grid button small { margin-top: 5px; color: var(--muted); font-size: 8px; }
+.camera-grid button.selected { border-color: var(--orange); }
+.recipe-drawer { margin-top: 10px; padding: 10px; border: 1px solid #5d4634; background: #1d1a17; }
+.recipe-drawer-heading { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; }
+.recipe-drawer-heading span { color: var(--muted); }
+.recipe-drawer .film-grid { height: auto; max-height: 192px; }
+.leak-grid-off { height: auto; grid-auto-rows: 48px; }
+.leak-grid-off button { height: 48px; }
 .film-grid, .leak-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 88px; gap: 9px; height: 288px; overflow-x: hidden; overflow-y: auto; padding: 3px; scroll-snap-type: y proximity; overscroll-behavior: contain; scrollbar-width: thin; }
 .film-card { min-width: 0; height: 88px; border: 1px solid transparent; padding: 0; text-align: left; background: #282521; cursor: pointer; scroll-snap-align: start; position: relative; overflow: hidden; }
 .film-card canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
